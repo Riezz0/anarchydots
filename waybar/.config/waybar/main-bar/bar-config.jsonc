@@ -11,8 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////|
 
 //Modules Alignment///////////////////////////////////////////////////////////////////////////////////////|
-"modules-left": ["custom/arch","hyprland/workspaces",//"group/apps", "custom/games",                  /////|
-"custom/notification","custom/gpu-temp","custom/cpu-temp","bluetooth"],                              /////|
+"modules-left": ["custom/arch","hyprland/workspaces","custom/notification","custom/gpu-temp",        /////|
+"custom/cpu-temp","bluetooth"],                                                                      /////|
 "modules-center": ["custom/quran","custom/salaat","custom/sunnah"],                                  /////|
 "modules-right": ["custom/themer","custom/recorder","network","pulseaudio",                          /////|
 "clock","tray","custom/power"]}                                                                      /////|                                                                  /////|

@@ -94,13 +94,6 @@ cp "$HOME/.cache/wal/pywal.kvconfig" "$KVANTUM_DIR/pywal.kvconfig"
 cp "$HOME/.cache/wal/pywal.svg" "$KVANTUM_DIR/pywal.svg"
 
 #------------------------#
-# FLATPAK THEME COMPATIBILITY
-#------------------------#
-#flatpak override --user --filesystem="$HOME/.themes"
-#flatpak override --user --filesystem="$HOME/.icons"
-#flatpak override --user --filesystem=xdg-config/gtk-4.0
-
-#------------------------#
 # FASTFETCH
 #------------------------#
 rm -rf ~/.cache/fastfetch 
@@ -119,6 +112,7 @@ hyprctl reload
 kill -SIGUSR1 $(pidof kitty)
 pywalfox update & disown 
 swaync-client -rs
+killall waybar
 bash /home/$USER/.config/scripts/waybar.sh
 gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 
