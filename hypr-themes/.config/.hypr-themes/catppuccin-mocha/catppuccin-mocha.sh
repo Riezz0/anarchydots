@@ -95,9 +95,19 @@ cp "$HOME/.cache/wal/pywal.svg" "$KVANTUM_DIR/pywal.svg"
 #------------------------#
 # FASTFETCH
 #------------------------#
-
 rm -rf ~/.cache/fastfetch 
-cp -r "$THEME_DIR/arch-cattpuccin-mocha.png" "/home/$USER/.config/fastfetch/arch.png"
+cp -r "$THEME_DIR/arch-catppuccin-mocha.png" "/home/$USER/.config/fastfetch/arch.png"
+
+#------------------------#
+# WAYBAR ICON
+#------------------------#
+cp -r "$THEME_DIR/arch-catppuccin-mocha.png" "/home/$USER/.config/waybar/icons/arch.png"
+
+#------------------------#
+# WAYBAR ICON
+#------------------------#
+cp -r "$THEME_DIR/arch-catppuccin-mocha.png" "/home/$USER/.config/waybar/icons/arch.png"
+
 #------------------------#
 # REFRESH INTERFACES
 #------------------------#

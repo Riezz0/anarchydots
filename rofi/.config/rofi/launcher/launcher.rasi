@@ -24,7 +24,7 @@ window {
     margin:                      0px;
     padding:                     0px;
     border:                      2px solid;
-    border-radius:               5px;
+    border-radius:               0px;
     border-color:                @border;
     background-color:            @bg;
     cursor:                      "default";
@@ -50,7 +50,7 @@ inputbar {
     margin:                      0px;
     padding:                     15px;
     border:                      2px solid;
-    border-radius:               5px;
+    border-radius:               0px;
     border-color:                @bg;
     background-color:            @border;
     text-color:                  @bg;
@@ -95,7 +95,7 @@ listview {
     margin:                      0px;
     padding:                     0px;
     border:                      0px solid;
-    border-radius:               5px;
+    border-radius:               0px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;
@@ -104,7 +104,7 @@ listview {
 scrollbar {
     handle-width:                5px ;
     handle-color:                @selected;
-    border-radius:               5px;
+    border-radius:               0px;
     background-color:            @selected;
 }
 
@@ -115,7 +115,7 @@ element {
     margin:                      0px;
     padding:                     5px;
     border:                      0px solid;
-    border-radius:               5px;
+    border-radius:               0px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;
@@ -148,7 +148,7 @@ element-text {
 error-message {
     padding:                     15px;
     border:                      2px solid;
-    border-radius:               5px;
+    border-radius:               0px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;

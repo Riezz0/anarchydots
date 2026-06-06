@@ -92,6 +92,17 @@ cp "$HOME/.cache/wal/pywal.kvconfig" "$KVANTUM_DIR/pywal.kvconfig"
 cp "$HOME/.cache/wal/pywal.svg" "$KVANTUM_DIR/pywal.svg"
 
 #------------------------#
+# FASTFETCH
+#------------------------#
+rm -rf ~/.cache/fastfetch 
+cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/fastfetch/arch.png"
+
+#------------------------#
+# WAYBAR ICON
+#------------------------#
+
+cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/waybar/icons/arch.png"
+#------------------------#
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30

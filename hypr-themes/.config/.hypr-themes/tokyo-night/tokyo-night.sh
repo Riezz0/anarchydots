@@ -100,6 +100,11 @@ rm -rf ~/.cache/fastfetch
 cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/fastfetch/arch.png"
 
 #------------------------#
+# WAYBAR ICON
+#------------------------#
+cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
+
+#------------------------#
 # WAYBAR LOGO 
 #------------------------#
 cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
