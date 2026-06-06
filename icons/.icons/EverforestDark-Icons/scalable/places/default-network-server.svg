@@ -4,14 +4,14 @@
         color:#333333;
       }
       .ColorScheme-Background{
-        color:#ffffff;
+        color:#d8caac;
       }
       .ColorScheme-Highlight {
         color:#a7c080;
       }</style>
  </defs>
  <rect class="ColorScheme-Highlight" transform="rotate(90)" x="13" y="-37" width="38" height="10" ry="2" fill="currentColor"/>
- <rect id="shadow" class="ColorScheme-Highlight" transform="rotate(90)" x="13" y="-37" width="38" height="10" ry="2" fill="#000000" opacity=".2"/>
+ <rect id="shadow" class="ColorScheme-Highlight" transform="rotate(90)" x="13" y="-37" width="38" height="10" ry="2" fill="#272e33" opacity=".2"/>
  <rect class="ColorScheme-Highlight" x="6" y="27" width="52" height="10" ry="2" fill="currentColor"/>
  <rect class="ColorScheme-Highlight" x="6" y="43" width="52" height="10" ry="2" fill="currentColor"/>
  <rect class="ColorScheme-Highlight" x="6" y="11" width="52" height="10" ry="2" fill="currentColor"/>

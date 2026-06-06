@@ -14,8 +14,8 @@
      id="defs7" />
   <sodipodi:namedview
      id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
+     pagecolor="#cdd6f4"
+     bordercolor="#1e1e2e"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -67,7 +67,7 @@
        transform="matrix(1.100055,0,0,1.1,-1.60033,-1.6)">
       <path
          d="m 24.669,26 c 0.731,0 1.33,-0.58 1.33,-1.288 V 11.573 c 0,-0.709 -0.599,-1.288 -1.33,-1.288 H 11.682 l 5.823,8.902 -0.61,6.812 z"
-         fill="#ffffff"
+         fill="#cdd6f4"
          id="path1" />
       <path
          d="M 20.317,21.714 H 15.664 L 16.894,26 Z"
@@ -79,11 +79,11 @@
          id="path3" />
       <path
          d="M 7.33,6 C 6.6,6 6,6.58 6,7.29 v 13.136 c 0,0.708 0.599,1.288 1.33,1.288 H 20.317 L 15.105,6 Z"
-         fill="#4285f4"
+         fill="#89b4fa"
          id="path4" />
       <path
          d="M 13.517,17.071 13.032,15.642 H 10.396 L 9.911,17.071 H 8.5 l 2.347,-6.429 h 1.724 l 2.357,6.429 z m -0.767,-2.5 -1.036,-2.933 -1.018,2.933 z"
-         fill="#ffffff"
+         fill="#cdd6f4"
          id="path5" />
     </g>
   </g>

@@ -14,8 +14,8 @@
      id="defs5" />
   <sodipodi:namedview
      id="namedview5"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
+     pagecolor="#c1c2c4"
+     bordercolor="#090b15"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -60,13 +60,13 @@
      style="fill:#096B94;fill-opacity:1" />
   <path
      id="path5"
-     style="opacity:0.15;fill:#000000;fill-opacity:1;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+     style="opacity:0.15;fill:#090b15;fill-opacity:1;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
      d="M 16 7 A 9 9 0 0 0 7 16 A 9 9 0 0 0 16 25 A 9 9 0 0 0 25 16 A 9 9 0 0 0 16 7 z M 16 10 A 6 6 0 0 1 22 16 A 6 6 0 0 1 16 22 A 6 6 0 0 1 10 16 A 6 6 0 0 1 16 10 z " />
   <g
      id="g5"
      transform="matrix(1.222203,0,0,1.222203,-3.5556923,-3.554783)">
     <path
-       fill="#ffffff"
+       fill="#c1c2c4"
        d="M 7.0002221,6.999478 17.20142,14.78912 14.799308,17.187343 Z"
        style="stroke-width:2.26745;paint-order:stroke markers fill"
        id="path2" />

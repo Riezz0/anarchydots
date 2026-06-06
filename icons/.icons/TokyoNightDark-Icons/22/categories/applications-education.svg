@@ -12,8 +12,8 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview3"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
+     pagecolor="#c0caf5"
+     bordercolor="#1a1b26"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -79,7 +79,7 @@
        fill="#43d07c"
        id="rect2" />
     <g
-       fill="#ffffff"
+       fill="#c0caf5"
        id="g3">
       <path
          d="M 15.775,19.767 26.634,14.536 V 14.058 L 15.775,8.828 4.925,14.053 v 0.488 z"

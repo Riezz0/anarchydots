@@ -12,8 +12,8 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview10"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
+     pagecolor="#d8caac"
+     bordercolor="#272e33"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -60,7 +60,7 @@
   <g
      transform="matrix(.35755 0 0 .37672 43.782 -5.3343)"
      enable-background="new"
-     fill="#ffffff"
+     fill="#d8caac"
      id="g10">
     <path
        d="m-86.682 70.021s-2.2303 1.2982 1.5891 1.7362c4.6278 0.52836 6.9927 0.45227 12.091-0.51144 0 0 1.3431 0.84021 3.2156 1.5679-11.433 4.8982-25.875-0.28382-16.896-2.7927z"

@@ -16,7 +16,7 @@
   <sodipodi:namedview
      id="namedview1"
      pagecolor="#505050"
-     bordercolor="#ffffff"
+     bordercolor="#c0caf5"
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
@@ -68,22 +68,22 @@
       <path
          fill="#27ae60"
          d="m 23,11 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
-         style="fill:#ffffff"
+         style="fill:#c0caf5"
          id="path3" />
       <path
          fill="#f33777"
          d="m 21,13 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
-         style="fill:#ffffff"
+         style="fill:#c0caf5"
          id="path4" />
       <path
          fill="#c0392b"
          d="m 25,13 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
-         style="fill:#ffffff"
+         style="fill:#c0caf5"
          id="path5" />
       <path
          fill="#2980b9"
          d="m 23,15 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
-         style="fill:#ffffff"
+         style="fill:#c0caf5"
          id="path6" />
     </g>
     <g
@@ -91,7 +91,7 @@
        id="g9"
        transform="matrix(0.81201575,0,0,0.79870211,3.0075727,3.2228945)">
       <path
-         fill="#ffffff"
+         fill="#c0caf5"
          d="m 8,11 v 2 H 6 v 2 h 2 v 2 h 2 v -2 h 2 v -2 h -2 v -2 z"
          id="path7" />
       <path
@@ -99,7 +99,7 @@
          d="m 13,17 a 2,2 0 0 0 -2,2 2,2 0 0 0 2,2 2,2 0 0 0 2,-2 2,2 0 0 0 -2,-2 m 6,0 a 2,2 0 0 0 -2,2 2,2 0 0 0 2,2 2,2 0 0 0 2,-2 2,2 0 0 0 -2,-2"
          id="path8" />
       <path
-         fill="#ffffff"
+         fill="#c0caf5"
          d="m 13,18 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1 m 6,0 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
          id="path9" />
     </g>

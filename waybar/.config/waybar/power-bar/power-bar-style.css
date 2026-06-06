@@ -22,7 +22,7 @@ window#waybar {
 #custom-shutdown{
   border-radius: 0px;
   background-color: alpha(@background, 0.65);
-  color: @color13;
+  color: @color1;
   margin-bottom: 10px;
   margin-top: 10px;
   margin-left: 10px;
@@ -32,16 +32,16 @@ window#waybar {
   padding-left: 45px;
   padding-right: 45px;
   box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.6);
-  border-bottom: 2px solid @color13;
-  border-top: 2px solid @color13;
-  border-left: 2px solid @color13;
-  border-right: 2px solid @color13;
+  border-bottom: 2px solid @color1;
+  border-top: 2px solid @color1;
+  border-left: 2px solid @color1;
+  border-right: 2px solid @color1;
 }
 
 #custom-restart{
   border-radius: 0px;
   background-color: alpha(@background, 0.65);
-  color: @color4;
+  color: @color2;
   margin-bottom: 10px;
   margin-top: 10px;
   margin-left: 10px;
@@ -51,10 +51,10 @@ window#waybar {
   padding-left: 45px;
   padding-right: 45px;
   box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.6);
-  border-bottom: 2px solid @color4;
-  border-top: 2px solid @color4;
-  border-left: 2px solid @color4;
-  border-right: 2px solid @color4;
+  border-bottom: 2px solid @color2;
+  border-top: 2px solid @color2;
+  border-left: 2px solid @color2;
+  border-right: 2px solid @color2;
 }
 
 #custom-lock{

@@ -4,6 +4,6 @@
   <circle cx="31.999" cy="32.001" r="17.999" opacity=".4"/>
   <circle transform="scale(1 -1)" cx="31.999" cy="-32.001" r="14" fill="#ba174e"/>
   <circle cx="31.999" cy="32.001" r="8" fill="#d67495"/>
-  <circle cx="35.23" cy="28.77" r="2.154" fill="#ffffff" opacity=".5"/>
+  <circle cx="35.23" cy="28.77" r="2.154" fill="#cdd6f4" opacity=".5"/>
  </g>
 </svg>

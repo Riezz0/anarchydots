@@ -6,6 +6,6 @@
             color:#232629;
         }</style>
  <circle transform="scale(1,-1)" cx="11" cy="-11" r="8" fill="#f67400"/>
- <circle cx="11" cy="15" r="1" fill="#ffffff"/>
- <path d="m10 13h2v-7h-2z" fill="#ffffff" fill-rule="evenodd"/>
+ <circle cx="11" cy="15" r="1" fill="#c0caf5"/>
+ <path d="m10 13h2v-7h-2z" fill="#c0caf5" fill-rule="evenodd"/>
 </svg>

@@ -25,7 +25,7 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     pagecolor="#ffffff"
+     pagecolor="#c1c2c4"
      bordercolor="#666666"
      borderopacity="1"
      objecttolerance="10"
@@ -49,12 +49,12 @@
     <style
        id="current-color-scheme"
        type="text/css">
-   .ColorScheme-Text { color:#565656; } .ColorScheme-Highlight { color:#4285f4; } .ColorScheme-NeutralText { color:#ff9800; } .ColorScheme-PositiveText { color:#4caf50; } .ColorScheme-NegativeText { color:#f44336; }
+   .ColorScheme-Text { color:#585b6c; } .ColorScheme-Highlight { color:#614D93; } .ColorScheme-NeutralText { color:#CA4AA7; } .ColorScheme-PositiveText { color:#EA58B4; } .ColorScheme-NegativeText { color:#981C71; }
   </style>
     <style
        id="current-color-scheme-3"
        type="text/css">
-   .ColorScheme-Text { color:#565656; } .ColorScheme-Highlight { color:#4285f4; } .ColorScheme-NeutralText { color:#ff9800; } .ColorScheme-PositiveText { color:#4caf50; } .ColorScheme-NegativeText { color:#f44336; }
+   .ColorScheme-Text { color:#585b6c; } .ColorScheme-Highlight { color:#614D93; } .ColorScheme-NeutralText { color:#CA4AA7; } .ColorScheme-PositiveText { color:#EA58B4; } .ColorScheme-NegativeText { color:#981C71; }
   </style>
   </defs>
   <g transform="translate(3,3)"

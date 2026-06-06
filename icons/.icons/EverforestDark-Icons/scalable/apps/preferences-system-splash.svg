@@ -1,9 +1,9 @@
 <svg width="64" height="64" version="1.1" xmlns="http://www.w3.org/2000/svg">
  <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#565656; } .ColorScheme-Highlight { color:#a7c080; }</style>
+  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#868d80; } .ColorScheme-Highlight { color:#a7c080; }</style>
  </defs>
  <linearGradient id="b" x1="19.577" x2="16" y1="12.05" y2="12.05" gradientTransform="translate(44.967 1009.3)" gradientUnits="userSpaceOnUse">
-  <stop stop-color="#ffffff" stop-opacity="0" offset="0"/>
+  <stop stop-color="#d8caac" stop-opacity="0" offset="0"/>
   <stop stop-color="#fcfcfc" offset="1"/>
  </linearGradient>
  <linearGradient id="a" x1="19.514" x2="15" y1="15.555" y2="11" gradientTransform="translate(44.967 1009.3)" gradientUnits="userSpaceOnUse">

@@ -14,8 +14,8 @@
      id="defs4" />
   <sodipodi:namedview
      id="namedview4"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
+     pagecolor="#c0caf5"
+     bordercolor="#1a1b26"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
@@ -65,7 +65,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#ffffff"
+     fill="#c0caf5"
      id="rect1" />
   <rect
      x="12"
@@ -74,7 +74,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#ffffff"
+     fill="#c0caf5"
      id="rect2" />
   <rect
      x="4"
@@ -83,7 +83,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#ffffff"
+     fill="#c0caf5"
      id="rect3" />
   <rect
      x="12"
@@ -92,6 +92,6 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#ffffff"
+     fill="#c0caf5"
      id="rect4" />
 </svg>
