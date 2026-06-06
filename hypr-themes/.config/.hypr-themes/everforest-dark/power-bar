@@ -1,7 +1,7 @@
 @import "../../../.cache/wal/colors-waybar.css";
 
 * {
-    font-family: MesloLGL Nerd Font Propo;
+    font-family: JetBrains Nerd Font Propo;
     font-size: 13px;
 }
 
@@ -10,7 +10,7 @@ window#waybar {
   color: @foreground;
   transition-property: background-color;
   transition-duration: 0.5s;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 0px 0px 0px 0px;
   transition-duration: .5s;
   border-bottom: 2px solid @color8;
   border-top: 2px solid @color8;
@@ -20,7 +20,7 @@ window#waybar {
 }
 
 #custom-shutdown{
-  border-radius: 10px;
+  border-radius: 0px;
   background-color: alpha(@background, 0.65);
   color: @color1;
   margin-bottom: 10px;
@@ -39,7 +39,7 @@ window#waybar {
 }
 
 #custom-restart{
-  border-radius: 10px;
+  border-radius: 0px;
   background-color: alpha(@background, 0.65);
   color: @color2;
   margin-bottom: 10px;
@@ -58,7 +58,7 @@ window#waybar {
 }
 
 #custom-lock{
-  border-radius: 10px;
+  border-radius: 0px;
   background-color: alpha(@background, 0.65);
   color: @color3;
   margin-bottom: 10px;
@@ -86,6 +86,6 @@ tooltip label {
 tooltip {
   background: alpha(@background, 1); 
   border: 2px solid @color8;        
-  border-radius: 10px;               
+  border-radius: 0px;               
 }
 

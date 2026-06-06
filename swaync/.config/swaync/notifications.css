@@ -16,9 +16,17 @@
 
   all: unset;
   font-size: 14px;
-  font-family: "MelsoLGL Nerd Font Mono 14";
+  font-family: "JetBrains Nerd Font Mono Propo 14";
   transition: 200ms;
 
+}
+.widget-label {
+  /* This centers the text horizontally */
+  text-align: center;
+  
+  /* This ensures the label occupies the full width of its container so alignment is visible */
+  margin: 0;
+  padding: 10px;
 }
 
 .notification-row {
