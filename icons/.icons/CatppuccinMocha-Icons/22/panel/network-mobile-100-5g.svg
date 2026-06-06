@@ -2,40 +2,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" width="22" height="22">
     <style type="text/css" id="current-color-scheme">
       .ColorScheme-Text {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-Background {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-Highlight {
-        color:#89b4fa;
+        color:#ffffff;
       }
       .ColorScheme-ViewText {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-ViewBackground {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-ViewHover {
-        color:#89b4fa;
+        color:#ffffff;
       }
       .ColorScheme-ViewFocus{
-        color:#89b4fa;
+        color:#ffffff;
       }
       .ColorScheme-ButtonText {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-ButtonBackground {
-        color:#cdd6f4;
+        color:#ffffff;
       }
       .ColorScheme-ButtonHover {
-        color:#89b4fa;
+        color:#ffffff;
       }
       .ColorScheme-ButtonFocus{
-        color:#89b4fa;
+        color:#ffffff;
       }
       .ColorScheme-NegativeText{
-        color:#f38ba8;
+        color:#fbdae3;
       }
       </style>
     <g transform="translate(0,-308) translate(22,374)" id="network-mobile-100-5g">

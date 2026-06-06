@@ -12,13 +12,13 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview10"
-     pagecolor="#cdd6f4"
-     bordercolor="#1e1e2e"
+     pagecolor="#ffffff"
+     bordercolor="#e71853"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#cdd6f4"
+     inkscape:deskcolor="#ffffff"
      inkscape:zoom="7.375"
      inkscape:cx="16"
      inkscape:cy="16"
@@ -38,11 +38,11 @@
        y2="-10.919"
        gradientUnits="userSpaceOnUse">
       <stop
-         stop-color="#f38ba8"
+         stop-color="#f9c4d3"
          offset="0"
          id="stop1" />
       <stop
-         stop-color="#f38ba8"
+         stop-color="#ffffff"
          offset="1"
          id="stop2" />
     </linearGradient>
@@ -54,13 +54,13 @@
      height="30"
      rx="8"
      ry="8"
-     fill="#cdd6f4"
+     fill="#ffffff"
      id="rect1"
-     style="fill:#f38ba8;fill-opacity:1" />
+     style="fill:#ffffff;fill-opacity:1" />
   <g
      transform="matrix(.35755 0 0 .37672 43.782 -5.3343)"
      enable-background="new"
-     fill="#cdd6f4"
+     fill="#ffffff"
      id="g10">
     <path
        d="m-86.682 70.021s-2.2303 1.2982 1.5891 1.7362c4.6278 0.52836 6.9927 0.45227 12.091-0.51144 0 0 1.3431 0.84021 3.2156 1.5679-11.433 4.8982-25.875-0.28382-16.896-2.7927z"
