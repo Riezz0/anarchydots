@@ -99,6 +99,12 @@ rm -rf ~/.cache/fastfetch
 cp -r "$THEME_DIR/arch-anime-room.png" "/home/$USER/.config/fastfetch/arch.png"
 
 #------------------------#
+# WAYBAR ICON
+#------------------------#
+cp -r "$THEME_DIR/arch-anime-room.png" "/home/$USER/.config/waybar/icons/arch.png"
+
+
+#------------------------#
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
@@ -106,7 +112,9 @@ hyprctl reload
 kill -SIGUSR1 $(pidof kitty)
 pywalfox update & disown 
 swaync-client -rs
-bash /home/$USER/.config/scripts/waybar.sh
+bash /home/$USER/.config/scripts/waybar.sh 
+wait
+
 
 #------------------------#
 # NOTIFICATION
@@ -117,4 +125,6 @@ notify-send "$THEME_DISPLAY Loaded"
 # NAUTILUS
 #------------------------#
 nautilus -q && gtk4-update-icon-cache ~/.config/gtk-4.0
-
+sleep 2
+clear
+source ~/.zshrc

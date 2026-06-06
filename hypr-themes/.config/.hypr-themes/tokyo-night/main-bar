@@ -1,17 +1,22 @@
 @import "../../../.cache/wal/colors-waybar.css";
 
 * {
-    font-family: MesloLGL Nerd Font Propo;
-    font-size: 12px;
+    font-family: JetBrains Mono Nerd Font Propo;
+    font-size: 14px;
 }
 
 window#waybar {
-  background-color: alpha(@background, 0.4);
+  background-color: alpha(@background, 1);
   color: @foreground;
   transition-property: background-color;
   transition-duration: 0.5s;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 0px 0px 0px 0px;
   transition-duration: .5s;
+  border-bottom: 2px alpha(@color2, 1) solid;
+  border-top: 2px alpha(@color2, 1) solid;
+  border-right: 2px alpha(@color2, 1) solid;
+  border-left: 2px alpha(@color2, 1) solid;
+
 }
 
 button {
@@ -25,46 +30,58 @@ button:hover {
 }
 
 #custom-arch {
-  background-image: url('../icons/cachyos.svg');
+  background-image: url('../icons/arch.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 30px;
   background-color: alpha(@background, 0.65);
   color: @color2;
-  margin-bottom: 5px;
-  margin-top: 3px;
-  margin-left: 5px;
-  margin-right: 0px;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.6);
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 5px;
+  padding-bottom: 7px;
+  padding-top: 7px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 0px;
+  box-shadow: 2px 2px 2px 0px rgba(0,0,0,1);
+  border-bottom: 2px alpha(@color2, 1) solid;
+  border-top: 2px alpha(@color2, 1) solid;
+  border-right: 2px alpha(@color2, 1) solid;
+  border-left: 2px alpha(@color2, 1) solid;
+}
+
+#custom-arch:hover {
+  padding-bottom: 7px;
+  padding-top: 7px;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: @color7;
+  background-color: alpha(@background, 0.65);
   border-bottom: 2px alpha(@color2, 0.5) solid;
   border-top: 2px alpha(@color2, 0.5) solid;
   border-right: 2px alpha(@color2, 0.5) solid;
   border-left: 2px alpha(@color2, 0.5) solid;
-
-
+  border-radius: 0px;
 }
 
 #workspaces {
     background-color: alpha(@background, 0.65);
-    margin-bottom: 5px;
-    margin-top: 3px;
-    margin-left: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 0px;
     margin-right: 5px;
-    padding-bottom: 0px;
-    padding-top: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 10px;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 0px;
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.6);
-    border-bottom: 2px alpha(@color4, 0.5) solid;
-    border-top: 2px alpha(@color4, 0.5) solid;
-    border-right: 2px alpha(@color4, 0.5) solid;
-    border-left: 2px alpha(@color4, 0.5) solid;
+    border-bottom: 2px alpha(@color4, 1) solid;
+    border-top: 2px alpha(@color4, 1) solid;
+    border-right: 2px alpha(@color4, 1) solid;
+    border-left: 2px alpha(@color4, 1) solid;
 }
 
 
@@ -611,13 +628,13 @@ button:hover {
 
 tooltip label {
   color: @foreground;                   
-  font-family: "MesloLGL Nerd Font";    
-  font-size: 12px;
+  font-family: "JetBrains Mono Nerd Font Propo";    
+  font-size: 14px;
   padding: 0px;
 }
 
 tooltip {
   background: alpha(@background, 1); 
   border: 2px solid @color2;        
-  border-radius: 10px;               
+  border-radius: 0px;               
 }
