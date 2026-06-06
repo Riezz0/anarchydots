@@ -14,13 +14,13 @@
      id="defs4" />
   <sodipodi:namedview
      id="namedview4"
-     pagecolor="#c1c2c4"
-     bordercolor="#090b15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#c1c2c4"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="11.313708"
      inkscape:cx="6.6733203"
@@ -38,9 +38,9 @@
        originy="0"
        spacingx="1"
        spacingy="1"
-       empcolor="#29ACCC"
+       empcolor="#0099e5"
        empopacity="0.30196078"
-       color="#29ACCC"
+       color="#0099e5"
        opacity="0.14901961"
        empspacing="5"
        dotted="false"
@@ -55,9 +55,9 @@
      height="22"
      rx="6"
      ry="6"
-     fill="#29ACCC"
+     fill="#26a6ff"
      id="rect2-6"
-     style="fill:#29ACCC;fill-opacity:1;stroke-width:0.733333" />
+     style="fill:#096B94;fill-opacity:1;stroke-width:0.733333" />
   <rect
      x="4"
      y="4"
@@ -65,7 +65,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#c1c2c4"
+     fill="#ffffff"
      id="rect1" />
   <rect
      x="12"
@@ -74,7 +74,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#c1c2c4"
+     fill="#ffffff"
      id="rect2" />
   <rect
      x="4"
@@ -83,7 +83,7 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#c1c2c4"
+     fill="#ffffff"
      id="rect3" />
   <rect
      x="12"
@@ -92,6 +92,6 @@
      height="6"
      rx="2"
      ry="2"
-     fill="#c1c2c4"
+     fill="#ffffff"
      id="rect4" />
 </svg>

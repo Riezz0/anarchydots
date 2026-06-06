@@ -1,37 +1,37 @@
 <svg width="22" height="22" version="1.1" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
  <defs>
   <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#c1c2c4;
+        color:#dfdfdf;
       }
       .ColorScheme-Background {
-        color:#c1c2c4;
+        color:#eff0f1;
       }
       .ColorScheme-Highlight {
-        color:#29ACCC;
+        color:#3daee9;
       }
       .ColorScheme-ViewText {
-        color:#090b15;
+        color:#31363b;
       }
       .ColorScheme-ViewBackground {
-        color:#c1c2c4;
+        color:#fcfcfc;
       }
       .ColorScheme-ViewHover {
-        color:#29ACCC;
+        color:#93cee9;
       }
       .ColorScheme-ViewFocus{
-        color:#29ACCC;
+        color:#3daee9;
       }
       .ColorScheme-ButtonText {
-        color:#090b15;
+        color:#31363b;
       }
       .ColorScheme-ButtonBackground {
-        color:#c1c2c4;
+        color:#eff0f1;
       }
       .ColorScheme-ButtonHover {
-        color:#29ACCC;
+        color:#93cee9;
       }
       .ColorScheme-ButtonFocus{
-        color:#29ACCC;
+        color:#3daee9;
       }</style>
  </defs>
  <g class="ColorScheme-Text" transform="translate(-47.273 -5)" fill="currentColor">

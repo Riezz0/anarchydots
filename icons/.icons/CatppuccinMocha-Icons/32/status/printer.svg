@@ -1,36 +1,36 @@
 <svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#f7b2c6;
+        color:#565656;
       }
       .ColorScheme-Background{
-        color:#ffffff;
+        color:#EFF0F1;
       }
       .ColorScheme-Highlight{
-        color:#ffffff;
+        color:#3DAEE6;
       }
       .ColorScheme-ViewText {
-        color:#fef7f9;
+        color:#7B7C7E;
       }
       .ColorScheme-ViewBackground{
-        color:#ffffff;
+        color:#FCFCFC;
       }
       .ColorScheme-ViewHover {
-        color:#ffffff;
+        color:#3DAEE6;
       }
       .ColorScheme-ViewFocus{
-        color:#ffffff;
+        color:#1E92FF;
       }
       .ColorScheme-ButtonText {
-        color:#fef7f9;
+        color:#7B7C7E;
       }
       .ColorScheme-ButtonBackground{
-        color:#ffffff;
+        color:#EFF0F1;
       }
       .ColorScheme-ButtonHover {
-        color:#ffffff;
+        color:#3DAEE6;
       }
       .ColorScheme-ButtonFocus{
-        color:#ffffff;
+        color:#1E92FF;
       }</style>
  <g class="ColorScheme-Text" transform="translate(-36)" fill="currentColor">
   <path d="m42 12c-1.662 0-3 1.338-3 3v6c0 1.662 1.3408 2.9028 3 3h3v-2h-3c-0.554 0-1-0.446-1-1v-6c0-0.554 0.446-1 1-1h20c0.554 0 1 0.446 1 1v6c0 0.554-0.44695 0.96759-1 1h-3v2h3c1.662 0 3-1.338 3-3v-6c0-1.662-1.338-3-3-3z"/>

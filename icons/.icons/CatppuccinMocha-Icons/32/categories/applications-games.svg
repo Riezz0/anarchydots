@@ -15,13 +15,13 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview1"
-     pagecolor="#f6a7bd"
+     pagecolor="#505050"
      bordercolor="#ffffff"
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#f6a7bd"
+     inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      inkscape:zoom="12.828125"
      inkscape:cx="10.095006"
@@ -41,8 +41,8 @@
     <circle
        cx="16"
        cy="16"
-       fill="#ffffff"
-       style="fill:#ffffff;fill-opacity:1;stroke-width:2.09966;paint-order:stroke fill markers"
+       fill="#f0f0f0"
+       style="fill:#e6e6e6;fill-opacity:1;stroke-width:2.09966;paint-order:stroke fill markers"
        id="circle1"
        r="15" />
     <g
@@ -52,11 +52,11 @@
        transform="matrix(0.81201575,0,0,0.79870211,3.0075727,3.2228945)"
        inkscape:label="g2">
       <path
-         fill="#f07195"
+         fill="#303136"
          d="m 4,14 -0.941,7.525 a 2,2 0 0 0 3.479,1.752 l 10e-4,0.004 5.46,-6.28 z m 24,0 -8,3 5.46,6.281 0.003,-0.004 A 2,2 0 0 0 29,22 2,2 0 0 0 28.941,21.525 Z"
          id="path1-2" />
       <path
-         fill="#f390ac"
+         fill="#3f4346"
          d="m 10,8 a 6,6 0 0 0 0,12 6,6 0 0 0 3.31,-1 h 5.38 A 6,6 0 0 0 22,20 6,6 0 0 0 22,8 h -7 z"
          id="path2-9" />
     </g>
@@ -66,22 +66,22 @@
        id="g6"
        transform="matrix(0.81201575,0,0,0.79870211,3.0075727,3.2228945)">
       <path
-         fill="#ffffff"
+         fill="#27ae60"
          d="m 23,11 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
          style="fill:#ffffff"
          id="path3" />
       <path
-         fill="#f9cad7"
+         fill="#f33777"
          d="m 21,13 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
          style="fill:#ffffff"
          id="path4" />
       <path
-         fill="#f7b0c4"
+         fill="#c0392b"
          d="m 25,13 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
          style="fill:#ffffff"
          id="path5" />
       <path
-         fill="#fce5eb"
+         fill="#2980b9"
          d="m 23,15 a 1,1 0 0 0 -1,1 1,1 0 0 0 1,1 1,1 0 0 0 1,-1 1,1 0 0 0 -1,-1"
          style="fill:#ffffff"
          id="path6" />
@@ -95,7 +95,7 @@
          d="m 8,11 v 2 H 6 v 2 h 2 v 2 h 2 v -2 h 2 v -2 h -2 v -2 z"
          id="path7" />
       <path
-         fill="#f07195"
+         fill="#303136"
          d="m 13,17 a 2,2 0 0 0 -2,2 2,2 0 0 0 2,2 2,2 0 0 0 2,-2 2,2 0 0 0 -2,-2 m 6,0 a 2,2 0 0 0 -2,2 2,2 0 0 0 2,2 2,2 0 0 0 2,-2 2,2 0 0 0 -2,-2"
          id="path8" />
       <path

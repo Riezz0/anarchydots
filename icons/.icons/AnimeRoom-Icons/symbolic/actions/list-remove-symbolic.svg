@@ -14,13 +14,13 @@
      id="defs1" />
   <sodipodi:namedview
      id="namedview1"
-     pagecolor="#c1c2c4"
-     bordercolor="#090b15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#c1c2c4"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="47.125"
      inkscape:cx="7.9893899"
      inkscape:cy="8"
@@ -35,6 +35,6 @@
      y="7"
      width="10"
      height="2"
-     fill="#585b6c"
+     fill="#565656"
      id="rect1" />
 </svg>

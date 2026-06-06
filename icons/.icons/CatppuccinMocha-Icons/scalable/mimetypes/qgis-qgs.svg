@@ -13,12 +13,12 @@
   <sodipodi:namedview
      id="namedview294"
      pagecolor="#ffffff"
-     bordercolor="#ea376a"
+     bordercolor="#111111"
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="12.21875"
      inkscape:cx="16.654731"
@@ -198,8 +198,8 @@
        width="48"
        height="56"
        ry="5"
-       fill="#f6a5bc"
-       style="paint-order:stroke fill markers;fill:#ffffff;fill-opacity:1"
+       fill="#4747b5"
+       style="paint-order:stroke fill markers;fill:#91af23;fill-opacity:1"
        id="rect282" />
     <path
        d="M56 46 42 60h9c2.77 0 5-2.23 5-5z"
@@ -236,13 +236,13 @@
        id="g2821"
        transform="translate(0.65173735,0.22244024)">
       <g
-         stroke="#ffffff"
+         stroke="#fcfcb4"
          id="g337"
          transform="matrix(0.12174107,0,0,0.12174107,16.651036,-4.2727528)"
          style="stroke:#ffffff;stroke-opacity:1">
         <path
            d="M 7.8693891,281.04198 212.37723,449.29913"
-           fill="#ffffff"
+           fill="#fcfc48"
            stroke-width="15.4066"
            id="path327"
            style="stroke:#ffffff;stroke-opacity:1" />
@@ -274,7 +274,7 @@
       <path
          d="M 31.039353,41.465745 17.327411,45.278033"
          fill="none"
-         stroke="#ffffff"
+         stroke="#fcfcb0"
          stroke-width="0.608706"
          id="path339"
          style="stroke:#ffffff;stroke-opacity:1" />

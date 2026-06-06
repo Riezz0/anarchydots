@@ -12,7 +12,7 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview11"
-     pagecolor="#f6a7bd"
+     pagecolor="#505050"
      bordercolor="#ffffff"
      borderopacity="1"
      inkscape:pageshadow="0"
@@ -55,8 +55,8 @@
        width="48"
        height="56"
        ry="5"
-       fill="#f7b6c8"
-       style="paint-order:stroke fill markers;fill:#f9c8d6;fill-opacity:1"
+       fill="#3d58a5"
+       style="paint-order:stroke fill markers;fill:#2d6e7b;fill-opacity:1"
        id="rect9" />
     <path
        d="M56 46 42 60h9c2.77 0 5-2.23 5-5z"

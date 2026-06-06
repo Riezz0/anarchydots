@@ -20,7 +20,7 @@ PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="oomox-cyberpunk-2077"
+ICON_THEME="Cyberpunk2077-Icons"
 CURSOR_THEME="Cyberpunk2077-Cursors"
 
 # Kvantum

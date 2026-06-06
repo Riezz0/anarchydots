@@ -15,12 +15,12 @@
   <sodipodi:namedview
      id="namedview4"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="11.313708"
      inkscape:cx="6.6733203"
@@ -38,9 +38,9 @@
        originy="0"
        spacingx="1"
        spacingy="1"
-       empcolor="#fffcfd"
+       empcolor="#0099e5"
        empopacity="0.30196078"
-       color="#fffcfd"
+       color="#0099e5"
        opacity="0.14901961"
        empspacing="5"
        dotted="false"
@@ -55,9 +55,9 @@
      height="22"
      rx="6"
      ry="6"
-     fill="#ffffff"
+     fill="#26a6ff"
      id="rect2-6"
-     style="fill:#ffffff;fill-opacity:1;stroke-width:0.733333" />
+     style="fill:#a6e3a1;fill-opacity:1;stroke-width:0.733333" />
   <rect
      x="4"
      y="4"

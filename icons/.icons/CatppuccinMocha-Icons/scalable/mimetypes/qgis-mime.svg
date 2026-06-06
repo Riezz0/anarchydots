@@ -13,12 +13,12 @@
   <sodipodi:namedview
      id="namedview294"
      pagecolor="#ffffff"
-     bordercolor="#ea376a"
+     bordercolor="#111111"
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="6.109375"
      inkscape:cx="22.83376"
@@ -56,8 +56,8 @@
        width="48"
        height="56"
        ry="5"
-       fill="#f6a5bc"
-       style="paint-order:stroke fill markers;fill:#ffffff;fill-opacity:1"
+       fill="#4747b5"
+       style="paint-order:stroke fill markers;fill:#91af23;fill-opacity:1"
        id="rect282" />
     <path
        d="M56 46 42 60h9c2.77 0 5-2.23 5-5z"

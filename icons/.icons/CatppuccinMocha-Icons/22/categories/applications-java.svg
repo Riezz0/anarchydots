@@ -13,12 +13,12 @@
   <sodipodi:namedview
      id="namedview10"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="7.375"
      inkscape:cx="16"
      inkscape:cy="16"
@@ -38,11 +38,11 @@
        y2="-10.919"
        gradientUnits="userSpaceOnUse">
       <stop
-         stop-color="#f9c4d3"
+         stop-color="#ff3069"
          offset="0"
          id="stop1" />
       <stop
-         stop-color="#ffffff"
+         stop-color="#ff7954"
          offset="1"
          id="stop2" />
     </linearGradient>
@@ -54,9 +54,9 @@
      height="30"
      rx="8"
      ry="8"
-     fill="#ffffff"
+     fill="#f2f2f2"
      id="rect1"
-     style="fill:#ffffff;fill-opacity:1" />
+     style="fill:#ff7b5c;fill-opacity:1" />
   <g
      transform="matrix(.35755 0 0 .37672 43.782 -5.3343)"
      enable-background="new"

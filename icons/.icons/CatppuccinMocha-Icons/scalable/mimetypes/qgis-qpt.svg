@@ -13,12 +13,12 @@
   <sodipodi:namedview
      id="namedview294"
      pagecolor="#ffffff"
-     bordercolor="#ea376a"
+     bordercolor="#111111"
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="12.21875"
      inkscape:cx="20.092072"
@@ -68,7 +68,7 @@
        y2="624.76453">
       <stop
          offset="0"
-         stop-color="#ffffff"
+         stop-color="#e5b366"
          id="stop7203" />
       <stop
          offset="1"
@@ -84,11 +84,11 @@
        y2="525.24249">
       <stop
          offset="0"
-         stop-color="#ffffff"
+         stop-color="#c07c11"
          id="stop7208" />
       <stop
          offset="1"
-         stop-color="#ffffff"
+         stop-color="#e8b86d"
          id="stop7210" />
     </linearGradient>
   </defs>
@@ -100,8 +100,8 @@
        width="48"
        height="56"
        ry="5"
-       fill="#f6a5bc"
-       style="paint-order:stroke fill markers;fill:#ffffff;fill-opacity:1"
+       fill="#4747b5"
+       style="paint-order:stroke fill markers;fill:#91af23;fill-opacity:1"
        id="rect282" />
     <path
        d="M56 46 42 60h9c2.77 0 5-2.23 5-5z"
@@ -120,7 +120,7 @@
      transform="matrix(0.32916253,0,0,0.32916253,-126.48934,-153.55806)"
      style="stroke-width:0.999506;stroke-dasharray:none">
     <g
-       stroke="#ffffff"
+       stroke="#c98d2c"
        id="g7279"
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.999506;stroke-dasharray:none"
        transform="translate(43.056702,58.775991)">
@@ -213,7 +213,7 @@
     <path
        d="m 458.75669,574.9065 40.53572,37.14285 c 0,0 3.67464,-3.05933 1.07143,-9.46429 -2.109,-5.18899 -9.64286,-13.39285 -9.64286,-13.39285 l 37.85714,-38.39286 c 0,0 2.22562,-5.83776 -1.25,-8.92857 -3.69928,-3.2897 -8.39286,-0.35714 -8.39286,-0.35714 l -35.71428,40.17857 c 0,0 -10.73359,-9.10054 -16.96429,-10.17858 -5.7609,-0.99674 -7.5,3.39287 -7.5,3.39287 z"
        fill="url(#m)"
-       stroke="#facdda"
+       stroke="#965f08"
        stroke-width="2.2"
        id="path7281"
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.999506;stroke-dasharray:none" />

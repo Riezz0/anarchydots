@@ -15,12 +15,12 @@
   <sodipodi:namedview
      id="namedview4"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="7.375"
      inkscape:cx="18.847458"
      inkscape:cy="28.745763"
@@ -37,9 +37,9 @@
      height="30"
      rx="8"
      ry="8"
-     fill="#ffffff"
+     fill="#f2f2f2"
      id="rect1-6"
-     style="fill:#f5a4bb;fill-opacity:1" />
+     style="fill:#4d4d4d;fill-opacity:1" />
   <path
      d="m 6,6.1429 v 17.286 c 0,1.5714 1.5714,1.5714 1.5714,1.5714 h 20.429 z m 3.9286,8.5416 7.4505,6.387 H 9.9286 Z"
      fill="#ffffff"
@@ -48,7 +48,7 @@
      style="stroke-width:0.39286" />
   <path
      d="m 15.472,13.607 c 0.41247,0.01493 0.78704,0.24462 0.98752,0.60539 l 5.8929,10.607 0.14732,2.9303 -2.2098,-1.784 -4.8616,-8.7518 v -3.6025 c 0.01493,0 0.02876,-0.0047 0.04376,-0.0047 z"
-     fill="#ffffff"
+     fill="#e6e6e6"
      fill-rule="evenodd"
      id="path2"
      style="stroke-width:0.39286" />
@@ -59,7 +59,7 @@
      style="stroke-width:0.39286" />
   <path
      d="m 13.857,8.8928 v 2.3571 h -0.78572 c -1.5714,0 -1.5714,1.5714 -1.5714,1.5714 v 3.9286 c 0,0 1.9643,1.9643 2.75,2.75 0.70651,0.54994 1.8796,0.59407 2.4868,-0.1296 l 2.6204,-2.6204 v -3.9286 c 0,0 0,-1.5714 -1.5714,-1.5714 H 16.99997 V 8.8928 Z"
-     fill="#ffffff"
+     fill="#cccccc"
      id="path4"
      style="stroke-width:0.39286" />
   <circle

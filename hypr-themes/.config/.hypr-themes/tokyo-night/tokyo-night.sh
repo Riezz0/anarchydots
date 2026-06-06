@@ -20,7 +20,7 @@ PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="TokyoNight-Icons"
+ICON_THEME="TokyoNightDark-Icons"
 CURSOR_THEME="TokyoNight-Cursors"
 
 

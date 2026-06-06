@@ -15,12 +15,12 @@
   <sodipodi:namedview
      id="namedview7"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="20.85965"
      inkscape:cx="9.5399491"
      inkscape:cy="5.5609754"
@@ -38,9 +38,9 @@
        originy="0"
        spacingx="1"
        spacingy="1"
-       empcolor="#fffcfd"
+       empcolor="#0099e5"
        empopacity="0.30196078"
-       color="#fffcfd"
+       color="#0099e5"
        opacity="0.14901961"
        empspacing="5"
        dotted="false"
@@ -58,9 +58,9 @@
        height="30"
        rx="8.181818"
        ry="8.181818"
-       fill="#fef9fa"
+       fill="#158eff"
        id="rect1"
-       style="fill:#ffffff;fill-opacity:1" />
+       style="fill:#c6cad2;fill-opacity:1" />
     <g
        stroke-width="0.5"
        id="g5"
@@ -71,15 +71,15 @@
          id="path1" />
       <path
          d="M 20.317,21.714 H 15.664 L 16.894,26 Z"
-         fill="#f8bfcf"
+         fill="#305fcf"
          id="path2" />
       <path
          d="m 19.571,13.5 v 1.071 h -2.55 v 1.073 h 0.436 v -10e-4 h 4.704 c -0.275,0.955 -0.882,1.875 -1.475,2.576 -0.744,-0.868 -0.959,-1.315 -1.023,-1.505 H 18.57 c 0.08,0.245 0.38,0.899 1.49,2.18 -0.48,0.482 -0.842,0.767 -0.842,0.767 l 0.335,1.033 c 0,0 0.506,-0.429 1.14,-1.091 a 47,47 0 0 0 2.516,2.468 l 0.653,-0.679 a 41,41 0 0 1 -2.544,-2.468 c 0.82,-0.956 1.653,-2.18 1.829,-3.282 h 1.78 v 0.002 h 0.002 V 14.57 H 20.642 V 13.5 Z"
-         fill="#fbdee6"
+         fill="#5a717f"
          id="path3" />
       <path
          d="M 7.33,6 C 6.6,6 6,6.58 6,7.29 v 13.136 c 0,0.708 0.599,1.288 1.33,1.288 H 20.317 L 15.105,6 Z"
-         fill="#fffcfd"
+         fill="#4285f4"
          id="path4" />
       <path
          d="M 13.517,17.071 13.032,15.642 H 10.396 L 9.911,17.071 H 8.5 l 2.347,-6.429 h 1.724 l 2.357,6.429 z m -0.767,-2.5 -1.036,-2.933 -1.018,2.933 z"

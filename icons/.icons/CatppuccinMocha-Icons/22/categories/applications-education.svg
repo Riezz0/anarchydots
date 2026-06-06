@@ -13,12 +13,12 @@
   <sodipodi:namedview
      id="namedview3"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="41.7193"
      inkscape:cx="15.124894"
@@ -36,9 +36,9 @@
        originy="0"
        spacingx="1"
        spacingy="1"
-       empcolor="#fffcfd"
+       empcolor="#0099e5"
        empopacity="0.30196078"
-       color="#fffcfd"
+       color="#0099e5"
        opacity="0.14901961"
        empspacing="5"
        dotted="false"
@@ -57,11 +57,11 @@
        gradientTransform="translate(-384.57,-515.8)"
        gradientUnits="userSpaceOnUse">
       <stop
-         stop-color="#fffcfd"
+         stop-color="#3889e9"
          offset="0"
          id="stop1" />
       <stop
-         stop-color="#ffffff"
+         stop-color="#5ea5fb"
          offset="1"
          id="stop2" />
     </linearGradient>
@@ -76,7 +76,7 @@
        height="30"
        rx="8.181818"
        ry="8.181818"
-       fill="#ffffff"
+       fill="#43d07c"
        id="rect2" />
     <g
        fill="#ffffff"

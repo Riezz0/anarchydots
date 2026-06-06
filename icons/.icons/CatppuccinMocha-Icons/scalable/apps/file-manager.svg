@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
 <defs>
   <style id="current-color-scheme" type="text/css">
-   .ColorScheme-Text { color:#f7b2c6; } .ColorScheme-Highlight { color:#ffffff; }
+   .ColorScheme-Text { color:#565656; } .ColorScheme-Highlight { color:#a6e3a1; }
   </style>
   <linearGradient id="a" x1="42" x2="44" y1="51" y2="55" gradientTransform="matrix(.96432 0 0 .96425 1.144 1.144)" gradientUnits="userSpaceOnUse"><stop offset="0"/><stop offset="1" stop-opacity="0"/>
   </linearGradient>

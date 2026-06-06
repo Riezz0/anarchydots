@@ -15,12 +15,12 @@
   <sodipodi:namedview
      id="namedview5"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="7.375"
      inkscape:cx="12.881356"
@@ -38,9 +38,9 @@
        originy="0"
        spacingx="1"
        spacingy="1"
-       empcolor="#fffcfd"
+       empcolor="#0099e5"
        empopacity="0.30196078"
-       color="#fffcfd"
+       color="#0099e5"
        opacity="0.14901961"
        empspacing="5"
        dotted="false"
@@ -55,12 +55,12 @@
      height="30"
      rx="8"
      ry="8"
-     fill="#ffffff"
+     fill="#f2f2f2"
      id="rect1"
-     style="fill:#ffffff;fill-opacity:1" />
+     style="fill:#a6e3a1;fill-opacity:1" />
   <path
      id="path5"
-     style="opacity:0.15;fill:#e71853;fill-opacity:1;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+     style="opacity:0.15;fill:#000000;fill-opacity:1;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
      d="M 16 7 A 9 9 0 0 0 7 16 A 9 9 0 0 0 16 25 A 9 9 0 0 0 25 16 A 9 9 0 0 0 16 7 z M 16 10 A 6 6 0 0 1 22 16 A 6 6 0 0 1 16 22 A 6 6 0 0 1 10 16 A 6 6 0 0 1 16 10 z " />
   <g
      id="g5"
@@ -71,7 +71,7 @@
        style="stroke-width:2.26745;paint-order:stroke markers fill"
        id="path2" />
     <path
-       fill="#ffffff"
+       fill="#e6e6e6"
        d="M 25.000505,24.999761 14.799308,17.201231 17.20142,14.798008 Z"
        style="stroke-width:2.26745;paint-order:stroke markers fill"
        id="path3" />

@@ -14,12 +14,12 @@
      id="defs2" /><sodipodi:namedview
      id="namedview2"
      pagecolor="#ffffff"
-     bordercolor="#e71853"
+     bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#ffffff"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.5135436"
      inkscape:cx="-54.504723"
      inkscape:cy="-16.11271"
@@ -32,9 +32,9 @@
      cx="32"
      cy="32"
      r="27"
-     fill="#ffffff"
+     fill="#3de365"
      id="circle1"
-     style="fill:#ef648b;fill-opacity:1" /><circle
+     style="fill:#2a2a2b;fill-opacity:1" /><circle
      cx="32.035"
      cy="32.067"
      r="30.001"
