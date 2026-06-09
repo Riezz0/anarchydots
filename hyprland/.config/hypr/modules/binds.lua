@@ -7,7 +7,8 @@ hl.bind("SUPER + L", hl.dsp.exec_cmd("hyprlock"),                               
 
 -- Scratchpads ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 hl.bind("SUPER + E", hl.dsp.exec_cmd("pypr toggle nautipad"),                                                       { description = "File Explorer - Scratchpad" })
-hl.bind("SUPER + T", hl.dsp.workspace.toggle_special("codepad"),                                                    { description = "Visual Studio - Scratchpad" })
+hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd("pypr toggle pyprpad"),                                                       { description = "File Explorer - Scratchpad" })
+hl.bind("SUPER + T", hl.dsp.exec_cmd("pypr toggle codipad"),                                                         { description = "Visual Studio - Scratchpad" })
 hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("pypr toggle termpad"),                                           { description = "Terminal - Scratchpad" })
 hl.bind("SUPER + V", hl.dsp.exec_cmd("pypr toggle vimpad"),                                                         { description = "Nvim - Scratchpad" })
 hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("~/.config/scripts/webapps/youtube.sh"),                               { description = "YouTube WebApp - Scratchpad" })

@@ -6,7 +6,7 @@ packages=(
     hypridle hyprlock hyprpicker tree qt5ct qt6ct qt5-styleplugins 
     wl-clipboard firefox code vlc nwg-look gnome-disk-utility 
     nwg-displays zsh ttf-meslo-nerd ttf-font-awesome 
-    ttf-font-awesome-4 ttf-font-awesome-5 waybar rust cargo 
+    ttf-font-awesome-4 ttf-font-awesome-5 waybar-git rust cargo 
     fastfetch cmatrix pulsemixer net-tools python-pip python-psutil 
     python-virtualenv python-requests python-hijri-converter 
     python-pytz python-gobject xfce4-settings xfce-polkit exa 
@@ -19,6 +19,7 @@ packages=(
     vencord xdg-desktop-portal-gtk xdg-desktop-portal-kde 
     xdg-desktop-portal-wlr xdg-desktop-portal-xapp nodejs-nativefier 
     gum stow nemo nemo-fileroller firewalld freedownloadmanager qdirstat
+    pyprland nautilus-open-any-terminal arch-update 
 )
 
 #Stow Packages#

@@ -49,8 +49,8 @@ mkdir -p /home/$USER/.config/vesktop/themes/
 #------------------------#
 # COPY CONFIG FILES
 #------------------------#
-cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/colors.conf"
-cp -r "$THEME_DIR/hyprlook" "$USER_HOME/.config/hypr/look.conf"
+cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/modules/colors.lua"
+cp -r "$THEME_DIR/hyprlook" "$USER_HOME/.config/hypr/modules/look.lua"
 cp -r "$THEME_DIR/kitty" "$USER_HOME/.config/kitty/kitty.conf"
 cp -r "$THEME_DIR/main-bar" "$USER_HOME/.config/waybar/main-bar/bar-style.css"
 cp -r "$THEME_DIR/power-bar" "$USER_HOME/.config/waybar/power-bar/power-bar-style.css"
@@ -119,7 +119,9 @@ pywalfox update & disown
 swaync-client -rs
 killall waybar
 bash /home/$USER/.config/scripts/waybar.sh
-gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
+systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
+wait
+#gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 
 #------------------------#
 # NOTIFICATION

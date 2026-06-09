@@ -1,21 +1,34 @@
--- Colors configuration
-return {
-    foreground = "rgba(192,202,245,1.0)",
-    background = "rgba(26,27,38,1.0)",
-    color0  = "rgba(21,22,30,1.0)",
-    color1  = "rgba(247,118,142,1.0)",
-    color2  = "rgba(158,206,106,1.0)",
-    color3  = "rgba(224,175,104,1.0)",
-    color4  = "rgba(122,162,247,1.0)",
-    color5  = "rgba(187,154,247,1.0)",
-    color6  = "rgba(125,207,255,1.0)",
-    color7  = "rgba(169,177,214,1.0)",
-    color8  = "rgba(65,72,104,1.0)",
-    color9  = "rgba(255,137,157,1.0)",
-    color10 = "rgba(159,224,68,1.0)",
-    color11 = "rgba(250,186,74,1.0)",
-    color12 = "rgba(141,176,255,1.0)",
-    color13 = "rgba(199,169,255,1.0)",
-    color14 = "rgba(164,218,255,1.0)",
-    color15 = "rgba(192,202,245,1.0)",
-}
+-- Define the helper function locally
+local function rgba(r, g, b, a)
+    -- Hyprland color format: 0xRRGGBBAA
+    return string.format("0x%02x%02x%02x%02x", r, g, b, math.floor(a * 255))
+end
+
+-- Create and populate the table
+local M = {}
+
+-- Background and Foreground
+M.background = "0xff1a1b26"
+M.foreground = "0xffc0caf5"
+M.cursor     = "0xffc0caf5"
+
+-- Colors
+M.color0     = "0xff1a1b26"
+M.color1     = "0xfff7768e"
+M.color2     = "0xff9ece6a"
+M.color3     = "0xffe0af68"
+M.color4     = "0xff7aa2f7"
+M.color5     = "0xffbb9af7"
+M.color6     = "0xff7dcfff"
+M.color7     = "0xffa9b1d6"
+M.color8     = "0xff414868"
+M.color9     = "0xffff899d"
+M.color10    = "0xff9fe044"
+M.color11    = "0xfffaba4a"
+M.color12    = "0xff8db0ff"
+M.color13    = "0xffc7a9ff"
+M.color14    = "0xffa4daff"
+M.color15    = "0xffc0caf5"
+
+-- Return the table
+return M
