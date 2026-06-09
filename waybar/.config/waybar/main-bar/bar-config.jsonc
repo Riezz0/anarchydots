@@ -4,9 +4,9 @@
 "output": "DP-2",                                                                                    /////|
 "margin-bottom": 0,                                                                                  /////|
 "layer": "bottom",                                                                                   /////|
-"margin-left": 5,                                                                                    /////|
+"margin-left": 10,                                                                                   /////|
 "margin-top": 5,                                                                                     /////|
-"margin-right": 5,                                                                                   /////|
+"margin-right": 10,                                                                                  /////|
 "include": ["~/.config/waybar/main-bar/modules/modules.json"],                                       /////|
 //////////////////////////////////////////////////////////////////////////////////////////////////////////|
 

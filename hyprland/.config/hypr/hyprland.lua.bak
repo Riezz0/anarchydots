@@ -1,0 +1,12 @@
+-- Main Hyprland Configuration
+require("configs.autostart")
+require("configs.binds")
+require("configs.colors")
+require("configs.look")
+require("configs.monitors")
+require("configs.rules")
+require("configs.env")
+require("configs.animations")
+require("configs.layout")
+require("configs.input")
+

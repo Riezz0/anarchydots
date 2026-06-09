@@ -160,7 +160,7 @@ class ThemeCard(wx.Panel):
 # ---------------- THEME SWITCHER ----------------
 class ThemeSwitcher(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="Hyprland Theme Switcher", size=(900, 650))
+        super().__init__(None, title="HyprThemer", size=(900, 650))
 
         self.panel = wx.Panel(self)
         self.panel.SetBackgroundColour(COLORS["background"])
