@@ -1,3 +1,3 @@
 #!/bin/bash
 
-hyprctl dispatch togglespecialworkspace quranpad
+pypr toggle quranpad

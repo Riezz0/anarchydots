@@ -1,3 +1,3 @@
 #!/bin/bash
 
-hyprctl dispatch togglespecialworkspace sunnanpad
+pypr toggle sunnanpad

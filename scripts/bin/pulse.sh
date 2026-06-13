@@ -1,2 +1,3 @@
 #!/bin/bash
-hyprctl dispatch togglespecialworkspace pulsepad
+
+pypr toggle pulsepad

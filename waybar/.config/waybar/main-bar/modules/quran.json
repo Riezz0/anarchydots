@@ -1,6 +1,6 @@
 //Quran///////////////////////////////////////////////////////////////////////////////////////////////////|
 {"custom/quran": {"format": "<span font='20px'></span>",                                            /////|
-"on-click": "python3 /usr/local/bin/quranwbh/sh", "tooltip": true,                                   /////|
+"on-click": "bash  /usr/local/bin/quranwbw.sh", "tooltip": true,                                     /////|
 "tooltip-format": "Quran\nLeft Click To Open\nLeft Click Again To Close" }},                         /////|
 //////////////////////////////////////////////////////////////////////////////////////////////////////////|
 

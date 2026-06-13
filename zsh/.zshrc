@@ -20,3 +20,6 @@ alias gc="git commit --allow-empty-message -m "
 alias gp="git push -u origin main"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# opencode
+export PATH=/home/riezzo/.opencode/bin:$PATH

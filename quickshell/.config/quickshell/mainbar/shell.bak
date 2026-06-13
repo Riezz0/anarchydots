@@ -1,0 +1,474 @@
+// Import required Qt modules
+import QtQuick                            // Core QML types
+import QtQuick.Controls                   // UI controls like buttons, text inputs
+import QtQuick.Layouts                    // Layout system for arranging items
+import Quickshell.Services.SystemTray     // System Tray Support
+import Quickshell                         // Core Quickshell functionality
+import Quickshell.Io                      // Input/output operations (processes, files)
+import Quickshell.Hyprland                // Hyprland window manager integration
+import Quickshell.Wayland                 // Wayland protocol support
+import "."                                // Import local directory files
+
+// ShellRoot is the main container for a Quickshell desktop shell
+ShellRoot {
+
+id: root  // Give this component an ID so we can reference it elsewhere
+    // Property: a variable that belongs to this component
+    // Tracks whether the power menu overlay is currently open
+    property bool powerMenuOpen: false
+
+    // Theme component - holds color definitions for the UI
+    Theme {
+        id: theme  // Now we can use theme.accent, theme.background, etc.
+    }
+
+    // Function to toggle power menu open/closed
+    function togglePowerMenu() {
+        powerMenuOpen = !powerMenuOpen  // ! means "not" - flips true/false
+    }
+
+    // Function to force close the power menu
+    function closePowerMenu() {
+        powerMenuOpen = false
+    }
+
+    // Function to execute a system command
+    function runCommand(cmd) {
+        powerProc.command = ["sh", "-c", cmd]  // Run through shell to handle complex commands
+        powerProc.running = true  // Start the process
+        closePowerMenu()  // Close menu after clicking
+    }
+
+    // Process component - runs external programs
+    Process {
+        id: powerProc
+        running: false  // Not running by default
+    }
+
+    // Global keyboard shortcut - works even when window doesn't have focus
+    GlobalShortcut {
+        name: "powerMenuToggle"  // Identifier for this shortcut
+        description: "Toggle the Quickshell power menu"  // Human-readable description
+        onPressed: root.togglePowerMenu()  // When key is pressed, call our function
+        // Note: You need to assign an actual key combination elsewhere (config file)
+    }
+
+    // Variants creates a separate instance for each screen in the model
+    Variants {
+        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+        // PanelWindow is a special window that docks to the screen edge
+        PanelWindow {
+            id: barWindow
+            required property var modelData  // Each screen's data is passed here
+            screen: modelData  // Attach this bar to the specific screen
+
+            // Anchors: position relative to parent (the screen)
+            anchors {
+                top: true    // Stick to top edge
+                left: true   // Stick to left edge
+                right: true  // Stick to right edge
+            }
+
+            implicitHeight: 60  // Natural height of the bar
+            
+            // BAR BACKGROUND AND BORDER
+            // The bar itself is transparent, the actual UI is inside the Rectangle below
+            color: "transparent"  // Make the PanelWindow transparent
+            
+            exclusiveZone: implicitHeight  // Tells compositor not to put windows here
+            exclusionMode: ExclusionMode.Normal  // Other windows avoid this area
+
+            // LEFT AND RIGHT GAPS - this creates space between bar and screen edges
+            margins {
+                left: 10   // 10 pixels gap from left screen edge
+                right: 10   // 10 pixels gap from right screen edge
+                top: 10   // 10 pixels gap from top screen edge
+                bottom: 10  // 10 pixels gap from bottom screen edge
+            }
+
+            // Container rectangle that holds all the bar content AND has a border
+            Rectangle {
+                id: barBackground
+                anchors.fill: parent  // Fill the entire PanelWindow
+                
+                // Background color (slightly transparent for a modern look)
+                color: theme.background
+                
+                // Add opacity for a subtle transparent effect (95% opaque)
+                opacity: 0.95
+                
+                // ROUNDED CORNERS
+                radius: 0  // Rounded corners on all 4 corners
+                
+                // BORDER PROPERTIES - this adds the border around the bar
+                border {
+                    color: theme.color2  // Use theme accent color for the border
+                    width: 2             // 2 pixels thick
+                }
+                
+                // The actual bar content goes inside this rectangle
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 10  // Extra padding inside left edge
+                    anchors.rightMargin: 10 // Extra padding inside right edge
+                    anchors.topMargin: 10
+                    anchors.bottomMargin: 10
+                    spacing: 10
+
+/////Arch Logo///////////////////////////////////////////////////////////////////////////////////|
+Rectangle { id: archBtn                                                                     /////|
+width: 40                                                                                   /////|
+height: 40                                                                                  /////|
+radius: 0                                                                                   /////|
+                                                                                            /////|
+color: "transparent"                                                                        /////|                                                
+border.width: 2                                                                             /////|
+border.color: theme.color2                                                                  /////|
+property bool hovered: false                                                                /////|
+                                                                                            /////|
+Image {                                                                                     /////|
+anchors.centerIn: parent                                                                    /////|
+width: 30                                                                                   /////|
+height: 30                                                                                  /////|
+source: "file://" + Quickshell.env("HOME") + "/.config/quickshell/assets/arch.png"          /////|
+smooth: true                                                                                /////|                                                                                /////|
+mipmap: true                                                                                /////|
+fillMode: Image.PreserveAspectFit                                                           /////|
+sourceSize.width: 64                                                                        /////|
+sourceSize.height: 65 }                                                                     /////|
+                                                                                            /////|
+MouseArea {                                                                                 /////|
+anchors.fill: parent                                                                        /////|
+hoverEnabled: true                                                                          /////|
+cursorShape: Qt.PointingHandCursor                                                          /////|
+onEntered: archBtn.hovered = true                                                           /////|
+onExited: archBtn.hovered = false                                                           /////|
+onClicked:     { root.runCommand("bash /usr/local/bin/binds.sh") }}                         /////|
+                                                                                            /////|
+Behavior on border.color { ColorAnimation { duration: 120 } }                               /////|                     
+onHoveredChanged: {                                                                         /////|
+border.color = hovered ? theme.muted : theme.color2 } }                                     /////|
+/////////////////////////////////////////////////////////////////////////////////////////////////|
+
+
+//System Tray////////////////////////////////////////////////////////////////////////////////////|
+
+//////////////////////////////////////////////////////////////
+
+//Hyprland Workspaces////////////////////////////////////////////////////////////
+Rectangle {
+id: workspaceContainer
+radius: 0
+border {
+color: theme.color4
+width: 2 }
+
+color: "transparent"
+
+Layout.alignment: Qt.AlignVCenter
+implicitWidth: workspaceRow.implicitWidth + 20
+implicitHeight: workspaceRow.implicitHeight + 15
+                        
+Row {
+id: workspaceRow
+spacing: 5
+anchors.centerIn: parent
+                            
+Repeater {
+model: Hyprland.workspaces
+                                
+Rectangle {
+required property int index
+width: 25
+height: 25
+radius: 0
+                                    
+property var ws: {
+for (let i = 0; i < Hyprland.workspaces.count; ++i) {
+const workspace = Hyprland.workspaces.get(i)
+if (workspace.id === index + 1)
+return workspace }
+return null }
+property bool isActive: Hyprland.focusedWorkspace
+&& Hyprland.focusedWorkspace.id === (index + 1)
+                                    
+color: ws ? Qt.darker(theme.background, 1.25) : "transparent"
+border.color: ws ? theme.muted : Qt.darker(theme.muted, 1.2)
+border.width: 0
+opacity: 1
+                                    
+Text {
+anchors.centerIn: parent
+text: parent.isActive ? "󰮯" : ""
+color: parent.isActive ? theme.color2 : theme.color4
+font.pixelSize: 18
+font.bold: false }
+                                    
+MouseArea {
+anchors.fill: parent
+cursorShape: Qt.PointingHandCursor
+onClicked: {
+const workspaceId = parent.index + 1
+if (parent.ws) {
+parent.ws.activate()
+} else if (Hyprland.usingLua) {
+Hyprland.dispatch("hl.dsp.focus({ workspace = " + workspaceId + " })")
+} else { Hyprland.dispatch("workspace " + workspaceId) } } } } } } }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+                    // Spacer - pushes everything to the left and right edges
+                    Item { Layout.fillWidth: true }
+
+//Hypr Themer///////////////////////////////////////////////////////////////////////////////////////////////|
+Item { 
+id: themerButton
+width: 40
+height: 40
+    
+Rectangle {
+id: themerRect
+anchors.fill: parent
+color: "transparent"
+border.width: 2
+border.color: theme.color4
+radius: 0
+        
+Behavior on border.color { 
+ColorAnimation { duration: 120 } }
+        
+Row {
+anchors.centerIn: parent
+spacing: 4
+
+Text { text: ""; 
+font.pixelSize: 20; 
+color: theme.color2 } } }
+   
+MouseArea {
+id: themerArea
+anchors.fill: parent
+hoverEnabled: true
+cursorShape: Qt.PointingHandCursor 
+onClicked: { root.runCommand("bash /usr/local/bin/themer.sh"); }
+onContainsMouseChanged: {
+themerRect.border.color = containsMouse ? theme.muted : theme.color2 } } }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////
+
+
+////////////////////////////
+                    // Time display
+                    Text {
+                        id: clockLabel
+                        color: theme.foreground
+                        font.pixelSize: 13
+                        font.bold: true
+                        Layout.alignment: Qt.AlignVCenter
+                        text: Qt.formatDateTime(new Date(), "hh:mm:ss")
+                    }
+
+                    // Power button circle
+                    Rectangle {
+                        width: 40
+                        height: 40
+                        radius: 0
+                        color: root.powerMenuOpen ? theme.color1 : Qt.darker(theme.background, 0.8)
+                        border.color: theme.color1
+                        border.width: 2
+                        Layout.alignment: Qt.AlignVCenter
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "\u23FB"
+                            color: root.powerMenuOpen ? theme.background : theme.color1
+                            font.pixelSize: 25
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.togglePowerMenu()
+                        }
+                    }
+                }
+            }
+
+            // Timer to update clock every second
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: {
+                    clockLabel.text = Qt.formatDateTime(new Date(), "hh:mm:ss")
+                    dateLabel.text = Qt.formatDateTime(new Date(), "ddd MMM d")
+                }
+            }
+        }
+    }
+
+    // Second Variants - creates power menu overlay on every screen
+    Variants {
+        model: Quickshell.screens
+
+        PanelWindow {
+            required property var modelData
+            screen: modelData
+            visible: root.powerMenuOpen
+
+            anchors {
+                top: true
+                bottom: true
+                left: true
+                right: true
+            }
+
+            color: "transparent"
+            
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: root.powerMenuOpen
+                ? WlrKeyboardFocus.OnDemand
+                : WlrKeyboardFocus.None
+            focusable: root.powerMenuOpen
+
+            Rectangle {
+                anchors.fill: parent
+                color: Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.72)
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: root.closePowerMenu()
+                }
+            }
+
+            Item {
+                anchors.fill: parent
+                focus: root.powerMenuOpen
+                Keys.onEscapePressed: root.closePowerMenu()
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: Math.min(420, parent.width - 48)
+                    height: powerColumn.implicitHeight + 40
+                    radius: 0
+                    color: theme.background
+                    border.color: theme.color2
+                    border.width: 2
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: mouse => mouse.accepted = true
+                    }
+
+                    ColumnLayout {
+                        id: powerColumn
+                        anchors.centerIn: parent
+                        spacing: 22
+
+                        Text {
+                            text: "Power Menu"
+                            color: theme.foreground
+                            font.pixelSize: 20
+                            font.bold: true
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        RowLayout {
+                            spacing: 20
+                            Layout.alignment: Qt.AlignHCenter
+
+                            PowerButton {
+                                icon: "󰐥"
+                                label: "Shutdown"
+                                bgColor: theme.color1
+                                textColor: theme.background
+                                onActivated: root.runCommand("systemctl poweroff")
+                            }
+
+                            PowerButton {
+                                icon: "󰜉"
+                                label: "Reboot"
+                                bgColor: theme.color2
+                                textColor: theme.background
+                                onActivated: root.runCommand("systemctl reboot")
+                            }
+
+                            PowerButton {
+                                icon: "󰍀"
+                                label: "Lock"
+                                bgColor: theme.color4
+                                textColor: theme.background
+                                onActivated: root.runCommand("hyprlock")
+                            }
+                        }
+
+                        Rectangle {
+                            width: 90
+                            height: 32
+                            radius: 0
+                            color: theme.color1
+                            Layout.alignment: Qt.AlignHCenter
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Cancel"
+                                color: theme.background
+                                font.bold: true
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.closePowerMenu()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Custom component definition - a reusable button for power actions
+    component PowerButton: ColumnLayout {
+        id: powerButtonRoot
+
+        property string icon
+        property string label
+        property color bgColor
+        property color textColor
+        
+        signal activated()
+
+        spacing: 8
+
+        Rectangle {
+            width: 58
+            height: 58
+            radius: 0
+            color: powerButtonRoot.bgColor
+            Layout.alignment: Qt.AlignHCenter
+
+            Text {
+                anchors.centerIn: parent
+                text: powerButtonRoot.icon
+                font.pixelSize: 40
+                color: powerButtonRoot.textColor
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+                onClicked: powerButtonRoot.activated()
+            }
+        }
+
+        Text {
+            text: powerButtonRoot.label
+            color: powerButtonRoot.textColor
+            font.pixelSize: 11
+            font.bold: true
+            Layout.alignment: Qt.AlignHCenter
+        }
+    }
+}

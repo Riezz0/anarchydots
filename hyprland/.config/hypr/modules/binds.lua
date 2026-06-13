@@ -7,8 +7,8 @@ hl.bind("SUPER + L", hl.dsp.exec_cmd("hyprlock"),                               
 
 -- Scratchpads ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 hl.bind("SUPER + E", hl.dsp.exec_cmd("pypr toggle nautipad"),                                                       { description = "File Explorer - Scratchpad" })
-hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd("pypr toggle pyprpad"),                                                       { description = "File Explorer - Scratchpad" })
-hl.bind("SUPER + T", hl.dsp.exec_cmd("pypr toggle codipad"),                                                         { description = "Visual Studio - Scratchpad" })
+hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd("pypr toggle pyprpad"),                                                { description = "File Explorer - Scratchpad" })
+hl.bind("SUPER + T", hl.dsp.exec_cmd("pypr toggle codipad"),                                                        { description = "Visual Studio - Scratchpad" })
 hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("pypr toggle termpad"),                                           { description = "Terminal - Scratchpad" })
 hl.bind("SUPER + V", hl.dsp.exec_cmd("pypr toggle vimpad"),                                                         { description = "Nvim - Scratchpad" })
 hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("~/.config/scripts/webapps/youtube.sh"),                               { description = "YouTube WebApp - Scratchpad" })
@@ -46,15 +46,21 @@ hl.bind(mainMod .. " + 9", hl.dsp.focus({ workspace = 9 }),                     
 hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = 10 }),                                                        { description = "Switch To Workspace 10" })
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+
+for i = 1, 10 do
+    local key = i % 10 -- 10 maps to key 0
+    hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+end
 -- Volume Control ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("~/.config/scripts/volume.sh up"),                                         { description = "Volume Up" })
 hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("~/.config/scripts/volume.sh down"),                                       { description = "Volume Down" })
 hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("~/.config/scripts/volume.sh mute"),                                   { description = "Volume Mute" })
 
 -- Testing -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-hl.bind("ALT + W", hl.dsp.exec_cmd("/usr/local/bin/waybar.sh"),                                                   { description = "Waybar Testing" })
-hl.bind("ALT + P", hl.dsp.exec_cmd("~/.config/scripts/swaync.sh"),                                                { description = "SwayNC Testing" })
-hl.bind("ALT + O", hl.dsp.exec_cmd("~/git/oomox/gui.sh"),                                                         { description = "Themix Testing" })
+hl.bind("ALT + W", hl.dsp.exec_cmd("/usr/local/bin/waybar.sh"),                                                     { description = "Waybar Testing" })
+hl.bind("ALT + P", hl.dsp.exec_cmd("~/.config/scripts/swaync.sh"),                                                  { description = "SwayNC Testing" })
+hl.bind("ALT + O", hl.dsp.exec_cmd("~/git/oomox/gui.sh"),                                                           { description = "Themix Testing" })
 
 
 
