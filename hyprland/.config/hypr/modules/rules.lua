@@ -49,11 +49,11 @@ float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", 
 border_color = { colors = { theme.color2, theme.color2 } } })
 
 -- Sunnan
-hl.window_rule({ name = "quranrules", match = { class = "chrome-www.sunnah.com__-Default" },
+hl.window_rule({ name = "sunnanrules", match = { class = "chrome-www.sunnah.com__-Default" },
 float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
 border_color = { colors = { theme.color2, theme.color2 } } })
 
 -- Pulse Mixer
-hl.window_rule({ name = "quranrules", match = { class = "pulsepad" },
+hl.window_rule({ name = "pulserules", match = { class = "pulsepad" },
 float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
 border_color = { colors = { theme.color2, theme.color2 } } })

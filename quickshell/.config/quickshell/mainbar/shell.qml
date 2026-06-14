@@ -223,14 +223,22 @@ function toggleMute() {
                                     border.color: ws ? theme.muted : Qt.darker(theme.muted, 1.2)
                                     border.width: 0
                                     opacity:      1
-
                                     Text {
-                                        anchors.centerIn: parent
-                                        text:             parent.isActive ? "󰮯" : ""
-                                        color:            parent.isActive ? theme.color2 : theme.color4
-                                        font.pixelSize:   18
-                                        font.bold:        false
+                                    anchors.centerIn: parent
+                                    // Use index + 1 to display the workspace number
+                                    text:            (parent.index + 1).toString() 
+                                    color:           parent.isActive ? theme.color2 : theme.color4
+                                    font.pixelSize:  14 // You may want to adjust the size for numbers
+                                    font.bold:       true
                                     }
+                                    // Uncomment This To Have Icons On Workspaces //
+                                    //Text {
+                                    //    anchors.centerIn: parent
+                                    //    text:             parent.isActive ? "󰮯" : ""
+                                    //    color:            parent.isActive ? theme.color2 : theme.color4
+                                    //    font.pixelSize:   18
+                                    //    font.bold:        false
+                                    // }
 
                                     MouseArea {
                                         anchors.fill: parent
@@ -312,7 +320,7 @@ function toggleMute() {
                             text:             root.salaatText
                             color:            theme.muted
                             font.pixelSize:   14
-                            font.family:      "JetBrainsMonoNF-Propo"
+                            font.family:      "JetBrains Mono Nerd Font Mono Propo"
                             font.bold:        false
                         }
 
@@ -323,9 +331,6 @@ function toggleMute() {
                             onExited:  { salaatModule.hovered = false; root.salaatHovered = false }
                         }
 
-                        ToolTip.visible: hovered
-                        ToolTip.text:    root.salaatTooltip
-                        ToolTip.delay:   0
                     }
                     // ── Sunnan ────────────────────────────────────────────────
                     Item {
@@ -403,7 +408,7 @@ function toggleMute() {
                             cursorShape:  Qt.PointingHandCursor
                             onClicked: { root.runCommand("bash /usr/local/bin/themer.sh") }
                             onContainsMouseChanged: {
-                                themerRect.border.color = containsMouse ? theme.muted : theme.color2
+                                themerRect.border.color = containsMouse ? theme.muted : theme.color4
                             }
                         }
                     }
@@ -441,9 +446,9 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           Math.round(root.volumeLevel * 100) + "%"
-                font.pixelSize: 13
+                font.pixelSize: 14
                 font.bold:      true
-                font.family:    "JetBrainsMonoNF-Propo"
+                font.family:    "JetBrains Mono Nerd Font Mono Propo"
                 color:          theme.muted
             }
         }
@@ -484,7 +489,7 @@ Item {
                         color:            theme.muted
                         font.pixelSize:   14
                         font.bold:        true
-                        font.family:      "JetBrainsMonoNF-Propo"
+                        font.family:      "JetBrains Mono Nerd Font Mono Propo"
                         Layout.alignment: Qt.AlignVCenter
                         text:             Qt.formatDateTime(new Date(), "hh:mm")
                     }
@@ -587,9 +592,9 @@ Variants {
                     Text {
                         text:        Math.round(root.volumeLevel * 100) + "%"
                         color:       theme.muted
-                        font.pixelSize: 16
+                        font.pixelSize: 14
                         font.bold:   true
-                        font.family: "JetBrainsMonoNF-Propo"
+                        font.family: "JetBrains Mono Nerd Font Mono Propo"
                     }
                 }
 
