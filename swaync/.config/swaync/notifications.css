@@ -18,6 +18,7 @@
   font-size: 14px;
   font-family: "JetBrains Nerd Font Mono Propo 14";
   transition: 200ms;
+  text-align: center;
 
 }
 .widget-label {
@@ -39,14 +40,14 @@
   background: alpha(@background, 1);
   box-shadow: 0 0 8px 0 rgba(0,0,0,.6);
   border: 2px solid @selected;
-  border-radius: 0px;
+  border-radius: 5px;
   margin: 16px;
   padding: 0;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification {
   padding: 6px;
-  border-radius: 0px;
+  border-radius: 5px;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification.critical {
@@ -55,6 +56,7 @@
 
 .floating-notifications.background .notification-row .notification-background .notification .notification-content {
   margin: 14px;
+  text-align: center;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * {
@@ -62,7 +64,7 @@
 }
 
 .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * .notification-action {
-  border-radius: 0px;
+  border-radius: 5px;
   background-color: @background-alt ;
   margin: 6px;
   border: 2px solid transparent;
@@ -85,16 +87,18 @@
 .summary {
   font-weight: 800;
   font-size: 1rem;
+  text-align: center;
 }
 
 .body {
   font-size: 0.8rem;
+  text-align: center;
 }
 
 .floating-notifications.background .notification-row .notification-background .close-button {
   margin: 6px;
   padding: 2px;
-  border-radius: 0px;
+  border-radius: 5px;
   background-color: transparent;
   border: 2px solid transparent;
 }
@@ -116,4 +120,3 @@
 .notification.normal progress {
   background-color: @selected;
 }
-

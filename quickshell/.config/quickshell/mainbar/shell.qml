@@ -21,10 +21,14 @@ ShellRoot {
     property string salaatTooltip:  ""
     property var    salaatPrayers:  []
     property bool   volumePopupOpen: false
+    property string clockTime:      Qt.formatDateTime(new Date(), "hh:mm:ss")
 // ── Audio (Pipewire) ─────────────────────────────────────────────────────
 readonly property var  audioSink:   Pipewire.defaultAudioSink
 readonly property real volumeLevel: root.audioSink && root.audioSink.audio ? root.audioSink.audio.volume : 0
 readonly property bool volumeMuted: root.audioSink && root.audioSink.audio ? root.audioSink.audio.muted : false
+property bool btPopupOpen: false
+property string gpuTemp:     "GPU: --"
+property string cpuTemp:     "CPU: --"
 
 PwObjectTracker {
     objects: root.audioSink ? [root.audioSink] : []
@@ -52,6 +56,9 @@ function toggleMute() {
 }
     // ── Theme ─────────────────────────────────────────────────────────────────
     Theme { id: theme }
+
+    // ── Bluetooth ────────────────────────────────────────────────────────────
+    Bluetooth { id: bt }
 
     // ── Functions ─────────────────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -85,6 +92,33 @@ function toggleMute() {
         }
     }
 
+    Process {
+        id:      gpuTempProc
+        command: ["bash", "/usr/local/bin/gpu.sh"]
+        running: false
+
+        stdout: SplitParser {
+            onRead: line => {
+                const trimmed = line.trim()
+                if (trimmed) root.gpuTemp = "GPU: " + trimmed
+            }
+        }
+    }
+
+    Process {
+        id:      cpuTempProc
+        command: ["bash", "/usr/local/bin/cpu.sh"]
+        running: false
+
+        stdout: SplitParser {
+            onRead: line => {
+                const trimmed = line.trim()
+                if (trimmed) root.cpuTemp = "CPU: " + trimmed
+            }
+        }
+    }
+
+
     // ── Timers ────────────────────────────────────────────────────────────────
     Timer {
         interval:         1000
@@ -99,9 +133,21 @@ function toggleMute() {
         running:  true
         repeat:   true
         onTriggered: {
-            clockLabel.text = Qt.formatDateTime(new Date(), "hh:mm")
+            root.clockTime = Qt.formatDateTime(new Date(), "hh:mm:ss")
         }
     }
+
+    Timer {
+        interval:         3000
+        running:          true
+        repeat:           true
+        triggeredOnStart: true
+        onTriggered: {
+            if (!gpuTempProc.running) gpuTempProc.running = true
+            if (!cpuTempProc.running) cpuTempProc.running = true
+        }
+    }
+
 
     // ── Global Shortcut ───────────────────────────────────────────────────────
     GlobalShortcut {
@@ -133,7 +179,7 @@ function toggleMute() {
                 anchors.fill: parent
                 color:        theme.background
                 opacity:      0.95
-                radius:       0
+                radius: 5
                 border { color: theme.color2; width: 2 }
 
                 RowLayout {
@@ -151,7 +197,7 @@ function toggleMute() {
                         id:     archBtn
                         width:  40
                         height: 40
-                        radius: 0
+                        radius: 5
                         color:  "transparent"
                         border { width: 2; color: theme.color2 }
 
@@ -185,7 +231,7 @@ function toggleMute() {
                     // ── Workspaces ────────────────────────────────────────────
                     Rectangle {
                         id:     workspaceContainer
-                        radius: 0
+                        radius: 5
                         color:  "transparent"
                         border { color: theme.color4; width: 2 }
 
@@ -198,63 +244,212 @@ function toggleMute() {
                             spacing:          5
                             anchors.centerIn: parent
 
+                            // ── Regular Workspaces (dynamic) ──────────────────
                             Repeater {
-                                model: Hyprland.workspaces
+                                model: {
+                                    // Find the highest workspace ID that has windows or is focused
+                                    let maxId = 5
+                                    for (let i = 0; i < Hyprland.workspaces.count; ++i) {
+                                        const ws = Hyprland.workspaces.get(i)
+                                        if (ws.id > maxId) maxId = ws.id
+                                    }
+                                    // Also check focused workspace
+                                    if (Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id > maxId)
+                                        maxId = Hyprland.focusedWorkspace.id
+                                    return maxId
+                                }
 
                                 Rectangle {
                                     required property int index
+                                    property int workspaceId: index + 1
                                     width:  25
                                     height: 25
-                                    radius: 0
-
-                                    property var ws: {
-                                        for (let i = 0; i < Hyprland.workspaces.count; ++i) {
-                                            const workspace = Hyprland.workspaces.get(i)
-                                            if (workspace.id === index + 1)
-                                                return workspace
-                                        }
-                                        return null
-                                    }
+                                    radius: 5
 
                                     property bool isActive: Hyprland.focusedWorkspace
-                                        && Hyprland.focusedWorkspace.id === (index + 1)
+                                        && Hyprland.focusedWorkspace.id === workspaceId
 
-                                    color:        ws ? Qt.darker(theme.background, 1.25) : "transparent"
-                                    border.color: ws ? theme.muted : Qt.darker(theme.muted, 1.2)
-                                    border.width: 0
-                                    opacity:      1
-                                    Text {
-                                    anchors.centerIn: parent
-                                    // Use index + 1 to display the workspace number
-                                    text:            (parent.index + 1).toString() 
-                                    color:           parent.isActive ? theme.color2 : theme.color4
-                                    font.pixelSize:  14 // You may want to adjust the size for numbers
-                                    font.bold:       true
+                                    property bool hasWindows: {
+                                        for (let i = 0; i < Hyprland.workspaces.count; ++i) {
+                                            const ws = Hyprland.workspaces.get(i)
+                                            if (ws.id === workspaceId && ws.windowCount > 0)
+                                                return true
+                                        }
+                                        return false
                                     }
-                                    // Uncomment This To Have Icons On Workspaces //
-                                    //Text {
-                                    //    anchors.centerIn: parent
-                                    //    text:             parent.isActive ? "󰮯" : ""
-                                    //    color:            parent.isActive ? theme.color2 : theme.color4
-                                    //    font.pixelSize:   18
-                                    //    font.bold:        false
-                                    // }
+
+                                    color:        isActive ? theme.color2 : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text:             parent.workspaceId.toString()
+                                        color:            parent.isActive ? theme.background : (parent.hasWindows ? theme.color4 : theme.muted)
+                                        font.pixelSize:   14
+                                        font.bold:        true
+                                    }
 
                                     MouseArea {
                                         anchors.fill: parent
                                         cursorShape:  Qt.PointingHandCursor
                                         onClicked: {
-                                            const workspaceId = parent.index + 1
-                                            if (parent.ws) {
-                                                parent.ws.activate()
-                                            } else if (Hyprland.usingLua) {
-                                                Hyprland.dispatch("hl.dsp.focus({ workspace = " + workspaceId + " })")
+                                            if (Hyprland.usingLua) {
+                                                Hyprland.dispatch("hl.dsp.focus({ workspace = " + parent.workspaceId + " })")
                                             } else {
-                                                Hyprland.dispatch("workspace " + workspaceId)
+                                                Hyprland.dispatch("workspace " + parent.workspaceId)
                                             }
                                         }
                                     }
                                 }
+                            }
+
+                            // ── Special Workspaces (Pyprland) ──────────────────
+                            Repeater {
+                                model: Hyprland.specialWorkspaces
+
+                                Rectangle {
+                                    required property var modelData
+                                    property int workspaceId: modelData.id
+                                    property string workspaceName: modelData.name || ""
+                                    width:  30
+                                    height: 25
+                                    radius: 5
+
+                                    property bool isActive: Hyprland.focusedWorkspace
+                                        && Hyprland.focusedWorkspace.id === workspaceId
+
+                                    // Icons for different special workspaces
+                                    property string specialIcon: {
+                                        if (workspaceName.includes("term") || workspaceName.includes("kitty"))
+                                            return ""  // Terminal
+                                        if (workspaceName.includes("files") || workspaceName.includes("nautilus"))
+                                            return ""  // Files
+                                        if (workspaceName.includes("browser") || workspaceName.includes("firefox"))
+                                            return ""  // Browser
+                                        if (workspaceName.includes("music") || workspaceName.includes("spotify"))
+                                            return ""  // Music
+                                        return ""  // Default special workspace icon
+                                    }
+
+                                    color:        isActive ? theme.color5 : "transparent"
+                                    border.color: isActive ? theme.color5 : Qt.darker(theme.muted, 1.2)
+                                    border.width: isActive ? 2 : 0
+
+                                    Row {
+                                        anchors.centerIn: parent
+                                        spacing: 3
+
+                                        Text {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            text:             specialIcon
+                                            color:            theme.foreground
+                                            font.pixelSize:   14
+                                            font.bold:        false
+                                        }
+
+                                        Text {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            text:             workspaceName.replace("special:", "").substring(0, 3).toUpperCase()
+                                            color:            isActive ? theme.background : theme.muted
+                                            font.pixelSize:   10
+                                            font.bold:        true
+                                            visible:          workspaceName.length > 0
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape:  Qt.PointingHandCursor
+                                        onClicked: {
+                                            Hyprland.dispatch("togglespecialworkspace " + workspaceName)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Bluetooth ────────────────────────────────────────────
+                    Item {
+                        id:     btButton
+                        width:  40
+                        height: 40
+
+                        Layout.alignment: Qt.AlignVCenter
+
+                        Rectangle {
+                            id:           btRect
+                            anchors.fill: parent
+                            color:        "transparent"
+                            radius: 5
+                            border {
+                                width: 2
+                                color: theme.color2
+                            }
+
+                            Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text:           bt.btIcon()
+                                font.pixelSize: 18
+                                color:          bt.btColor()
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill:     parent
+                            hoverEnabled:     true
+                            cursorShape:      Qt.PointingHandCursor
+                            acceptedButtons:  Qt.LeftButton | Qt.RightButton
+
+                            onClicked: mouse => {
+                                if (mouse.button === Qt.RightButton) {
+                                    bt.toggle()
+                                } else {
+                                    root.btPopupOpen = !root.btPopupOpen
+                                }
+                            }
+
+                            onContainsMouseChanged: {
+                                btRect.border.color = containsMouse ? theme.muted : theme.color2
+                            }
+                        }
+                    }
+
+                    // ── Temperature ──────────────────────────────────────────
+                    Rectangle {
+                        id:     tempModule
+                        radius: 5
+                        color:  "transparent"
+                        border { width: 2; color: theme.color4 }
+
+                        Layout.alignment: Qt.AlignVCenter
+                        implicitHeight:   40
+                        implicitWidth:    tempColumn.implicitWidth + 20
+
+                        Column {
+                            id:               tempColumn
+                            anchors.centerIn: parent
+                            spacing:          2
+
+                            Text {
+                                text:           root.gpuTemp
+                                font.pixelSize: 11
+                                font.bold:      true
+                                font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                                color:          theme.color2
+                                horizontalAlignment: Text.AlignHCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
+
+                            Text {
+                                text:           root.cpuTemp
+                                font.pixelSize: 11
+                                font.bold:      true
+                                font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                                color:          theme.color3
+                                horizontalAlignment: Text.AlignHCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
                             }
                         }
                     }
@@ -272,7 +467,7 @@ function toggleMute() {
                             id:           quranRect
                             anchors.fill: parent
                             color:        "transparent"
-                            radius:       0
+                            radius: 5
                             border { width: 2; color: theme.color4 }
 
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -304,11 +499,11 @@ function toggleMute() {
                     // ── Salaat Times ──────────────────────────────────────────
                     Rectangle {
                         id:     salaatModule
-                        radius: 0
+                        radius: 5
                         color:  "transparent"
                         border { width: 2; color: theme.color3 }
 
-                        Layout.alignment: Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         implicitHeight:   40
                         implicitWidth:    salaatLabel.implicitWidth + 20
 
@@ -324,11 +519,19 @@ function toggleMute() {
                             font.bold:        false
                         }
 
+                        ToolTip {
+                            id:               salaatTooltip
+                            text:             root.salaatTooltip
+                            visible:          salaatModule.salaatHovered
+                            delay:            200
+                            timeout:          5000
+                        }
+
                         MouseArea {
                             anchors.fill: parent
                             hoverEnabled: true
-                            onEntered: { salaatModule.hovered = true; root.salaatHovered = true  }
-                            onExited:  { salaatModule.hovered = false; root.salaatHovered = false }
+                            onEntered: { salaatModule.hovered = true; root.salaatHovered = true; salaatTooltip.visible = true }
+                            onExited:  { salaatModule.hovered = false; root.salaatHovered = false; salaatTooltip.visible = false }
                         }
 
                     }
@@ -342,7 +545,7 @@ function toggleMute() {
                             id:           sunnanRect
                             anchors.fill: parent
                             color:        "transparent"
-                            radius:       0
+                            radius: 5
                             border { width: 2; color: theme.color4 }
 
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -384,7 +587,7 @@ function toggleMute() {
                             id:           themerRect
                             anchors.fill: parent
                             color:        "transparent"
-                            radius:       0
+                            radius: 5
                             border { width: 2; color: theme.color4 }
 
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -412,6 +615,7 @@ function toggleMute() {
                             }
                         }
                     }
+
 // ── Volume (Pipewire) ─────────────────────────────────────
 Item {
     id:     volumeButton
@@ -424,7 +628,7 @@ Item {
         id:           volumeRect
         anchors.fill: parent
         color:        "transparent"
-        radius:       0
+        radius: 5
         border {
             width: 2
             color: root.volumeMuted ? theme.color1 : theme.color4
@@ -483,6 +687,7 @@ Item {
     }
 
 }
+
                     // ── Clock ─────────────────────────────────────────────────
                     Text {
                         id:               clockLabel
@@ -491,14 +696,14 @@ Item {
                         font.bold:        true
                         font.family:      "JetBrains Mono Nerd Font Mono Propo"
                         Layout.alignment: Qt.AlignVCenter
-                        text:             Qt.formatDateTime(new Date(), "hh:mm")
+                        text:             root.clockTime
                     }
 
                     // ── Power Button ──────────────────────────────────────────
                     Rectangle {
                         width:            40
                         height:           40
-                        radius:           0
+                        radius: 5
                         color:            root.powerMenuOpen ? theme.color1 : Qt.darker(theme.background, 0.8)
                         border { color: theme.color1; width: 2 }
                         Layout.alignment: Qt.AlignVCenter
@@ -550,13 +755,13 @@ Variants {
             id: volumePanel
             anchors.top:        parent.top
             anchors.horizontalCenter:  parent.horizontalCenter
-            anchors.topMargin:  2
-            width:    260
+            anchors.topMargin:  10
+            width:    500
             implicitHeight: volumeColumn.implicitHeight + 28
             height:   implicitHeight
-            radius:   0
+            radius: 5
             color:    theme.background
-            opacity:  0.98
+            opacity:  0.90
             border { width: 2; color: theme.color2 }
 
             MouseArea {
@@ -603,9 +808,9 @@ Variants {
                     id:     sliderTrack
                     Layout.fillWidth: true
                     implicitHeight: 14
-                    radius: 0
+                    radius: 5
                     color:  Qt.darker(theme.background, 1.3)
-                    border { width: 1; color: theme.color4 }
+                    border { width: 2; color: theme.color4 }
 
                     Rectangle {
                         anchors {
@@ -614,7 +819,7 @@ Variants {
                             bottom: parent.bottom
                         }
                         width:  parent.width * Math.min(Math.max(root.volumeLevel, 0), 1)
-                        radius: 0
+                        radius: 5
                         color:  root.volumeMuted ? theme.muted : theme.color2
 
                         Behavior on width { NumberAnimation { duration: 80 } }
@@ -634,7 +839,7 @@ Variants {
                                  ? (root.audioSink.description || root.audioSink.name)
                                  : "No output device"
                     color:   theme.muted
-                    font.pixelSize: 11
+                    font.pixelSize: 12
                     elide:   Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -647,9 +852,9 @@ Variants {
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: 28
-                        radius: 0
+                        radius: 5
                         color:  root.volumeMuted ? theme.color1 : "transparent"
-                        border { width: 1; color: theme.color4 }
+                        border { width: 2; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -669,9 +874,9 @@ Variants {
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: 28
-                        radius: 0
+                        radius: 5
                         color:  "transparent"
-                        border { width: 1; color: theme.color4 }
+                        border { width: 2; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -695,6 +900,208 @@ Variants {
         }
     }
 }
+
+// ── Bluetooth Popup (DP-2) ────────────────────────────────────────────────────
+Variants {
+    model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+
+    PanelWindow {
+        screen:  modelData
+        visible: root.btPopupOpen
+        required property var modelData
+
+        anchors { top: true; bottom: true; left: true; right: true }
+
+        color:     "transparent"
+        focusable: root.btPopupOpen
+
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: root.btPopupOpen
+            ? WlrKeyboardFocus.OnDemand
+            : WlrKeyboardFocus.None
+
+        // Click outside to close
+        MouseArea {
+            anchors.fill: parent
+            onClicked:    root.btPopupOpen = false
+        }
+
+        Rectangle {
+            id: btPanel
+            anchors.top:        parent.top
+            anchors.horizontalCenter:  parent.horizontalCenter
+            anchors.topMargin:  10
+            width:    500
+            implicitHeight: btColumn.implicitHeight + 32
+            height:   implicitHeight
+            radius: 5
+            color:    theme.background
+            opacity:  0.95
+            border { width: 2; color: theme.color2 }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked:    mouse => mouse.accepted = true
+            }
+
+            ColumnLayout {
+                id: btColumn
+                anchors.fill:    parent
+                anchors.margins: 16
+                spacing: 0
+
+                // ── Header ─────────────────────────────────────────────────────
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.bottomMargin: 16
+                    spacing: 12
+
+                    Text {
+                        text:           bt.btIcon()
+                        font.pixelSize: 24
+                        color:          bt.enabled ? theme.color2 : theme.muted
+                    }
+
+                    Text {
+                        text:      "Bluetooth"
+                        color:     theme.foreground
+                        font.pixelSize: 18
+                        font.bold: true
+                        Layout.fillWidth: true
+                    }
+
+                    Text {
+                        text:           bt.stateLabel()
+                        color:          theme.muted
+                        font.pixelSize: 14
+                        font.bold:      true
+                        font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                    }
+                }
+
+                // ── Toggle Button ──────────────────────────────────────────────
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.bottomMargin: 16
+                    implicitHeight: 32
+                    radius: 5
+                    color:  bt.enabled ? theme.color2 : "transparent"
+                    border { width: 2; color: theme.color4 }
+
+                    Text {
+                        anchors.centerIn: parent
+                        text:  bt.enabled ? "Disable" : "Enable"
+                        color: bt.enabled ? theme.background : theme.color2
+                        font.pixelSize: 13
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape:  Qt.PointingHandCursor
+                        onClicked:    bt.toggle()
+                    }
+                }
+
+                // ── Device List Header ─────────────────────────────────────────
+                Text {
+                    text:      "Devices (" + bt.deviceCount + ")"
+                    color:     theme.foreground
+                    font.pixelSize: 14
+                    font.bold: true
+                    Layout.bottomMargin: 10
+                }
+
+                // ── Device List ────────────────────────────────────────────────
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    Repeater {
+                        model: bt.adapterValid ? bt.adapter.devices : []
+
+                        Rectangle {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            implicitHeight: 48
+                            radius: 5
+                            color:  modelData.connected ? Qt.darker(theme.background, 1.2) : "transparent"
+                            border { width: 2; color: modelData.connected ? theme.color2 : theme.color4 }
+
+                            RowLayout {
+                                anchors.fill:         parent
+                                anchors.leftMargin:   12
+                                anchors.rightMargin:  12
+                                anchors.topMargin:    0
+                                anchors.bottomMargin: 0
+                                spacing: 12
+
+                                // Device Name
+                                Text {
+                                    text:             modelData.name || modelData.address
+                                    color:            modelData.connected ? theme.color2 : theme.foreground
+                                    font.pixelSize:   13
+                                    Layout.fillWidth: true
+                                    Layout.alignment: Qt.AlignVCenter
+                                    elide:            Text.ElideRight
+                                }
+
+                                // Connection Status
+                                Text {
+                                    text:               modelData.connected ? "Connected" : (modelData.paired ? "Paired" : "")
+                                    color:              modelData.connected ? theme.color2 : theme.muted
+                                    font.pixelSize:     11
+                                    font.family:        "JetBrains Mono Nerd Font Mono Propo"
+                                    Layout.rightMargin: 8
+                                    Layout.alignment:   Qt.AlignVCenter
+                                }
+
+                                // Connect/Disconnect Button
+                                Rectangle {
+                                    width:  90
+                                    height: 30
+                                    radius: 5
+                                    color:  modelData.connected ? theme.color1 : "transparent"
+                                    border { width: 2; color: theme.color4 }
+                                    Layout.alignment:   Qt.AlignVCenter
+                                    Layout.rightMargin: 4
+
+                                    Text {
+                                        anchors.fill:        parent
+                                        text:                modelData.connected ? "Disconnect" : "Connect"
+                                        color:               modelData.connected ? theme.background : theme.color2
+                                        font.pixelSize:      12
+                                        font.bold:           true
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment:   Text.AlignVCenter
+                                        renderType:          Text.NativeRendering
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape:  Qt.PointingHandCursor
+                                        onClicked:    bt.connectDevice(modelData)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ── No Devices Message ─────────────────────────────────────────
+                Text {
+                    visible: bt.deviceCount === 0
+                    text:      "No devices found"
+                    color:     theme.muted
+                    font.pixelSize: 12
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.topMargin: 16
+                }
+            }
+        }
+    }
+}
+
     // ── Power Menu Overlay (all screens) ──────────────────────────────────────
     Variants {
         model: Quickshell.screens
@@ -735,7 +1142,7 @@ Variants {
                     anchors.centerIn: parent
                     width:        Math.min(420, parent.width - 48)
                     height:       powerColumn.implicitHeight + 40
-                    radius:       0
+                    radius: 5
                     color:        theme.background
                     border { color: theme.color2; width: 2 }
 
@@ -789,7 +1196,7 @@ Variants {
                         Rectangle {
                             width:            90
                             height:           32
-                            radius:           0
+                            radius: 5
                             color:            theme.color1
                             Layout.alignment: Qt.AlignHCenter
 
@@ -828,7 +1235,7 @@ Variants {
         Rectangle {
             width:            58
             height:           58
-            radius:           0
+            radius: 5
             color:            powerButtonRoot.bgColor
             Layout.alignment: Qt.AlignHCenter
 
