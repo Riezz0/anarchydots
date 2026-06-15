@@ -616,6 +616,11 @@ function toggleMute() {
                         }
                     }
 
+                    // ── Recorder ──────────────────────────────────────────────
+                    Recorder {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
 // ── Volume (Pipewire) ─────────────────────────────────────
 Item {
     id:     volumeButton
