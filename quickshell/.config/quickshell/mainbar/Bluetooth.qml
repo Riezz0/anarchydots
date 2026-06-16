@@ -78,11 +78,11 @@ Item {
     // ── Icon Color ────────────────────────────────────────────────────────────
     // Returns color based on connection state:
     //   theme.muted  = Disabled/No adapter
-    //   #9ece6a = Connected (green)
+    //   theme.color6 = Connected (green)
     //   theme.color4 = Enabled but no connection (cyan)
     function btColor() {
         if (!adapterValid || isDisabled) return theme.muted
-        if (connectedCount > 0)          return "#9ece6a"
+        if (connectedCount > 0)          return theme.color6
         return theme.color4
     }
 

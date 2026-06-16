@@ -304,10 +304,10 @@ Item {
         if (networkRoot.connectionType === "disconnected") return theme.muted
         if (networkRoot.connectionType === "wifi") {
             const s = parseInt(networkRoot.signalStrength) || 0
-            if (s >= 60) return "#9ece6a"
+            if (s >= 60) return theme.color6
             return theme.color4
         }
-        return "#9ece6a"
+        return theme.color6
     }
 
     function displayText() {
