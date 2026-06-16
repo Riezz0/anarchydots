@@ -72,7 +72,7 @@ Item {
         color: "transparent"
         border {
             width: 2
-            color: recorder.recording ? theme.color1 : theme.color4
+            color: recorder.recording ? "#f7768e" : theme.color4
         }
 
         Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -84,7 +84,7 @@ Item {
             width:  12
             height: 12
             radius: recorder.recording ? 1 : 6
-            color:  recorder.recording ? theme.color1 : theme.color2
+            color:  recorder.recording ? "#f7768e" : "#9ece6a"
         }
 
         // ── Pulse animation when recording ───────────────────────────────────
@@ -141,7 +141,7 @@ Item {
         if (recorder.hovered) {
             recBtn.border.color = theme.muted
         } else {
-            recBtn.border.color = recorder.recording ? theme.color1 : theme.color4
+            recBtn.border.color = recorder.recording ? "#f7768e" : theme.color4
         }
     }
 

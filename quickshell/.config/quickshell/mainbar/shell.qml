@@ -16,10 +16,6 @@ ShellRoot {
 
     // ── Properties ────────────────────────────────────────────────────────────
     property bool   powerMenuOpen:  false
-    property bool   salaatHovered:  false
-    property string salaatText:     "Loading..."
-    property string salaatTooltip:  ""
-    property var    salaatPrayers:  []
     property bool   volumePopupOpen: false
     property string clockTime:      Qt.formatDateTime(new Date(), "hh:mm:ss")
 // ── Audio (Pipewire) ─────────────────────────────────────────────────────
@@ -29,8 +25,6 @@ readonly property bool volumeMuted: root.audioSink && root.audioSink.audio ? roo
 property bool btPopupOpen: false
 property bool weatherPopupOpen: false
 property bool calendarPopupOpen: false
-property bool themeSwitcherOpen: false
-property bool volumeOsdVisible: false
 property var calendarDate: new Date()
 property string gpuTemp:     "GPU: --"
 property string cpuTemp:     "CPU: --"
@@ -89,25 +83,6 @@ function toggleMute() {
     if (!root.audioSink || !root.audioSink.audio) return
     root.audioSink.audio.muted = !root.audioSink.audio.muted
 }
-
-Timer {
-    id: volumeOsdTimer
-    interval: 2000
-    onTriggered: root.volumeOsdVisible = false
-}
-
-Connections {
-    target: root.audioSink && root.audioSink.audio ? root.audioSink.audio : null
-    function onVolumeChanged() {
-        root.volumeOsdVisible = true
-        volumeOsdTimer.restart()
-    }
-    function onMutedChanged() {
-        root.volumeOsdVisible = true
-        volumeOsdTimer.restart()
-    }
-}
-
     // ── Theme ─────────────────────────────────────────────────────────────────
     Theme { id: theme }
 
@@ -116,9 +91,6 @@ Connections {
 
     // ── Weather ──────────────────────────────────────────────────────────────
     Weather { id: weather }
-
-    // ── Theme Switcher ─────────────────────────────────────────────────────
-    ThemeSwitcher { id: themeSwitcher }
 
     // ── Functions ─────────────────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -134,22 +106,6 @@ Connections {
     Process {
         id:      powerProc
         running: false
-    }
-
-    Process {
-        id:      salaatProc
-        command: ["python3", "/usr/local/bin/salaat.py"]
-
-        stdout: SplitParser {
-            onRead: line => {
-                if (!line.trim()) return
-                try {
-                    const result = JSON.parse(line)
-                    if (result.text)    root.salaatText    = result.text
-                    if (result.tooltip) root.salaatTooltip = result.tooltip
-                } catch (e) {}
-            }
-        }
     }
 
     Process {
@@ -182,14 +138,6 @@ Connections {
     // ── Timers ────────────────────────────────────────────────────────────────
     Timer {
         interval:         1000
-        running:          true
-        repeat:           true
-        triggeredOnStart: true
-        onTriggered: { if (!salaatProc.running) salaatProc.running = true }
-    }
-
-    Timer {
-        interval: 1000
         running:  true
         repeat:   true
         onTriggered: {
@@ -566,203 +514,8 @@ Connections {
                     // ── Left Spacer ───────────────────────────────────────────
                     Item { Layout.fillWidth: true }
 
-                    // ── Quran ─────────────────────────────────────────────────
-                    Item {
-                        id:     quranButton
-                        width:  40
-                        height: 40
-
-                        Rectangle {
-                            id:           quranRect
-                            anchors.fill: parent
-                            color:        "transparent"
-                            radius: 5
-                            border { width: 2; color: theme.color4 }
-
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing:          4
-
-                                Text {
-                                    text:           ""
-                                    font.pixelSize: 20
-                                    color:          theme.color2
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id:           quranArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked: { root.runCommand("bash /usr/local/bin/quranwbw.sh") }
-                            onContainsMouseChanged: {
-                                quranRect.border.color = containsMouse ? theme.muted : theme.color4
-                            }
-                        }
-                    }
-
-                    // ── Salaat Times ──────────────────────────────────────────
-                    Rectangle {
-                        id:     salaatModule
-                        radius: 5
-                        color:  "transparent"
-                        border { width: 2; color: theme.color3 }
-
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        implicitHeight:   40
-                        implicitWidth:    salaatLabel.implicitWidth + 20
-
-                        property bool salaatHovered: false
-
-                        Text {
-                            id:               salaatLabel
-                            anchors.centerIn: parent
-                            text:             root.salaatText
-                            color:            theme.muted
-                            font.pixelSize:   14
-                            font.family:      "JetBrains Mono Nerd Font Mono"
-                            font.bold:        false
-                        }
-
-                        ToolTip {
-                            id:               salaatTooltip
-                            text:             root.salaatTooltip
-                            visible:          salaatModule.salaatHovered
-                            delay:            200
-                            timeout:          5000
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: { salaatModule.hovered = true; root.salaatHovered = true; salaatTooltip.visible = true }
-                            onExited:  { salaatModule.hovered = false; root.salaatHovered = false; salaatTooltip.visible = false }
-                        }
-
-                    }
-                    // ── Sunnan ────────────────────────────────────────────────
-                    Item {
-                        id:     sunnanButton
-                        width:  40
-                        height: 40
-
-                        Rectangle {
-                            id:           sunnanRect
-                            anchors.fill: parent
-                            color:        "transparent"
-                            radius: 5
-                            border { width: 2; color: theme.color4 }
-
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing:          4
-
-                                Text {
-                                    text:           "󱛉"
-                                    font.pixelSize: 20
-                                    color:          theme.color2
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id:           sunnanArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked: { root.runCommand("bash /usr/local/bin/sunnah.sh") }
-                            onContainsMouseChanged: {
-                                sunnanRect.border.color = containsMouse ? theme.muted : theme.color4
-                            }
-                        }
-                    }
-
                     // ── Right Spacer ──────────────────────────────────────────
                     Item { Layout.fillWidth: true }
-
-                    // ── Themer ────────────────────────────────────────────────
-                    Item {
-                        id:     themerButton
-                        width:  40
-                        height: 40
-
-                        Rectangle {
-                            id:           themerRect
-                            anchors.fill: parent
-                            color:        "transparent"
-                            radius: 5
-                            border { width: 2; color: theme.color4 }
-
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing:          4
-
-                                Text {
-                                    text:           ""
-                                    font.pixelSize: 20
-                                    color:          theme.color2
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id:           themerArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked: { root.runCommand("bash /usr/local/bin/themer.sh") }
-                            onContainsMouseChanged: {
-                                themerRect.border.color = containsMouse ? theme.muted : theme.color4
-                            }
-                        }
-                    }
-
-                    // ── Theme Switcher ──────────────────────────────────────────
-                    Item {
-                        id:     tsButton
-                        width:  40
-                        height: 40
-
-                        Rectangle {
-                            id:           tsRect
-                            anchors.fill: parent
-                            color:        "transparent"
-                            radius: 5
-                            border { width: 2; color: theme.color4 }
-
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing:          4
-
-                                Text {
-                                    text:           ""
-                                    font.pixelSize: 20
-                                    color:          theme.color2
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id:           tsArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked:    root.themeSwitcherOpen = !root.themeSwitcherOpen
-                            onContainsMouseChanged: {
-                                tsRect.border.color = containsMouse ? theme.muted : theme.color4
-                            }
-                        }
-                    }
 
                     // ── Recorder ──────────────────────────────────────────────
                     Recorder {
@@ -1278,31 +1031,32 @@ Variants {
     Variants {
         model: Quickshell.screens.filter(screen => screen.name === "DP-2")
 
-            PanelWindow {
-                screen:  modelData
-                visible: true
-                required property var modelData
+        PanelWindow {
+            screen:  modelData
+            visible: root.weatherPopupOpen
+            required property var modelData
 
-                anchors { top: true; bottom: true; left: true; right: true }
+            anchors { top: true; bottom: true; left: true; right: true }
 
-                color:     "transparent"
-                focusable: root.weatherPopupOpen
+            color:     "transparent"
+            focusable: root.weatherPopupOpen
 
-                WlrLayershell.layer: WlrLayer.Overlay
-                WlrLayershell.keyboardFocus: root.weatherPopupOpen
-                    ? WlrKeyboardFocus.OnDemand
-                    : WlrKeyboardFocus.None
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: root.weatherPopupOpen
+                ? WlrKeyboardFocus.OnDemand
+                : WlrKeyboardFocus.None
 
-                // Click outside to close
-                MouseArea {
-                    anchors.fill: parent
-                    visible:      root.weatherPopupOpen
-                    onClicked:    root.weatherPopupOpen = false
-                }
+            // Click outside to close
+            MouseArea {
+                anchors.fill: parent
+                onClicked:    root.weatherPopupOpen = false
+            }
 
             Rectangle {
                 id: weatherPanel
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top:        parent.top
+                anchors.horizontalCenter:  parent.horizontalCenter
+                anchors.topMargin:  10
                 width:    500
                 implicitHeight: weatherColumn.implicitHeight + 32
                 height:   implicitHeight
@@ -1310,11 +1064,6 @@ Variants {
                 color:    theme.background
                 opacity:  0.95
                 border { width: 2; color: theme.color4 }
-                x: root.weatherPopupOpen ? 10 : -width - 10
-
-                Behavior on x {
-                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -1324,42 +1073,42 @@ Variants {
                 ColumnLayout {
                     id: weatherColumn
                     anchors.fill:    parent
-                    anchors.margins: 20
-                    spacing: 16
+                    anchors.margins: 16
+                    spacing: 12
 
                     // ── Header ──────────────────────────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 16
+                        spacing: 12
 
                         Text {
                             text:           weather.weatherIconText()
-                            font.pixelSize: 36
+                            font.pixelSize: 28
                             color:          theme.color4
                         }
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 4
+                            spacing: 2
 
                             Text {
                                 text:      weather.locationDisplay()
                                 color:     theme.foreground
-                                font.pixelSize: 20
+                                font.pixelSize: 16
                                 font.bold: true
                             }
 
                             Text {
                                 text:      weather.shortCondition()
                                 color:     theme.muted
-                                font.pixelSize: 14
+                                font.pixelSize: 12
                             }
                         }
 
                         Text {
                             text:           weather.loaded ? weather.tempDisplay() : "--"
                             color:          theme.color4
-                            font.pixelSize: 36
+                            font.pixelSize: 28
                             font.bold:      true
                             font.family:    "JetBrains Mono Nerd Font Mono"
                         }
@@ -1368,8 +1117,8 @@ Variants {
                     // ── Separator ────────────────────────────────────────────────
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.bottomMargin: 8
-                        Layout.topMargin: 8
+                        Layout.bottomMargin: 4
+                        Layout.topMargin: 4
                         height: 1
                         color: theme.muted
                         opacity: 0.4
@@ -1380,26 +1129,25 @@ Variants {
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignCenter
                         columns: 3
-                        columnSpacing: 16
-                        rowSpacing: 16
+                        columnSpacing: 12
+                        rowSpacing: 12
 
                         // Feels Like
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󰖐"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color6
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1407,7 +1155,7 @@ Variants {
 
                                 Text {
                                     text:           weather.feelsLikeC + "°C"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1416,7 +1164,7 @@ Variants {
 
                                 Text {
                                     text:           "Feels Like"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1427,20 +1175,19 @@ Variants {
                         // Humidity
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󱈑"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color3
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1448,7 +1195,7 @@ Variants {
 
                                 Text {
                                     text:           weather.humidity + "%"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1457,7 +1204,7 @@ Variants {
 
                                 Text {
                                     text:           "Humidity"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1468,20 +1215,19 @@ Variants {
                         // Wind
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󰖝"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color5
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1489,7 +1235,7 @@ Variants {
 
                                 Text {
                                     text:           weather.windSpeed + " km/h"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1498,7 +1244,7 @@ Variants {
 
                                 Text {
                                     text:           weather.windDir
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1509,20 +1255,19 @@ Variants {
                         // Pressure
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󰖂"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color2
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1530,7 +1275,7 @@ Variants {
 
                                 Text {
                                     text:           weather.pressure + " hPa"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1539,7 +1284,7 @@ Variants {
 
                                 Text {
                                     text:           "Pressure"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1550,20 +1295,19 @@ Variants {
                         // UV Index
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󰖨"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color1
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1571,7 +1315,7 @@ Variants {
 
                                 Text {
                                     text:           weather.uvIndex
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1580,7 +1324,7 @@ Variants {
 
                                 Text {
                                     text:           "UV Index"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1591,20 +1335,19 @@ Variants {
                         // Visibility
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 76
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 10
+                                anchors.centerIn: parent
+                                spacing: 8
 
                                 Text {
                                     text:           "󰈈"
-                                    font.pixelSize: 24
+                                    font.pixelSize: 14
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color4
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1612,7 +1355,7 @@ Variants {
 
                                 Text {
                                     text:           weather.visibility + " km"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 14
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1621,7 +1364,7 @@ Variants {
 
                                 Text {
                                     text:           "Visibility"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 10
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1633,12 +1376,12 @@ Variants {
                     // ── Cloud Cover ─────────────────────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
-                        Layout.topMargin: 8
-                        spacing: 12
+                        Layout.topMargin: 4
+                        spacing: 8
 
                         Rectangle {
                             Layout.fillWidth: true
-                            implicitHeight: 24
+                            implicitHeight: 20
                             radius: 5
                             color: Qt.darker(theme.background, 1.3)
 
@@ -1657,7 +1400,7 @@ Variants {
 
                         Text {
                             text:           weather.cloudCover + "% clouds"
-                            font.pixelSize: 13
+                            font.pixelSize: 11
                             font.family:    "JetBrains Mono Nerd Font Mono"
                             color:          theme.muted
                         }
@@ -1666,8 +1409,8 @@ Variants {
                     // ── Refresh Button ──────────────────────────────────────────
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.topMargin: 8
-                        implicitHeight: 36
+                        Layout.topMargin: 4
+                        implicitHeight: 28
                         radius: 5
                         color:  "transparent"
                         border { width: 2; color: theme.color4 }
@@ -1676,7 +1419,7 @@ Variants {
                             anchors.centerIn: parent
                             text:  "Refresh"
                             color: theme.color4
-                            font.pixelSize: 14
+                            font.pixelSize: 12
                             font.bold: true
                         }
 
@@ -1697,7 +1440,7 @@ Variants {
 
         PanelWindow {
             screen:  modelData
-            visible: true
+            visible: root.calendarPopupOpen
             required property var modelData
 
             anchors { top: true; bottom: true; left: true; right: true }
@@ -1713,13 +1456,14 @@ Variants {
             // Click outside to close
             MouseArea {
                 anchors.fill: parent
-                visible:      root.calendarPopupOpen
                 onClicked:    root.calendarPopupOpen = false
             }
 
             Rectangle {
                 id: calendarPanel
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top:        parent.top
+                anchors.horizontalCenter:  parent.horizontalCenter
+                anchors.topMargin:  10
                 width:    400
                 implicitHeight: calendarColumn.implicitHeight + 32
                 height:   implicitHeight
@@ -1727,11 +1471,6 @@ Variants {
                 color:    theme.background
                 opacity:  0.95
                 border { width: 2; color: theme.color4 }
-                x: root.calendarPopupOpen ? parent.width - width - 10 : parent.width + 10
-
-                Behavior on x {
-                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -1904,255 +1643,6 @@ Variants {
         }
     }
 
-    // ── Volume OSD (DP-2) ──────────────────────────────────────────────────
-    Variants {
-        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
-
-        PanelWindow {
-            screen:  modelData
-            visible: true
-            required property var modelData
-
-            anchors { top: true; bottom: true; left: true; right: true }
-
-            color:     "transparent"
-            focusable: false
-
-            WlrLayershell.layer: WlrLayer.Overlay
-
-            Rectangle {
-                id: volumeOsdPanel
-                anchors.verticalCenter: parent.verticalCenter
-                width: 80
-                implicitHeight: volumeOsdColumn.implicitHeight + 24
-                height: implicitHeight
-                radius: 5
-                color: theme.background
-                opacity: 0.95
-                border { width: 2; color: theme.color2 }
-                x: root.volumeOsdVisible ? parent.width - width - 10 : parent.width + 10
-
-                Behavior on x {
-                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: mouse => mouse.accepted = true
-                }
-
-                ColumnLayout {
-                    id: volumeOsdColumn
-                    anchors.fill: parent
-                    anchors.margins: 12
-                    spacing: 10
-
-                    Text {
-                        text: root.volumeIcon()
-                        font.pixelSize: 24
-                        color: root.volumeMuted ? theme.color1 : theme.color2
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-
-                    Text {
-                        text: Math.round(root.volumeLevel * 100) + "%"
-                        color: theme.foreground
-                        font.pixelSize: 13
-                        font.bold: true
-                        font.family: "JetBrains Mono Nerd Font Mono"
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-
-                    Rectangle {
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.preferredWidth: 10
-                        Layout.preferredHeight: 120
-                        radius: 5
-                        color: Qt.darker(theme.background, 1.3)
-                        border { width: 1; color: theme.color4 }
-
-                        Rectangle {
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                                bottom: parent.bottom
-                            }
-                            width: parent.width
-                            height: parent.height * Math.min(Math.max(root.volumeLevel, 0), 1)
-                            radius: 5
-                            color: root.volumeMuted ? theme.muted : theme.color2
-
-                            Behavior on height { NumberAnimation { duration: 80 } }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // ── Theme Switcher Popup (DP-2) ─────────────────────────────────────────
-    Variants {
-        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
-
-        PanelWindow {
-            screen:  modelData
-            visible: true
-            required property var modelData
-
-            anchors { top: true; bottom: true; left: true; right: true }
-
-            color:     "transparent"
-            focusable: root.themeSwitcherOpen
-
-            WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: root.themeSwitcherOpen
-                ? WlrKeyboardFocus.OnDemand
-                : WlrKeyboardFocus.None
-
-            MouseArea {
-                anchors.fill: parent
-                visible: root.themeSwitcherOpen
-                onClicked:    root.themeSwitcherOpen = false
-            }
-
-            Rectangle {
-                id: tsPanel
-                anchors.horizontalCenter: parent.horizontalCenter
-                width:  660
-                implicitHeight: tsColumn.implicitHeight + 32
-                height: implicitHeight
-                radius: 8
-                color: theme.background
-                opacity: 0.95
-                border { width: 2; color: theme.color2 }
-                y: root.themeSwitcherOpen ? parent.height - height - 10 : parent.height + 10
-
-                Behavior on y {
-                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: mouse => mouse.accepted = true
-                }
-
-                ColumnLayout {
-                    id: tsColumn
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 14
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 10
-
-                        Text {
-                            text: ""
-                            font.pixelSize: 22
-                            color: theme.color2
-                        }
-
-                        Text {
-                            text: "Theme Switcher"
-                            color: theme.foreground
-                            font.pixelSize: 16
-                            font.bold: true
-                            Layout.fillWidth: true
-                        }
-
-                        Text {
-                            text: themeSwitcher.themes.length + " themes"
-                            color: theme.muted
-                            font.pixelSize: 12
-                            font.family: "JetBrains Mono Nerd Font Mono"
-                        }
-                    }
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        height: 1
-                        color: theme.muted
-                        opacity: 0.3
-                    }
-
-                    Flickable {
-                        Layout.fillWidth: true
-                        height: 310
-                        clip: true
-                        contentHeight: grid.implicitHeight
-                        flickableDirection: Flickable.VerticalFlick
-                        ScrollBar.vertical: ScrollBar {
-                            policy: parent.contentHeight > parent.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                        }
-
-                        Grid {
-                            id: grid
-                            columns: 3
-                            spacing: 10
-
-                            Repeater {
-                                model: themeSwitcher.themes
-
-                                Rectangle {
-                                    id: themeCard
-                                    width: 190
-                                    height: 150
-                                    radius: 6
-
-                                    property bool hovered: false
-
-                                    color: hovered ? theme.color2 : theme.background
-                                    border { width: 2; color: hovered ? theme.color2 : theme.muted }
-
-                                    Column {
-                                        anchors.fill: parent
-                                        anchors.margins: 6
-                                        spacing: 6
-
-                                        Image {
-                                            width: parent.width
-                                            height: 105
-                                            source: modelData.thumbnail || ""
-                                            fillMode: Image.PreserveAspectCrop
-                                            clip: true
-                                            asynchronous: true
-                                            mipmap: true
-                                            smooth: true
-                                        }
-
-                                        Text {
-                                            text: modelData.name
-                                            color: themeCard.hovered ? theme.background : theme.foreground
-                                            font.pixelSize: 13
-                                            font.bold: true
-                                            font.family: "JetBrains Mono Nerd Font Mono"
-                                            elide: Text.ElideRight
-                                            width: parent.width
-                                            horizontalAlignment: Text.AlignHCenter
-                                        }
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        cursorShape: modelData.script ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                        hoverEnabled: true
-                                        onContainsMouseChanged: themeCard.hovered = containsMouse
-                                        onClicked: {
-                                            if (modelData.script) {
-                                                themeSwitcher.applyTheme(modelData.script)
-                                                root.themeSwitcherOpen = false
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // ── Power Menu Overlay (all screens) ──────────────────────────────────────
     Variants {
         model: Quickshell.screens
@@ -2313,5 +1803,6 @@ Variants {
             Layout.alignment: Qt.AlignHCenter
         }
     }
+
 }
 

@@ -1,27 +1,28 @@
 #!/bin/bash
 
 #========================#
-#      GRUVBOX_DARK      #
+#       TOKYO NIGHT      #
 #========================#
 
 #------------------------#
 # VARIABLES
 #------------------------#
 USER_HOME="$HOME"
-THEME_NAME="gruvbox-dark"
-THEME_DISPLAY="Gruvbox Dark Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/gruvbox-dark
+THEME_NAME="test"
+THEME_DISPLAY="Test Theme"
+THEME_DIR="$USER_HOME/.config/.hypr-themes/test"
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/gruvbox-dark/thumbnail.png
+WALL="$USER_HOME/.config/.hypr-themes/test/thumbnail.png"
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
-GTK_THEME="graphite-anarchy-gruvbox-dark"
-ICON_THEME="GruvboxDark-Icons"
-CURSOR_THEME="GruvboxDark-Cursors"
+GTK_THEME="adw-gtk3-dark"
+ICON_THEME="TokyoNightDark-Icons"
+CURSOR_THEME="TokyoNight-Cursors"
+
 
 # Kvantum
 KVANTUM_DIR="$USER_HOME/.config/Kvantum/pywal"
@@ -73,12 +74,13 @@ cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/gtk-dark.css" "$USER_HOME/.conf
 cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/gtk.css" "$USER_HOME/.config/gtk-4.0/"
 cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/libadwaita-tweaks.css" "$USER_HOME/.config/gtk-4.0/"
 cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/libadwaita.css" "$USER_HOME/.config/gtk-4.0/"
-gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME" 
-gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME" 
+gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
+gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
 echo "$ICON_THEME" > "$HOME/.cache/current_icon_theme.txt"
 wait
 gradience-cli apply -p ~/.config/presets/user/pywal.json --gtk both  
-gradience-cli flatpak-overrides -e both
+gradience-cli flatpak-overrides -e both 
+
 #------------------------#
 # SET KVANTUM THEME
 #------------------------#
@@ -96,13 +98,18 @@ cp "$HOME/.cache/wal/pywal.svg" "$KVANTUM_DIR/pywal.svg"
 # FASTFETCH
 #------------------------#
 rm -rf ~/.cache/fastfetch 
-cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/fastfetch/arch.png"
+cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/fastfetch/arch.png"
 
 #------------------------#
 # WAYBAR ICON
 #------------------------#
-cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/waybar/icons/arch.png"
-cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/quickshell/assets/arch.png"
+cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
+cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/quickshell/assets/arch.png"
+
+#------------------------#
+# WAYBAR LOGO 
+#------------------------#
+cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
 
 #------------------------#
 # REFRESH INTERFACES
@@ -112,11 +119,13 @@ hyprctl reload
 kill -SIGUSR1 $(pidof kitty)
 pywalfox update & disown 
 swaync-client -rs
+#killall waybar
 #bash /home/$USER/.config/scripts/waybar.sh
 killall quickshell
 bash /usr/local/bin/qbarmain.sh
 systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 wait
+#gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 
 #------------------------#
 # NOTIFICATION
@@ -127,3 +136,4 @@ notify-send "$THEME_DISPLAY Loaded"
 # NAUTILUS
 #------------------------#
 nautilus -q && gtk4-update-icon-cache ~/.config/gtk-4.0
+

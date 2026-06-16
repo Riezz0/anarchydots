@@ -10,10 +10,10 @@
 USER_HOME="$HOME"
 THEME_NAME="everforest-dark"
 THEME_DISPLAY="Everforest Dark Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
+THEME_DIR="$USER_HOME/.config/.hypr-themes/everforest-dark
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
+WALL="$USER_HOME/.config/.hypr-themes/everforest-dark/thumbnail.png
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"

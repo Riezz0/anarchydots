@@ -2,5 +2,4 @@
 {"custom/themer": {"format": "<span font='20px'></span>",                                           /////|
 "on-click": "bash /usr/local/bin/themer.sh", "tooltip": true,                                        /////|
 "tooltip-format": "Theme Select\nLeft Click To Open\nLeft Click Again To Close" }},                  /////|
-//////////////////////////////////////////////////////////////////////////////////////////////////////////|
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////|
