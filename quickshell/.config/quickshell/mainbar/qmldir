@@ -6,4 +6,12 @@ Weather 1.0 Weather.qml
 SystemTray 1.0 SystemTray.qml
 Network 1.0 Network.qml
 SystemStats 1.0 SystemStats.qml
-
+Audio 1.0 Audio.qml
+Calendar 1.0 Calendar.qml
+Bar 1.0 Bar.qml
+VolumePopup 1.0 VolumePopup.qml
+BluetoothPopup 1.0 BluetoothPopup.qml
+WeatherPopup 1.0 WeatherPopup.qml
+CalendarPopup 1.0 CalendarPopup.qml
+SystemStatsPopup 1.0 SystemStatsPopup.qml
+PowerMenu 1.0 PowerMenu.qml
