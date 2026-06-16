@@ -32,7 +32,7 @@ KVANTUM_DIR="$USER_HOME/.config/Kvantum/pywal"
 #------------------------#
 awww img "$WALL" --transition-fps 144 --transition-step 255 --transition-type random
 cp -r "$WALL" "/home/$USER/.config/hypr/lock.png"
-cp -r "$WALL" "/home/$USER/.config/wallpapers/Wall.png"
+cp -r "$WALL" "/home/$USER/.config/activebg/Wall.png"
 
 #------------------------#
 # SET COLOR SCHEME

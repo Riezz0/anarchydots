@@ -2,4 +2,5 @@ module mainbar
 Theme 1.0 Theme.qml
 Bluetooth 1.0 Bluetooth.qml
 Recorder 1.0 Recorder.qml
+Weather 1.0 Weather.qml
 

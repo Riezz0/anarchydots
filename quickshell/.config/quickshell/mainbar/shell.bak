@@ -27,8 +27,41 @@ readonly property var  audioSink:   Pipewire.defaultAudioSink
 readonly property real volumeLevel: root.audioSink && root.audioSink.audio ? root.audioSink.audio.volume : 0
 readonly property bool volumeMuted: root.audioSink && root.audioSink.audio ? root.audioSink.audio.muted : false
 property bool btPopupOpen: false
+property bool weatherPopupOpen: false
+property bool calendarPopupOpen: false
+property var calendarDate: new Date()
 property string gpuTemp:     "GPU: --"
 property string cpuTemp:     "CPU: --"
+
+function daysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate()
+}
+
+function firstDayOfMonth(year, month) {
+    return new Date(year, month, 1).getDay()
+}
+
+function calendarMonthName() {
+    const months = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"]
+    return months[calendarDate.getMonth()] + " " + calendarDate.getFullYear()
+}
+
+function prevMonth() {
+    var d = new Date(calendarDate)
+    d.setMonth(d.getMonth() - 1)
+    calendarDate = d
+}
+
+function nextMonth() {
+    var d = new Date(calendarDate)
+    d.setMonth(d.getMonth() + 1)
+    calendarDate = d
+}
+
+function goToToday() {
+    calendarDate = new Date()
+}
 
 PwObjectTracker {
     objects: root.audioSink ? [root.audioSink] : []
@@ -59,6 +92,9 @@ function toggleMute() {
 
     // ── Bluetooth ────────────────────────────────────────────────────────────
     Bluetooth { id: bt }
+
+    // ── Weather ──────────────────────────────────────────────────────────────
+    Weather { id: weather }
 
     // ── Functions ─────────────────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -436,7 +472,7 @@ function toggleMute() {
                                 text:           root.gpuTemp
                                 font.pixelSize: 11
                                 font.bold:      true
-                                font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                                font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          theme.color2
                                 horizontalAlignment: Text.AlignHCenter
                                 anchors.horizontalCenter: parent.horizontalCenter
@@ -446,12 +482,59 @@ function toggleMute() {
                                 text:           root.cpuTemp
                                 font.pixelSize: 11
                                 font.bold:      true
-                                font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                                font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          theme.color3
                                 horizontalAlignment: Text.AlignHCenter
                                 anchors.horizontalCenter: parent.horizontalCenter
                             }
                         }
+                    }
+
+                    // ── Weather ──────────────────────────────────────────────
+                    Rectangle {
+                        id:     weatherBtn
+                        radius: 5
+                        color:  "transparent"
+                        border { width: 2; color: theme.color4 }
+
+                        Layout.alignment: Qt.AlignVCenter
+                        implicitHeight:   40
+                        implicitWidth:    weatherRow.implicitWidth + 28
+
+                        property bool hovered: false
+
+                        Row {
+                            id:               weatherRow
+                            anchors.centerIn: parent
+                            spacing:          6
+
+                            Text {
+                                text:           weather.weatherIconText()
+                                font.pixelSize: 18
+                                color:          theme.color4
+                            }
+
+                            Text {
+                                text:           weather.loaded ? weather.tempDisplay() : "--"
+                                font.pixelSize: 14
+                                font.bold:      true
+                                font.family:    "JetBrains Mono Nerd Font Mono"
+                                color:          theme.muted
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill:    parent
+                            hoverEnabled:    true
+                            cursorShape:     Qt.PointingHandCursor
+                            onClicked:       root.weatherPopupOpen = !root.weatherPopupOpen
+                            onContainsMouseChanged: {
+                                weatherBtn.hovered = containsMouse
+                                weatherBtn.border.color = containsMouse ? theme.muted : theme.color4
+                            }
+                        }
+
+                        Behavior on border.color { ColorAnimation { duration: 120 } }
                     }
 
                     // ── Left Spacer ───────────────────────────────────────────
@@ -515,7 +598,7 @@ function toggleMute() {
                             text:             root.salaatText
                             color:            theme.muted
                             font.pixelSize:   14
-                            font.family:      "JetBrains Mono Nerd Font Mono Propo"
+                            font.family:      "JetBrains Mono Nerd Font Mono"
                             font.bold:        false
                         }
 
@@ -616,6 +699,11 @@ function toggleMute() {
                         }
                     }
 
+                    // ── Recorder ──────────────────────────────────────────────
+                    Recorder {
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
 // ── Volume (Pipewire) ─────────────────────────────────────
 Item {
     id:     volumeButton
@@ -652,7 +740,7 @@ Item {
                 text:           Math.round(root.volumeLevel * 100) + "%"
                 font.pixelSize: 14
                 font.bold:      true
-                font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                font.family:    "JetBrains Mono Nerd Font Mono"
                 color:          theme.muted
             }
         }
@@ -689,14 +777,33 @@ Item {
 }
 
                     // ── Clock ─────────────────────────────────────────────────
-                    Text {
-                        id:               clockLabel
-                        color:            theme.muted
-                        font.pixelSize:   14
-                        font.bold:        true
-                        font.family:      "JetBrains Mono Nerd Font Mono Propo"
+                    Item {
+                        id:     clockBtn
+                        width:  clockLabel.implicitWidth + 16
+                        height: 40
                         Layout.alignment: Qt.AlignVCenter
-                        text:             root.clockTime
+
+                        Text {
+                            id:               clockLabel
+                            anchors.centerIn: parent
+                            color:            theme.muted
+                            font.pixelSize:   14
+                            font.bold:        true
+                            font.family:      "JetBrains Mono Nerd Font Mono"
+                            text:             root.clockTime
+
+                            Behavior on color { ColorAnimation { duration: 120 } }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  Qt.PointingHandCursor
+                            onClicked:    root.calendarPopupOpen = !root.calendarPopupOpen
+                            onContainsMouseChanged: {
+                                clockLabel.color = containsMouse ? theme.color1 : theme.muted
+                            }
+                        }
                     }
 
                     // ── Power Button ──────────────────────────────────────────
@@ -799,7 +906,7 @@ Variants {
                         color:       theme.muted
                         font.pixelSize: 14
                         font.bold:   true
-                        font.family: "JetBrains Mono Nerd Font Mono Propo"
+                        font.family: "JetBrains Mono Nerd Font Mono"
                     }
                 }
 
@@ -975,7 +1082,7 @@ Variants {
                         color:          theme.muted
                         font.pixelSize: 14
                         font.bold:      true
-                        font.family:    "JetBrains Mono Nerd Font Mono Propo"
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                     }
                 }
 
@@ -1051,7 +1158,7 @@ Variants {
                                     text:               modelData.connected ? "Connected" : (modelData.paired ? "Paired" : "")
                                     color:              modelData.connected ? theme.color2 : theme.muted
                                     font.pixelSize:     11
-                                    font.family:        "JetBrains Mono Nerd Font Mono Propo"
+                                    font.family:        "JetBrains Mono Nerd Font Mono"
                                     Layout.rightMargin: 8
                                     Layout.alignment:   Qt.AlignVCenter
                                 }
@@ -1101,6 +1208,622 @@ Variants {
         }
     }
 }
+
+    // ── Weather Popup (DP-2) ──────────────────────────────────────────────────
+    Variants {
+        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+
+        PanelWindow {
+            screen:  modelData
+            visible: root.weatherPopupOpen
+            required property var modelData
+
+            anchors { top: true; bottom: true; left: true; right: true }
+
+            color:     "transparent"
+            focusable: root.weatherPopupOpen
+
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: root.weatherPopupOpen
+                ? WlrKeyboardFocus.OnDemand
+                : WlrKeyboardFocus.None
+
+            // Click outside to close
+            MouseArea {
+                anchors.fill: parent
+                onClicked:    root.weatherPopupOpen = false
+            }
+
+            Rectangle {
+                id: weatherPanel
+                anchors.top:        parent.top
+                anchors.horizontalCenter:  parent.horizontalCenter
+                anchors.topMargin:  10
+                width:    500
+                implicitHeight: weatherColumn.implicitHeight + 32
+                height:   implicitHeight
+                radius: 5
+                color:    theme.background
+                opacity:  0.95
+                border { width: 2; color: theme.color4 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked:    mouse => mouse.accepted = true
+                }
+
+                ColumnLayout {
+                    id: weatherColumn
+                    anchors.fill:    parent
+                    anchors.margins: 16
+                    spacing: 12
+
+                    // ── Header ──────────────────────────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 12
+
+                        Text {
+                            text:           weather.weatherIconText()
+                            font.pixelSize: 28
+                            color:          theme.color4
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            Text {
+                                text:      weather.locationDisplay()
+                                color:     theme.foreground
+                                font.pixelSize: 16
+                                font.bold: true
+                            }
+
+                            Text {
+                                text:      weather.shortCondition()
+                                color:     theme.muted
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        Text {
+                            text:           weather.loaded ? weather.tempDisplay() : "--"
+                            color:          theme.color4
+                            font.pixelSize: 28
+                            font.bold:      true
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                        }
+                    }
+
+                    // ── Separator ────────────────────────────────────────────────
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: 4
+                        Layout.topMargin: 4
+                        height: 1
+                        color: theme.muted
+                        opacity: 0.4
+                    }
+
+                    // ── Stats Grid ──────────────────────────────────────────────
+                    GridLayout {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignCenter
+                        columns: 3
+                        columnSpacing: 12
+                        rowSpacing: 12
+
+                        // Feels Like
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󰖐"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color6
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.feelsLikeC + "°C"
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           "Feels Like"
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        // Humidity
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󱈑"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color3
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.humidity + "%"
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           "Humidity"
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        // Wind
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󰖝"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color5
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.windSpeed + " km/h"
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.windDir
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        // Pressure
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󰖂"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color2
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.pressure + " hPa"
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           "Pressure"
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        // UV Index
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󰖨"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color1
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.uvIndex
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           "UV Index"
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        // Visibility
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 76
+                            Layout.alignment: Qt.AlignHCenter
+                            radius: 5
+                            color: "transparent"
+                            border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text:           "󰈈"
+                                    font.pixelSize: 14
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.color4
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           weather.visibility + " km"
+                                    font.pixelSize: 14
+                                    font.bold:      true
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.foreground
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text:           "Visibility"
+                                    font.pixelSize: 10
+                                    font.family:    "JetBrains Mono Nerd Font Mono"
+                                    color:          theme.muted
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Cloud Cover ─────────────────────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 4
+                        spacing: 8
+
+                        Rectangle {
+                            Layout.fillWidth: true
+                            implicitHeight: 20
+                            radius: 5
+                            color: Qt.darker(theme.background, 1.3)
+
+                            Rectangle {
+                                anchors {
+                                    left:   parent.left
+                                    top:    parent.top
+                                    bottom: parent.bottom
+                                }
+                                width: parent.width * (parseInt(weather.cloudCover) / 100)
+                                radius: 5
+                                color: theme.color4
+                                opacity: 0.6
+                            }
+                        }
+
+                        Text {
+                            text:           weather.cloudCover + "% clouds"
+                            font.pixelSize: 11
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                            color:          theme.muted
+                        }
+                    }
+
+                    // ── Refresh Button ──────────────────────────────────────────
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 4
+                        implicitHeight: 28
+                        radius: 5
+                        color:  "transparent"
+                        border { width: 2; color: theme.color4 }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text:  "Refresh"
+                            color: theme.color4
+                            font.pixelSize: 12
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape:  Qt.PointingHandCursor
+                            onClicked:    weather.refresh()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ── Calendar Popup (DP-2) ─────────────────────────────────────────────────
+    Variants {
+        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+
+        PanelWindow {
+            screen:  modelData
+            visible: root.calendarPopupOpen
+            required property var modelData
+
+            anchors { top: true; bottom: true; left: true; right: true }
+
+            color:     "transparent"
+            focusable: root.calendarPopupOpen
+
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: root.calendarPopupOpen
+                ? WlrKeyboardFocus.OnDemand
+                : WlrKeyboardFocus.None
+
+            // Click outside to close
+            MouseArea {
+                anchors.fill: parent
+                onClicked:    root.calendarPopupOpen = false
+            }
+
+            Rectangle {
+                id: calendarPanel
+                anchors.top:        parent.top
+                anchors.horizontalCenter:  parent.horizontalCenter
+                anchors.topMargin:  10
+                width:    400
+                implicitHeight: calendarColumn.implicitHeight + 32
+                height:   implicitHeight
+                radius: 5
+                color:    theme.background
+                opacity:  0.95
+                border { width: 2; color: theme.color4 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked:    mouse => mouse.accepted = true
+                }
+
+                ColumnLayout {
+                    id: calendarColumn
+                    anchors.fill:    parent
+                    anchors.margins: 16
+                    spacing: 10
+
+                    // ── Header ──────────────────────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+
+                        Rectangle {
+                            width: 28; height: 28; radius: 5
+                            color: "transparent"
+                            border { width: 2; color: theme.color4 }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰁍"
+                                font.pixelSize: 14
+                                color: theme.color4
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.prevMonth()
+                            }
+                        }
+
+                        Text {
+                            text: root.calendarMonthName()
+                            color: theme.foreground
+                            font.pixelSize: 16
+                            font.bold: true
+                            Layout.fillWidth: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Rectangle {
+                            width: 28; height: 28; radius: 5
+                            color: "transparent"
+                            border { width: 2; color: theme.color4 }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰁔"
+                                font.pixelSize: 14
+                                color: theme.color4
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.nextMonth()
+                            }
+                        }
+                    }
+
+                    // ── Calendar Grid ───────────────────────────────────────
+                    GridLayout {
+                        Layout.fillWidth: true
+                        columns: 7
+                        columnSpacing: 0
+                        rowSpacing: 4
+
+                        // Day-of-week headers
+                        Repeater {
+                            model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+
+                            Text {
+                                text: modelData
+                                font.pixelSize: 11
+                                font.bold: true
+                                font.family: "JetBrains Mono Nerd Font Mono"
+                                color: theme.muted
+                                Layout.fillWidth: true
+                                Layout.preferredWidth: 1
+                                horizontalAlignment: Text.AlignHCenter
+                                topPadding: 4
+                                bottomPadding: 4
+                            }
+                        }
+
+                        // Separator (spans all 7 columns)
+                        Rectangle {
+                            Layout.columnSpan: 7
+                            Layout.fillWidth: true
+                            Layout.topMargin: 4
+                            Layout.bottomMargin: 4
+                            height: 1
+                            color: theme.muted
+                            opacity: 0.3
+                        }
+
+                        // Calendar day cells
+                        Repeater {
+                            model: 42  // 6 rows * 7 columns
+
+                            Rectangle {
+                                required property int index
+                                property int rowIndex: Math.floor(index / 7)
+                                property int colIndex: index % 7
+                                property int dayNum: {
+                                    var y = root.calendarDate.getFullYear()
+                                    var m = root.calendarDate.getMonth()
+                                    var firstDay = root.firstDayOfMonth(y, m)
+                                    var totalDays = root.daysInMonth(y, m)
+                                    var day = (rowIndex * 7) + colIndex - firstDay + 1
+                                    if (day < 1 || day > totalDays) return 0
+                                    return day
+                                }
+                                property bool isToday: {
+                                    if (dayNum === 0) return false
+                                    var now = new Date()
+                                    return dayNum === now.getDate()
+                                        && root.calendarDate.getMonth() === now.getMonth()
+                                        && root.calendarDate.getFullYear() === now.getFullYear()
+                                }
+
+                                Layout.fillWidth: true
+                                Layout.preferredWidth: 1
+                                Layout.preferredHeight: 32
+                                radius: 5
+                                color: isToday ? theme.color2 : "transparent"
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: dayNum === 0 ? "" : dayNum.toString()
+                                    font.pixelSize: 12
+                                    font.family: "JetBrains Mono Nerd Font Mono"
+                                    font.bold: isToday
+                                    color: isToday ? theme.background : (dayNum === 0 ? "transparent" : theme.foreground)
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Today Button ────────────────────────────────────────
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 4
+                        implicitHeight: 28
+                        radius: 5
+                        color: "transparent"
+                        border { width: 2; color: theme.color4 }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Today"
+                            color: theme.color4
+                            font.pixelSize: 12
+                            font.bold: true
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.goToToday()
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // ── Power Menu Overlay (all screens) ──────────────────────────────────────
     Variants {

@@ -4,8 +4,8 @@
 # Sets wallpaper with transitions and error handling
 
 USER=$(whoami)
-WALLPAPER_DIR="/home/$USER/.config/wallpapers"
-LOG_FILE="/home/$USER/.awww-wallpaper.log"
+WALLPAPER_DIR="/home/$USER/.config/activebg/"
+LOG_FILE="/home/$USER/.config/activebg/awww-wallpaper.log"
 
 # Logging function
 log() {
