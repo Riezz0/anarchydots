@@ -29,6 +29,7 @@ readonly property bool volumeMuted: root.audioSink && root.audioSink.audio ? roo
 property bool btPopupOpen: false
 property bool weatherPopupOpen: false
 property bool calendarPopupOpen: false
+property bool themeSwitcherOpen: false
 property var calendarDate: new Date()
 property string gpuTemp:     "GPU: --"
 property string cpuTemp:     "CPU: --"
@@ -95,6 +96,9 @@ function toggleMute() {
 
     // ── Weather ──────────────────────────────────────────────────────────────
     Weather { id: weather }
+
+    // ── Theme Switcher ─────────────────────────────────────────────────────
+    ThemeSwitcher { id: themeSwitcher }
 
     // ── Functions ─────────────────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -509,12 +513,14 @@ function toggleMute() {
                             spacing:          6
 
                             Text {
+                                anchors.verticalCenter: parent.verticalCenter
                                 text:           weather.weatherIconText()
                                 font.pixelSize: 18
                                 color:          theme.color4
                             }
 
                             Text {
+                                anchors.verticalCenter: parent.verticalCenter
                                 text:           weather.loaded ? weather.tempDisplay() : "--"
                                 font.pixelSize: 14
                                 font.bold:      true
@@ -695,6 +701,45 @@ function toggleMute() {
                             onClicked: { root.runCommand("bash /usr/local/bin/themer.sh") }
                             onContainsMouseChanged: {
                                 themerRect.border.color = containsMouse ? theme.muted : theme.color4
+                            }
+                        }
+                    }
+
+                    // ── Theme Switcher ──────────────────────────────────────────
+                    Item {
+                        id:     tsButton
+                        width:  40
+                        height: 40
+
+                        Rectangle {
+                            id:           tsRect
+                            anchors.fill: parent
+                            color:        "transparent"
+                            radius: 5
+                            border { width: 2; color: theme.color4 }
+
+                            Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing:          4
+
+                                Text {
+                                    text:           ""
+                                    font.pixelSize: 20
+                                    color:          theme.color2
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            id:           tsArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  Qt.PointingHandCursor
+                            onClicked:    root.themeSwitcherOpen = !root.themeSwitcherOpen
+                            onContainsMouseChanged: {
+                                tsRect.border.color = containsMouse ? theme.muted : theme.color4
                             }
                         }
                     }
@@ -1818,6 +1863,165 @@ Variants {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.goToToday()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ── Theme Switcher Popup (DP-2) ─────────────────────────────────────────
+    Variants {
+        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+
+        PanelWindow {
+            screen:  modelData
+            visible: root.themeSwitcherOpen
+            required property var modelData
+
+            anchors { top: true; bottom: true; left: true; right: true }
+
+            color:     "transparent"
+            focusable: root.themeSwitcherOpen
+
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: root.themeSwitcherOpen
+                ? WlrKeyboardFocus.OnDemand
+                : WlrKeyboardFocus.None
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked:    root.themeSwitcherOpen = false
+            }
+
+            Rectangle {
+                id: tsPanel
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: 10
+                width:  660
+                implicitHeight: tsColumn.implicitHeight + 32
+                height: implicitHeight
+                radius: 8
+                color: theme.background
+                opacity: 0.95
+                border { width: 2; color: theme.color2 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mouse => mouse.accepted = true
+                }
+
+                ColumnLayout {
+                    id: tsColumn
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    spacing: 14
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 10
+
+                        Text {
+                            text: ""
+                            font.pixelSize: 22
+                            color: theme.color2
+                        }
+
+                        Text {
+                            text: "Theme Switcher"
+                            color: theme.foreground
+                            font.pixelSize: 16
+                            font.bold: true
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: themeSwitcher.themes.length + " themes"
+                            color: theme.muted
+                            font.pixelSize: 12
+                            font.family: "JetBrains Mono Nerd Font Mono"
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 1
+                        color: theme.muted
+                        opacity: 0.3
+                    }
+
+                    Flickable {
+                        Layout.fillWidth: true
+                        height: 310
+                        clip: true
+                        contentHeight: grid.implicitHeight
+                        flickableDirection: Flickable.VerticalFlick
+                        ScrollBar.vertical: ScrollBar {
+                            policy: parent.contentHeight > parent.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                        }
+
+                        Grid {
+                            id: grid
+                            columns: 3
+                            spacing: 10
+
+                            Repeater {
+                                model: themeSwitcher.themes
+
+                                Rectangle {
+                                    id: themeCard
+                                    width: 190
+                                    height: 150
+                                    radius: 6
+
+                                    property bool hovered: false
+
+                                    color: hovered ? theme.color2 : theme.background
+                                    border { width: 2; color: hovered ? theme.color2 : theme.muted }
+
+                                    Column {
+                                        anchors.fill: parent
+                                        anchors.margins: 6
+                                        spacing: 6
+
+                                        Image {
+                                            width: parent.width
+                                            height: 105
+                                            source: modelData.thumbnail || ""
+                                            fillMode: Image.PreserveAspectCrop
+                                            clip: true
+                                            asynchronous: true
+                                            mipmap: true
+                                            smooth: true
+                                        }
+
+                                        Text {
+                                            text: modelData.name
+                                            color: themeCard.hovered ? theme.background : theme.foreground
+                                            font.pixelSize: 13
+                                            font.bold: true
+                                            font.family: "JetBrains Mono Nerd Font Mono"
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: modelData.script ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                        hoverEnabled: true
+                                        onContainsMouseChanged: themeCard.hovered = containsMouse
+                                        onClicked: {
+                                            if (modelData.script) {
+                                                themeSwitcher.applyTheme(modelData.script)
+                                                root.themeSwitcherOpen = false
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

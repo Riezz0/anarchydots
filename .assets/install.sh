@@ -19,7 +19,7 @@ packages=(
     vencord xdg-desktop-portal-gtk xdg-desktop-portal-kde 
     xdg-desktop-portal-wlr xdg-desktop-portal-xapp nodejs-nativefier 
     gum stow nemo nemo-fileroller firewalld freedownloadmanager qdirstat
-    pyprland nautilus-open-any-terminal arch-update 
+    pyprland nautilus-open-any-terminal nautilus-admin arch-update 
 )
 
 #Stow Packages#

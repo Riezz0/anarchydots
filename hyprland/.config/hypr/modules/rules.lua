@@ -57,3 +57,18 @@ border_color = { colors = { theme.color2, theme.color2 } } })
 hl.window_rule({ name = "pulserules", match = { class = "pulsepad" },
 float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
 border_color = { colors = { theme.color2, theme.color2 } } })
+
+-- XFCE Polkit
+hl.window_rule({ name = "polkitrules", match = { class = "xfce-polkit" },
+float = true, size = "500 150", center = true, border_size = 2, opacity = "1", animation = "slide top", 
+border_color = { colors = { theme.color2, theme.color2 } } })
+
+-- Cooler Conntrol
+hl.window_rule({ name = "coolerctrlrules", match = { class = "org.coolercontrol.CoolerControl" },
+float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
+border_color = { colors = { theme.color2, theme.color2 } } })
+
+-- Core Conntrol
+hl.window_rule({ name = "corectrlrules", match = { class = "org.corectrl.CoreCtrl" },
+float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
+border_color = { colors = { theme.color2, theme.color2 } } })
