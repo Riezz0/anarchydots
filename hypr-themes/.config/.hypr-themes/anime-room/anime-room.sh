@@ -10,10 +10,10 @@
 USER_HOME="$HOME"
 THEME_NAME="anime-room"
 THEME_DISPLAY="Anime Room Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/anime-room
+THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/anime-room/thumbnail.png
+WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"

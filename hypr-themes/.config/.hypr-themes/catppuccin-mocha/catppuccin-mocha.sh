@@ -10,10 +10,10 @@
 USER_HOME="$HOME"
 THEME_NAME="catppuccin-mocha"
 THEME_DISPLAY="Catppuccin Mocha Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/catppuccin-mocha
+THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/catppuccin-mocha/thumbnail.png
+WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"

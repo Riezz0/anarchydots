@@ -10,10 +10,10 @@
 USER_HOME="$HOME"
 THEME_NAME="tokyo-night"
 THEME_DISPLAY="Tokyo Night Dark Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/tokyo-night
+THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/tokyo-night/thumbnail.png
+WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"

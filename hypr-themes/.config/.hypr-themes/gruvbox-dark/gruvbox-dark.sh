@@ -10,10 +10,10 @@
 USER_HOME="$HOME"
 THEME_NAME="gruvbox-dark"
 THEME_DISPLAY="Gruvbox Dark Theme"
-THEME_DIR="$USER_HOME/.config/.hypr-themes/gruvbox-dark
+THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
 
 # Wallpaper
-WALL="$USER_HOME/.config/.hypr-themes/gruvbox-dark/thumbnail.png
+WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
 
 # Pywal
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"
