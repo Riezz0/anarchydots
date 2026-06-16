@@ -30,6 +30,7 @@ property bool btPopupOpen: false
 property bool weatherPopupOpen: false
 property bool calendarPopupOpen: false
 property bool themeSwitcherOpen: false
+property bool volumeOsdVisible: false
 property var calendarDate: new Date()
 property string gpuTemp:     "GPU: --"
 property string cpuTemp:     "CPU: --"
@@ -88,6 +89,25 @@ function toggleMute() {
     if (!root.audioSink || !root.audioSink.audio) return
     root.audioSink.audio.muted = !root.audioSink.audio.muted
 }
+
+Timer {
+    id: volumeOsdTimer
+    interval: 2000
+    onTriggered: root.volumeOsdVisible = false
+}
+
+Connections {
+    target: root.audioSink && root.audioSink.audio ? root.audioSink.audio : null
+    function onVolumeChanged() {
+        root.volumeOsdVisible = true
+        volumeOsdTimer.restart()
+    }
+    function onMutedChanged() {
+        root.volumeOsdVisible = true
+        volumeOsdTimer.restart()
+    }
+}
+
     // ── Theme ─────────────────────────────────────────────────────────────────
     Theme { id: theme }
 
@@ -1258,32 +1278,31 @@ Variants {
     Variants {
         model: Quickshell.screens.filter(screen => screen.name === "DP-2")
 
-        PanelWindow {
-            screen:  modelData
-            visible: root.weatherPopupOpen
-            required property var modelData
+            PanelWindow {
+                screen:  modelData
+                visible: true
+                required property var modelData
 
-            anchors { top: true; bottom: true; left: true; right: true }
+                anchors { top: true; bottom: true; left: true; right: true }
 
-            color:     "transparent"
-            focusable: root.weatherPopupOpen
+                color:     "transparent"
+                focusable: root.weatherPopupOpen
 
-            WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: root.weatherPopupOpen
-                ? WlrKeyboardFocus.OnDemand
-                : WlrKeyboardFocus.None
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: root.weatherPopupOpen
+                    ? WlrKeyboardFocus.OnDemand
+                    : WlrKeyboardFocus.None
 
-            // Click outside to close
-            MouseArea {
-                anchors.fill: parent
-                onClicked:    root.weatherPopupOpen = false
-            }
+                // Click outside to close
+                MouseArea {
+                    anchors.fill: parent
+                    visible:      root.weatherPopupOpen
+                    onClicked:    root.weatherPopupOpen = false
+                }
 
             Rectangle {
                 id: weatherPanel
-                anchors.top:        parent.top
-                anchors.horizontalCenter:  parent.horizontalCenter
-                anchors.topMargin:  10
+                anchors.verticalCenter: parent.verticalCenter
                 width:    500
                 implicitHeight: weatherColumn.implicitHeight + 32
                 height:   implicitHeight
@@ -1291,6 +1310,11 @@ Variants {
                 color:    theme.background
                 opacity:  0.95
                 border { width: 2; color: theme.color4 }
+                x: root.weatherPopupOpen ? 10 : -width - 10
+
+                Behavior on x {
+                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -1300,42 +1324,42 @@ Variants {
                 ColumnLayout {
                     id: weatherColumn
                     anchors.fill:    parent
-                    anchors.margins: 16
-                    spacing: 12
+                    anchors.margins: 20
+                    spacing: 16
 
                     // ── Header ──────────────────────────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 12
+                        spacing: 16
 
                         Text {
                             text:           weather.weatherIconText()
-                            font.pixelSize: 28
+                            font.pixelSize: 36
                             color:          theme.color4
                         }
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 2
+                            spacing: 4
 
                             Text {
                                 text:      weather.locationDisplay()
                                 color:     theme.foreground
-                                font.pixelSize: 16
+                                font.pixelSize: 20
                                 font.bold: true
                             }
 
                             Text {
                                 text:      weather.shortCondition()
                                 color:     theme.muted
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                             }
                         }
 
                         Text {
                             text:           weather.loaded ? weather.tempDisplay() : "--"
                             color:          theme.color4
-                            font.pixelSize: 28
+                            font.pixelSize: 36
                             font.bold:      true
                             font.family:    "JetBrains Mono Nerd Font Mono"
                         }
@@ -1344,8 +1368,8 @@ Variants {
                     // ── Separator ────────────────────────────────────────────────
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.bottomMargin: 4
-                        Layout.topMargin: 4
+                        Layout.bottomMargin: 8
+                        Layout.topMargin: 8
                         height: 1
                         color: theme.muted
                         opacity: 0.4
@@ -1356,25 +1380,26 @@ Variants {
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignCenter
                         columns: 3
-                        columnSpacing: 12
-                        rowSpacing: 12
+                        columnSpacing: 16
+                        rowSpacing: 16
 
                         // Feels Like
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󰖐"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color6
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1382,7 +1407,7 @@ Variants {
 
                                 Text {
                                     text:           weather.feelsLikeC + "°C"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1391,7 +1416,7 @@ Variants {
 
                                 Text {
                                     text:           "Feels Like"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1402,19 +1427,20 @@ Variants {
                         // Humidity
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󱈑"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color3
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1422,7 +1448,7 @@ Variants {
 
                                 Text {
                                     text:           weather.humidity + "%"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1431,7 +1457,7 @@ Variants {
 
                                 Text {
                                     text:           "Humidity"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1442,19 +1468,20 @@ Variants {
                         // Wind
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󰖝"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color5
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1462,7 +1489,7 @@ Variants {
 
                                 Text {
                                     text:           weather.windSpeed + " km/h"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1471,7 +1498,7 @@ Variants {
 
                                 Text {
                                     text:           weather.windDir
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1482,19 +1509,20 @@ Variants {
                         // Pressure
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󰖂"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color2
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1502,7 +1530,7 @@ Variants {
 
                                 Text {
                                     text:           weather.pressure + " hPa"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1511,7 +1539,7 @@ Variants {
 
                                 Text {
                                     text:           "Pressure"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1522,19 +1550,20 @@ Variants {
                         // UV Index
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󰖨"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color1
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1542,7 +1571,7 @@ Variants {
 
                                 Text {
                                     text:           weather.uvIndex
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1551,7 +1580,7 @@ Variants {
 
                                 Text {
                                     text:           "UV Index"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1562,19 +1591,20 @@ Variants {
                         // Visibility
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 76
+                            Layout.preferredHeight: 100
                             Layout.alignment: Qt.AlignHCenter
                             radius: 5
                             color: "transparent"
                             border { width: 2; color: Qt.darker(theme.muted, 1.5) }
 
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
 
                                 Text {
                                     text:           "󰈈"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 24
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.color4
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1582,7 +1612,7 @@ Variants {
 
                                 Text {
                                     text:           weather.visibility + " km"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 18
                                     font.bold:      true
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.foreground
@@ -1591,7 +1621,7 @@ Variants {
 
                                 Text {
                                     text:           "Visibility"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 13
                                     font.family:    "JetBrains Mono Nerd Font Mono"
                                     color:          theme.muted
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1603,12 +1633,12 @@ Variants {
                     // ── Cloud Cover ─────────────────────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
-                        Layout.topMargin: 4
-                        spacing: 8
+                        Layout.topMargin: 8
+                        spacing: 12
 
                         Rectangle {
                             Layout.fillWidth: true
-                            implicitHeight: 20
+                            implicitHeight: 24
                             radius: 5
                             color: Qt.darker(theme.background, 1.3)
 
@@ -1627,7 +1657,7 @@ Variants {
 
                         Text {
                             text:           weather.cloudCover + "% clouds"
-                            font.pixelSize: 11
+                            font.pixelSize: 13
                             font.family:    "JetBrains Mono Nerd Font Mono"
                             color:          theme.muted
                         }
@@ -1636,8 +1666,8 @@ Variants {
                     // ── Refresh Button ──────────────────────────────────────────
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.topMargin: 4
-                        implicitHeight: 28
+                        Layout.topMargin: 8
+                        implicitHeight: 36
                         radius: 5
                         color:  "transparent"
                         border { width: 2; color: theme.color4 }
@@ -1646,7 +1676,7 @@ Variants {
                             anchors.centerIn: parent
                             text:  "Refresh"
                             color: theme.color4
-                            font.pixelSize: 12
+                            font.pixelSize: 14
                             font.bold: true
                         }
 
@@ -1667,7 +1697,7 @@ Variants {
 
         PanelWindow {
             screen:  modelData
-            visible: root.calendarPopupOpen
+            visible: true
             required property var modelData
 
             anchors { top: true; bottom: true; left: true; right: true }
@@ -1683,14 +1713,13 @@ Variants {
             // Click outside to close
             MouseArea {
                 anchors.fill: parent
+                visible:      root.calendarPopupOpen
                 onClicked:    root.calendarPopupOpen = false
             }
 
             Rectangle {
                 id: calendarPanel
-                anchors.top:        parent.top
-                anchors.horizontalCenter:  parent.horizontalCenter
-                anchors.topMargin:  10
+                anchors.verticalCenter: parent.verticalCenter
                 width:    400
                 implicitHeight: calendarColumn.implicitHeight + 32
                 height:   implicitHeight
@@ -1698,6 +1727,11 @@ Variants {
                 color:    theme.background
                 opacity:  0.95
                 border { width: 2; color: theme.color4 }
+                x: root.calendarPopupOpen ? parent.width - width - 10 : parent.width + 10
+
+                Behavior on x {
+                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -1863,6 +1897,92 @@ Variants {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.goToToday()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ── Volume OSD (DP-2) ──────────────────────────────────────────────────
+    Variants {
+        model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+
+        PanelWindow {
+            screen:  modelData
+            visible: true
+            required property var modelData
+
+            anchors { top: true; bottom: true; left: true; right: true }
+
+            color:     "transparent"
+            focusable: false
+
+            WlrLayershell.layer: WlrLayer.Overlay
+
+            Rectangle {
+                id: volumeOsdPanel
+                anchors.verticalCenter: parent.verticalCenter
+                width: 80
+                implicitHeight: volumeOsdColumn.implicitHeight + 24
+                height: implicitHeight
+                radius: 5
+                color: theme.background
+                opacity: 0.95
+                border { width: 2; color: theme.color2 }
+                x: root.volumeOsdVisible ? parent.width - width - 10 : parent.width + 10
+
+                Behavior on x {
+                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mouse => mouse.accepted = true
+                }
+
+                ColumnLayout {
+                    id: volumeOsdColumn
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 10
+
+                    Text {
+                        text: root.volumeIcon()
+                        font.pixelSize: 24
+                        color: root.volumeMuted ? theme.color1 : theme.color2
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+
+                    Text {
+                        text: Math.round(root.volumeLevel * 100) + "%"
+                        color: theme.foreground
+                        font.pixelSize: 13
+                        font.bold: true
+                        font.family: "JetBrains Mono Nerd Font Mono"
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+
+                    Rectangle {
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.preferredWidth: 10
+                        Layout.preferredHeight: 120
+                        radius: 5
+                        color: Qt.darker(theme.background, 1.3)
+                        border { width: 1; color: theme.color4 }
+
+                        Rectangle {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                                bottom: parent.bottom
+                            }
+                            width: parent.width
+                            height: parent.height * Math.min(Math.max(root.volumeLevel, 0), 1)
+                            radius: 5
+                            color: root.volumeMuted ? theme.muted : theme.color2
+
+                            Behavior on height { NumberAnimation { duration: 80 } }
                         }
                     }
                 }
