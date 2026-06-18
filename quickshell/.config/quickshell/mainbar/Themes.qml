@@ -10,7 +10,6 @@ Item {
 
     readonly property string themesDir: Quickshell.env("HOME") + "/.config/.hypr-themes"
 
-    // Step 1: List all theme folders
     Process {
         id:      listProc
         command: ["ls", "-1", themesRoot.themesDir]
@@ -35,7 +34,6 @@ Item {
         }
     }
 
-    // Step 2: For each folder, find the .sh script
     property var pendingFolders: []
     property var pendingResults: []
 
@@ -101,10 +99,16 @@ Item {
         scriptProc.running = true
     }
 
+    Process {
+        id:      applyProc
+        command: ["bash", themesRoot.themesDir + "/run-theme.sh", ""]
+        running: false
+    }
+
     Timer {
         interval: 30000
         running: true
-        repeat:   true
+        repeat:  true
         triggeredOnStart: true
         onTriggered: {
             if (!listProc.running) {
@@ -114,24 +118,9 @@ Item {
         }
     }
 
-    Process {
-        id:      applyProc
-        command: ["bash", themesRoot.themesDir + "/run-theme.sh", ""]
-        running: false
-
-        onRunningChanged: {
-            if (!running) {
-                if (!listProc.running) {
-                    listProc.buffer = ""
-                    listProc.running = true
-                }
-            }
-        }
-    }
-
     function applyTheme(scriptPath) {
         if (applyProc.running) return
-        applyProc.command = ["bash", themesRoot.themesDir + "/run-theme.sh", scriptPath]
+        applyProc.command = ["setsid", "bash", themesRoot.themesDir + "/run-theme.sh", scriptPath]
         applyProc.running = true
     }
 

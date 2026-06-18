@@ -10,15 +10,7 @@ if [ -z "$THEME_SCRIPT" ] || [ ! -f "$THEME_SCRIPT" ]; then
     exit 1
 fi
 
+# Run theme script as-is — it handles killall + qbarmain itself
 bash "$THEME_SCRIPT" >> "$LOG" 2>&1
-EXIT_CODE=$?
 
-echo "[$(date)] Script finished with exit code: $EXIT_CODE" >> "$LOG"
-
-# Check if quickshell is running, restart if not
-if ! pgrep -x quickshell > /dev/null 2>&1; then
-    echo "[$(date)] Quickshell not running, restarting via qbarmain.sh" >> "$LOG"
-    bash /usr/local/bin/qbarmain.sh >> "$LOG" 2>&1
-else
-    echo "[$(date)] Quickshell is running" >> "$LOG"
-fi
+echo "[$(date)] Script finished" >> "$LOG"
