@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+    model: [Quickshell.primaryScreen]
 
     PanelWindow {
         screen:  modelData

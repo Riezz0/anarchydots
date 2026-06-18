@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Displays detailed weather information including temperature, humidity, wind,
 // pressure, UV index, visibility, and cloud cover.
-// Shown on DP-2 when the weather button is clicked.
+// Shown on the primary monitor when the weather button is clicked.
 //
 // Required properties (passed from shell.qml):
 //   visible       - Whether the popup is shown
@@ -16,7 +16,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+    model: [Quickshell.primaryScreen]
 
     PanelWindow {
         screen:  modelData

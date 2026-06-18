@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Bar - Main Status Bar (DP-2)
+// Bar - Main Status Bar (All Monitors)
 // ═══════════════════════════════════════════════════════════════════════════════
 // The top bar containing: Arch logo, workspaces, Bluetooth, system resources,
 // weather, recorder, volume, clock, and power button.
-// Displayed on DP-2 only.
+// Displayed on all monitors.
 //
 // Required properties (passed from shell.qml):
 //   theme, audio, bt, weather, stats, calendar
@@ -17,7 +17,7 @@ import Quickshell
 import Quickshell.Hyprland
 
 Variants {
-    model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+    model: Quickshell.screens
 
     PanelWindow {
         id:     barWindow
@@ -80,7 +80,7 @@ Variants {
                         cursorShape:  Qt.PointingHandCursor
                         onEntered:    archBtn.hovered = true
                         onExited:     archBtn.hovered = false
-                        onClicked:    { root.runCommand("bash /usr/local/bin/binds.sh") }
+                        onClicked:    { root.runCommand("python3 /usr/local/bin/binds.py") }
                     }
 
                     Behavior on border.color { ColorAnimation { duration: 120 } }

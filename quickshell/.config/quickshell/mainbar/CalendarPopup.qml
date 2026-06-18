@@ -2,7 +2,7 @@
 // CalendarPopup - Calendar Date Picker Overlay
 // ═══════════════════════════════════════════════════════════════════════════════
 // Displays a monthly calendar grid with navigation and "Today" button.
-// Shown on DP-2 when the clock is clicked.
+// Shown on the primary monitor when the clock is clicked.
 //
 // Required properties (passed from shell.qml):
 //   visible       - Whether the popup is shown
@@ -15,7 +15,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: Quickshell.screens.filter(screen => screen.name === "DP-2")
+    model: [Quickshell.primaryScreen]
 
     PanelWindow {
         screen:  modelData

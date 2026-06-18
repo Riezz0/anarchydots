@@ -125,7 +125,6 @@ killall quickshell
 bash /usr/local/bin/qbarmain.sh
 systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 wait
-#gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 
 #------------------------#
 # NOTIFICATION

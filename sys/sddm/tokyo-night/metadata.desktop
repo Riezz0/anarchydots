@@ -1,16 +1,12 @@
 [SddmGreeterTheme]
-Name=Sugar Candy
-Description=Premium Sugar for SDDM
-Author=Marian Arlt
-Copyright=Copyright (C) 2018 Marian Arlt
-License=GPL-3.0-or-later
+Name=Pixie SDDM
+Description=A clean, modern, and minimal SDDM theme inspired by Google Pixel UI and Material Design 3.
+Author=xCaptaiN09
+Copyright=(c) 2026 xCaptaiN09
+License=MIT
 Type=sddm-theme
-Version=1.6
-Website=https://framagit.org/MarianArlt/sddm-sugar-candy
-Screenshot=Previews/PartialBlur.png
+Version=3.0
 MainScript=Main.qml
-ConfigFile=theme.conf
-TranslationsDirectory=translations
-Email=marianarlt@icloud.com
-Theme-Id=sugar-candy
-Theme-API=2.11
+Screenshot=screenshot.png
+QtVersion=6
+X-SDDM-Theme-InterfaceVersion=2
