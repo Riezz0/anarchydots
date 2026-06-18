@@ -530,8 +530,11 @@ Variants {
                 onClicked:    root.salaatPopupOpen = !root.salaatPopupOpen
                 onContainsMouseChanged: {
                     salaatBtn.hovered = containsMouse
+                    salaatBtn.border.color = containsMouse ? theme.muted : theme.color3
                 }
             }
+
+            Behavior on border.color { ColorAnimation { duration: 120 } }
         }
     }
 }

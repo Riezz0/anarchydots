@@ -105,7 +105,7 @@ Variants {
                                 font.bold:      true
                                 font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          modelData.name === salaat.nextPrayer
-                                    ? theme.color3 : theme.foreground
+                                    ? theme.muted : theme.foreground
                                 Layout.fillWidth: true
                             }
 
@@ -115,7 +115,7 @@ Variants {
                                 font.bold:      true
                                 font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          modelData.name === salaat.nextPrayer
-                                    ? theme.color3 : theme.muted
+                                    ? theme.muted : theme.muted
                             }
                         }
                     }

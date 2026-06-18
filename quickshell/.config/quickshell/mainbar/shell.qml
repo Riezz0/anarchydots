@@ -132,5 +132,6 @@ ShellRoot {
     CalendarPopup      {}
     SystemStatsPopup   {}
     SalaatPopup        {}
+    VolumeOsd          {}
     PowerMenu          {}
 }
