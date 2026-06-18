@@ -20,6 +20,7 @@ packages=(
     xdg-desktop-portal-wlr xdg-desktop-portal-xapp nodejs-nativefier 
     gum stow nemo nemo-fileroller firewalld freedownloadmanager qdirstat
     pyprland nautilus-open-any-terminal nautilus-admin arch-update 
+    inotify-tools
 )
 
 #Stow Packages#

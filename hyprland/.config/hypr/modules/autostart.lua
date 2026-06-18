@@ -6,7 +6,7 @@ hl.exec_cmd("pypr-gui")
 hl.exec_cmd("awww-daemon")
 hl.exec_cmd("swaync")
 hl.exec_cmd("coolercontrol")
-hl.exec_cmd("/usr/local/bin/swww.sh")
+hl.exec_cmd("/usr/local/bin/awww.sh")
 hl.exec_cmd("wal --theme ~/.config/pywal/themes/active.json")
 -- hl.exec_cmd("/usr/local/bin/waybar.sh")  -- replaced by quickshell powerbar
 hl.exec_cmd("/usr/local/bin/qbarmain.sh")
