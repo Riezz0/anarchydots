@@ -62,7 +62,7 @@ Variants {
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text:           audio.volumeIcon()
-                    font.pixelSize: 20
+                    font.pixelSize: 14
                     color:          audio.volumeMuted ? theme.color1 : theme.color5
                 }
 

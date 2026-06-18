@@ -52,7 +52,7 @@ Variants {
                 // Header
                 Text {
                     text:           "Prayer Times"
-                    font.pixelSize: 18
+                    font.pixelSize: 14
                     font.bold:      true
                     color:          theme.foreground
                     Layout.bottomMargin: 4
@@ -60,7 +60,7 @@ Variants {
 
                 Text {
                     text:           salaat.locationName || ""
-                    font.pixelSize: 12
+                    font.pixelSize: 14
                     color:          theme.muted
                     Layout.bottomMargin: 8
                 }

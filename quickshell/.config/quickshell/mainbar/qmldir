@@ -17,4 +17,6 @@ SystemStatsPopup 1.0 SystemStatsPopup.qml
 PowerMenu 1.0 PowerMenu.qml
 Salaat 1.0 Salaat.qml
 SalaatPopup 1.0 SalaatPopup.qml
+Themes 1.0 Themes.qml
+ThemesPopup 1.0 ThemesPopup.qml
 VolumeOsd 1.0 VolumeOsd.qml

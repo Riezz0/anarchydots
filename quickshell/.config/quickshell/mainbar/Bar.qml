@@ -328,7 +328,7 @@ Variants {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           weather.weatherIconText()
-                            font.pixelSize: 20
+                            font.pixelSize: 14
                             color:          theme.color4
                         }
 
@@ -361,6 +361,40 @@ Variants {
 
                 // ── Right Spacer ──────────────────────────────────────────
                 Item { Layout.fillWidth: true }
+
+                // ── Themes ───────────────────────────────────────────────
+                Rectangle {
+                    id:     themesBtn
+                    width:  40
+                    height: 40
+                    radius: 5
+                    color:  "transparent"
+                    border { width: 2; color: theme.color6 }
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Text {
+                        anchors.centerIn: parent
+                        text:           "󰔉"
+                        font.pixelSize: 18
+                        color:          theme.color6
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape:  Qt.PointingHandCursor
+                        onClicked:    root.themesPopupOpen = !root.themesPopupOpen
+                        onContainsMouseChanged: {
+                            themesBtn.hovered = containsMouse
+                            themesBtn.border.color = containsMouse ? theme.muted : theme.color6
+                        }
+                    }
+
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+                }
 
                 // ── Recorder ──────────────────────────────────────────────
                 Recorder {
@@ -514,7 +548,7 @@ Variants {
                 anchors.left:           parent.left
                 anchors.leftMargin:     8
                 text:             salaat._displayText || "Loading..."
-                font.pixelSize:   13
+                font.pixelSize:   14
                 font.bold:        true
                 font.family:      "JetBrains Mono Nerd Font Mono"
                 color:            theme.muted
