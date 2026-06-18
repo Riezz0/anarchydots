@@ -159,68 +159,6 @@ Variants {
                             }
                         }
 
-                        // ── Special Workspaces (Pyprland) ──────────────────
-                        Repeater {
-                            model: Hyprland.specialWorkspaces
-
-                            Rectangle {
-                                required property var modelData
-                                property int workspaceId: modelData.id
-                                property string workspaceName: modelData.name || ""
-                                width:  30
-                                height: 25
-                                radius: 5
-
-                                property bool isActive: Hyprland.focusedWorkspace
-                                    && Hyprland.focusedWorkspace.id === workspaceId
-
-                                property string specialIcon: {
-                                    if (workspaceName.includes("term") || workspaceName.includes("kitty"))
-                                        return ""
-                                    if (workspaceName.includes("files") || workspaceName.includes("nautilus"))
-                                        return ""
-                                    if (workspaceName.includes("browser") || workspaceName.includes("firefox"))
-                                        return ""
-                                    if (workspaceName.includes("music") || workspaceName.includes("spotify"))
-                                        return ""
-                                    return ""
-                                }
-
-                                color:        isActive ? theme.color5 : "transparent"
-                                border.color: isActive ? theme.color5 : Qt.darker(theme.muted, 1.2)
-                                border.width: isActive ? 2 : 0
-
-                                Row {
-                                    anchors.centerIn: parent
-                                    spacing: 3
-
-                                    Text {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text:             specialIcon
-                                        color:            theme.foreground
-                                        font.pixelSize:   14
-                                        font.bold:        false
-                                    }
-
-                                    Text {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text:             workspaceName.replace("special:", "").substring(0, 3).toUpperCase()
-                                        color:            isActive ? theme.background : theme.muted
-                                        font.pixelSize:   10
-                                        font.bold:        true
-                                        visible:          workspaceName.length > 0
-                                    }
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape:  Qt.PointingHandCursor
-                                    onClicked: {
-                                        Hyprland.dispatch("togglespecialworkspace " + workspaceName)
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
 
