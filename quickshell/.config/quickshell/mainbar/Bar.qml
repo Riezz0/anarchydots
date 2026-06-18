@@ -11,6 +11,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
@@ -489,6 +490,46 @@ Variants {
                         cursorShape:  Qt.PointingHandCursor
                         onClicked:    root.togglePowerMenu()
                     }
+                }
+            }
+        }
+
+        // ── Salaat Widget (fixed center on screen) ──────────────────────
+        Rectangle {
+            id:     salaatBtn
+            width:  200
+            height: 40
+            radius: 5
+            color:  "transparent"
+            border { width: 2; color: theme.color3 }
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top:              parent.top
+            anchors.topMargin:        10
+
+            property bool hovered: false
+
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left:           parent.left
+                anchors.leftMargin:     8
+                text:             salaat._displayText || "Loading..."
+                font.pixelSize:   13
+                font.bold:        true
+                font.family:      "JetBrains Mono Nerd Font Mono"
+                color:            theme.muted
+                elide:            Text.ElideRight
+                width:            parent.width - 16
+                clip:             true
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape:  Qt.PointingHandCursor
+                onClicked:    root.salaatPopupOpen = !root.salaatPopupOpen
+                onContainsMouseChanged: {
+                    salaatBtn.hovered = containsMouse
                 }
             }
         }

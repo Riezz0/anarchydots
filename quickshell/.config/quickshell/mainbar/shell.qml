@@ -2,7 +2,7 @@
 // Shell Root - Quickshell Bar Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 // This is the main entry point. It wires together all modular components:
-//   - Audio, Calendar, SystemStats (data modules)
+//   - Audio, Calendar, SystemStats, Salaat (data modules)
 //   - Theme, Bluetooth, Weather (existing modules)
 //   - Bar, VolumePopup, BluetoothPopup, WeatherPopup, CalendarPopup,
 //     SystemStatsPopup, PowerMenu (UI modules)
@@ -29,6 +29,7 @@ ShellRoot {
     property bool   weatherPopupOpen: false
     property bool   calendarPopupOpen: false
     property bool   tempPopupOpen:    false
+    property bool   salaatPopupOpen:  false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -42,6 +43,7 @@ ShellRoot {
     // ── Existing Modules ──────────────────────────────────────────────────────
     Bluetooth { id: bt }
     Weather   { id: weather }
+    Salaat    { id: salaat }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -110,6 +112,12 @@ ShellRoot {
     }
 
     Item {
+        id: salaatPopup
+        property bool isOpen: root.salaatPopupOpen
+        function close() { root.salaatPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -123,5 +131,6 @@ ShellRoot {
     WeatherPopup       {}
     CalendarPopup      {}
     SystemStatsPopup   {}
+    SalaatPopup        {}
     PowerMenu          {}
 }

@@ -15,3 +15,5 @@ WeatherPopup 1.0 WeatherPopup.qml
 CalendarPopup 1.0 CalendarPopup.qml
 SystemStatsPopup 1.0 SystemStatsPopup.qml
 PowerMenu 1.0 PowerMenu.qml
+Salaat 1.0 Salaat.qml
+SalaatPopup 1.0 SalaatPopup.qml
