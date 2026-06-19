@@ -40,6 +40,18 @@ hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = 10 }),                    
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }),                                                    { description = "Next Workspace" })
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }),                                                      { description = "Previous Workspace" })
 
+-- Move Window to Workspace
+hl.bind(mainMod .. " + SHIFT + 1", hl.dsp.window.move({ workspace = 1 }),                                                   { description = "Move to Workspace 1" })
+hl.bind(mainMod .. " + SHIFT + 2", hl.dsp.window.move({ workspace = 2 }),                                                   { description = "Move to Workspace 2" })
+hl.bind(mainMod .. " + SHIFT + 3", hl.dsp.window.move({ workspace = 3 }),                                                   { description = "Move to Workspace 3" })
+hl.bind(mainMod .. " + SHIFT + 4", hl.dsp.window.move({ workspace = 4 }),                                                   { description = "Move to Workspace 4" })
+hl.bind(mainMod .. " + SHIFT + 5", hl.dsp.window.move({ workspace = 5 }),                                                   { description = "Move to Workspace 5" })
+hl.bind(mainMod .. " + SHIFT + 6", hl.dsp.window.move({ workspace = 6 }),                                                   { description = "Move to Workspace 6" })
+hl.bind(mainMod .. " + SHIFT + 7", hl.dsp.window.move({ workspace = 7 }),                                                   { description = "Move to Workspace 7" })
+hl.bind(mainMod .. " + SHIFT + 8", hl.dsp.window.move({ workspace = 8 }),                                                   { description = "Move to Workspace 8" })
+hl.bind(mainMod .. " + SHIFT + 9", hl.dsp.window.move({ workspace = 9 }),                                                   { description = "Move to Workspace 9" })
+hl.bind(mainMod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = 10 }),                                                  { description = "Move to Workspace 10" })
+
 -- Volume Control
 hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("~/.config/scripts/volume.sh up"),                                                 { description = "Volume Up" })
 hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("~/.config/scripts/volume.sh down"),                                               { description = "Volume Down" })

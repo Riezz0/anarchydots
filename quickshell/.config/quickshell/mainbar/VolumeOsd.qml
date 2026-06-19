@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: [Quickshell.primaryScreen]
+    model: [Quickshell.screens[1]]
 
     PanelWindow {
         screen:  modelData

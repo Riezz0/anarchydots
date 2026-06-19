@@ -3,6 +3,7 @@ Theme 1.0 Theme.qml
 Bluetooth 1.0 Bluetooth.qml
 Recorder 1.0 Recorder.qml
 Weather 1.0 Weather.qml
+Keyboard 1.0 Keyboard.qml
 SystemTray 1.0 SystemTray.qml
 Network 1.0 Network.qml
 SystemStats 1.0 SystemStats.qml
@@ -14,6 +15,7 @@ BluetoothPopup 1.0 BluetoothPopup.qml
 WeatherPopup 1.0 WeatherPopup.qml
 CalendarPopup 1.0 CalendarPopup.qml
 SystemStatsPopup 1.0 SystemStatsPopup.qml
+NetworkPopup 1.0 NetworkPopup.qml
 PowerMenu 1.0 PowerMenu.qml
 Salaat 1.0 Salaat.qml
 SalaatPopup 1.0 SalaatPopup.qml

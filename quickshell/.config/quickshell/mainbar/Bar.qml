@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Bar - Main Status Bar (All Monitors)
+// Bar - Main Status Bar (Primary Monitor)
 // ═══════════════════════════════════════════════════════════════════════════════
 // The top bar containing: Arch logo, workspaces, Bluetooth, system resources,
 // weather, recorder, volume, clock, and power button.
-// Displayed on all monitors.
+// Displayed on primary monitor only.
 //
 // Required properties (passed from shell.qml):
 //   theme, audio, bt, weather, stats, calendar
@@ -17,7 +17,7 @@ import Quickshell
 import Quickshell.Hyprland
 
 Variants {
-    model: Quickshell.screens
+    model: [Quickshell.screens[1]]
 
     PanelWindow {
         id:     barWindow
@@ -294,11 +294,109 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
+                // ── Keyboard Layout ──────────────────────────────────────
+                Rectangle {
+                    id:     kbdBtn
+                    width:  kbdRow.implicitWidth + 20
+                    height: 40
+                    radius: 5
+                    color:  "transparent"
+                    border { width: 2; color: theme.color4 }
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Row {
+                        id:               kbdRow
+                        anchors.centerIn: parent
+                        spacing:          6
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           kbd.layoutIcon()
+                            font.pixelSize: 14
+                            color:          kbd.layoutColor()
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           kbd.loaded ? kbd.layoutLabel : "--"
+                            font.pixelSize: 13
+                            font.bold:      true
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                            color:          theme.muted
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill:    parent
+                        hoverEnabled:    true
+                        cursorShape:     Qt.PointingHandCursor
+                        onClicked:       root.runCommand("python3 ~/.config/xkb/symbols/my_ar.py")
+                        onContainsMouseChanged: {
+                            kbdBtn.hovered = containsMouse
+                            kbdBtn.border.color = containsMouse ? theme.muted : theme.color4
+                        }
+                    }
+
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+                }
+
                 // ── Left Spacer ───────────────────────────────────────────
                 Item { Layout.fillWidth: true }
 
                 // ── Right Spacer ──────────────────────────────────────────
                 Item { Layout.fillWidth: true }
+
+                // ── Network ──────────────────────────────────────────────
+                Rectangle {
+                    id:     netBtn
+                    radius: 5
+                    color:  "transparent"
+                    border { width: 2; color: theme.color4 }
+
+                    Layout.alignment: Qt.AlignVCenter
+                    implicitHeight:   40
+                    implicitWidth:    netRow.implicitWidth + 28
+
+                    property bool hovered: false
+
+                    Row {
+                        id:               netRow
+                        anchors.centerIn: parent
+                        spacing:          6
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           net.networkIcon()
+                            font.pixelSize: 14
+                            color:          net.networkColor()
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           net.loaded ? net.displayText() : "--"
+                            font.pixelSize: 12
+                            font.bold:      true
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                            color:          theme.muted
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill:    parent
+                        hoverEnabled:    true
+                        cursorShape:     Qt.PointingHandCursor
+                        onClicked:       root.networkPopupOpen = !root.networkPopupOpen
+                        onContainsMouseChanged: {
+                            netBtn.hovered = containsMouse
+                            netBtn.border.color = containsMouse ? theme.muted : theme.color4
+                        }
+                    }
+
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+                }
 
                 // ── Themes ───────────────────────────────────────────────
                 Rectangle {

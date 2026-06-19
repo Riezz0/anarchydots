@@ -32,6 +32,7 @@ ShellRoot {
     property bool   salaatPopupOpen:  false
     property bool   themesPopupOpen:  false
     property bool   keybindsPopupOpen: false
+    property bool   networkPopupOpen:  false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -45,8 +46,10 @@ ShellRoot {
     // ── Existing Modules ──────────────────────────────────────────────────────
     Bluetooth { id: bt }
     Weather   { id: weather }
+    Keyboard  { id: kbd }
     Salaat    { id: salaat }
     Themes    { id: themes }
+    Network   { id: net }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -134,6 +137,12 @@ ShellRoot {
     }
 
     Item {
+        id: networkPopup
+        property bool isOpen: root.networkPopupOpen
+        function close() { root.networkPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -150,6 +159,7 @@ ShellRoot {
     SalaatPopup        {}
     ThemesPopup        {}
     KeybindsPopup      {}
+    NetworkPopup       {}
     VolumeOsd          {}
     PowerMenu          {}
 }

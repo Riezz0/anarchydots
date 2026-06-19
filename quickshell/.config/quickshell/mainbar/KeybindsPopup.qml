@@ -185,7 +185,7 @@ Item {
 
     // ── Popup Windows ─────────────────────────────────────────────────────
     Variants {
-        model: [Quickshell.primaryScreen]
+        model: [Quickshell.screens[1]]
 
         PanelWindow {
             screen:  modelData
