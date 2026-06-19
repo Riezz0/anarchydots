@@ -80,7 +80,7 @@ Variants {
                         cursorShape:  Qt.PointingHandCursor
                         onEntered:    archBtn.hovered = true
                         onExited:     archBtn.hovered = false
-                        onClicked:    { root.runCommand("python3 /usr/local/bin/binds.py") }
+                        onClicked:    { root.keybindsPopupOpen = !root.keybindsPopupOpen }
                     }
 
                     Behavior on border.color { ColorAnimation { duration: 120 } }

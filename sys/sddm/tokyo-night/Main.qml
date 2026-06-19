@@ -475,7 +475,7 @@ Rectangle {
 
                 Item {
                     Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: userNameLabel.width + 40
+                    Layout.preferredWidth: userNameLabel.width + 20
                     Layout.preferredHeight: userNameLabel.height + 20
                     Layout.topMargin: 10
 

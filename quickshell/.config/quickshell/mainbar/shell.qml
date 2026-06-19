@@ -31,6 +31,7 @@ ShellRoot {
     property bool   tempPopupOpen:    false
     property bool   salaatPopupOpen:  false
     property bool   themesPopupOpen:  false
+    property bool   keybindsPopupOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -126,6 +127,13 @@ ShellRoot {
     }
 
     Item {
+        id: keybindsPopup
+        property bool isOpen: root.keybindsPopupOpen
+        function close() { root.keybindsPopupOpen = false }
+        function loadBinds() { /* Handled by KeybindsPopup component */ }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -141,6 +149,7 @@ ShellRoot {
     SystemStatsPopup   {}
     SalaatPopup        {}
     ThemesPopup        {}
+    KeybindsPopup      {}
     VolumeOsd          {}
     PowerMenu          {}
 }
