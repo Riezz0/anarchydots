@@ -21,6 +21,7 @@ Variants {
         id: osd
 
         property bool showOsd: false
+        property bool initialized: false
 
         // ── Auto-hide timer ──────────────────────────────────────────────────
         Timer {
@@ -29,10 +30,22 @@ Variants {
             onTriggered: osd.showOsd = false
         }
 
+        // ── Skip initial volume read on reload ───────────────────────────────
+        Component.onCompleted: {
+            skipTimer.start()
+        }
+
+        Timer {
+            id:      skipTimer
+            interval: 500
+            onTriggered: osd.initialized = true
+        }
+
         // ── Volume change tracker ────────────────────────────────────────────
         Connections {
             target: audio
             function onVolumeLevelChanged() {
+                if (!osd.initialized) return
                 osd.showOsd = true
                 hideTimer.restart()
             }

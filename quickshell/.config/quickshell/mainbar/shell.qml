@@ -2,10 +2,10 @@
 // Shell Root - Quickshell Bar Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 // This is the main entry point. It wires together all modular components:
-//   - Audio, Calendar, SystemStats, Salaat, Themes (data modules)
+//   - Audio, Calendar, SystemStats, Salaat, Themes, Notifications (data modules)
 //   - Theme, Bluetooth, Weather (existing modules)
 //   - Bar, VolumePopup, BluetoothPopup, WeatherPopup, CalendarPopup,
-//     SystemStatsPopup, PowerMenu (UI modules)
+//     SystemStatsPopup, NotificationPopup, NotificationsPopup, PowerMenu (UI modules)
 //
 // Each module is self-contained and can be modified independently.
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -33,15 +33,17 @@ ShellRoot {
     property bool   themesPopupOpen:  false
     property bool   keybindsPopupOpen: false
     property bool   networkPopupOpen:  false
+    property bool   notificationsPopupOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
     Theme { id: theme }
 
     // ── Data Modules ──────────────────────────────────────────────────────────
-    Audio       { id: audio }
-    Calendar    { id: calendar }
-    SystemStats { id: stats }
+    Audio         { id: audio }
+    Calendar      { id: calendar }
+    SystemStats   { id: stats }
+    Notifications { id: notifs }
 
     // ── Existing Modules ──────────────────────────────────────────────────────
     Bluetooth { id: bt }
@@ -143,6 +145,12 @@ ShellRoot {
     }
 
     Item {
+        id: notificationsPopup
+        property bool isOpen: root.notificationsPopupOpen
+        function close() { root.notificationsPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -160,6 +168,8 @@ ShellRoot {
     ThemesPopup        {}
     KeybindsPopup      {}
     NetworkPopup       {}
+    NotificationPopup  {}
+    NotificationsPopup {}
     VolumeOsd          {}
     PowerMenu          {}
 }

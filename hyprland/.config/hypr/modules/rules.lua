@@ -72,3 +72,8 @@ border_color = theme.color2 .. " " .. theme.color15 })
 hl.window_rule({ name = "corectrlrules", match = { class = "org.corectrl.CoreCtrl" },
 float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
+
+-- AR KB Layout
+hl.window_rule({ name = "corectrlrules", match = { class = "com.layout.viewer" },
+float = true, size = "1200 700", center = true, border_size = 2, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })

@@ -2,7 +2,7 @@
 // Bar - Main Status Bar (Primary Monitor)
 // ═══════════════════════════════════════════════════════════════════════════════
 // The top bar containing: Arch logo, workspaces, Bluetooth, system resources,
-// weather, recorder, volume, clock, and power button.
+// weather, recorder, notifications, volume, clock, and power button.
 // Displayed on primary monitor only.
 //
 // Required properties (passed from shell.qml):
@@ -435,6 +435,79 @@ Variants {
                 // ── Recorder ──────────────────────────────────────────────
                 Recorder {
                     Layout.alignment: Qt.AlignVCenter
+                }
+
+                // ── Notifications ─────────────────────────────────────────
+                Item {
+                    id:     notifButton
+                    width:  40
+                    height: 40
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Rectangle {
+                        id:           notifRect
+                        anchors.fill: parent
+                        color:        "transparent"
+                        radius: 5
+                        border {
+                            width: 2
+                            color: notifButton.hovered ? theme.muted
+                                 : notifs.hasUnread ? theme.color1
+                                 : theme.color4
+                        }
+
+                        Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text:           notifs.notifIcon()
+                            font.pixelSize: 18
+                            color:          notifs.notifColor()
+                        }
+
+                        // Unread badge
+                        Rectangle {
+                            visible: notifs.trackedCount > 0
+                            width:   16
+                            height:  16
+                            radius:  8
+                            color:   theme.color1
+                            anchors.top:    parent.top
+                            anchors.right: parent.right
+                            anchors.topMargin:   -4
+                            anchors.rightMargin: -4
+
+                            Text {
+                                anchors.centerIn: parent
+                                text:             notifs.trackedCount > 9 ? "9+" : String(notifs.trackedCount)
+                                color:            theme.background
+                                font.pixelSize:   9
+                                font.bold:        true
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill:     parent
+                        hoverEnabled:     true
+                        cursorShape:      Qt.PointingHandCursor
+                        acceptedButtons:  Qt.LeftButton | Qt.RightButton
+
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.RightButton) {
+                                notifs.clearAll()
+                            } else {
+                                root.notificationsPopupOpen = !root.notificationsPopupOpen
+                            }
+                        }
+
+                        onContainsMouseChanged: {
+                            notifButton.hovered = containsMouse
+                        }
+                    }
                 }
 
                 // ── Volume (Pipewire) ─────────────────────────────────────
