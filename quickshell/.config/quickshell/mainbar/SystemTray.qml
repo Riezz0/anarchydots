@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Quickshell
 import Quickshell.Services.SystemTray
-import Quickshell.DBusMenu
 
 RowLayout {
     id: systrayRoot
@@ -15,6 +15,14 @@ RowLayout {
             required property var modelData
             width: 28
             height: 28
+
+            QsMenuAnchor {
+                id: menuAnchor
+                menu: modelData.menu
+                anchor.item: parent
+                anchor.edges: Edges.Bottom
+                anchor.gravity: Edges.Bottom
+            }
 
             Image {
                 id: trayIcon
@@ -38,13 +46,15 @@ RowLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                 onClicked: mouse => {
                     if (mouse.button === Qt.LeftButton) {
                         modelData.activate()
                     } else if (mouse.button === Qt.RightButton) {
-                        modelData.requestContextMenu()
+                        if (modelData.hasMenu) {
+                            menuAnchor.open()
+                        }
                     } else if (mouse.button === Qt.MiddleButton) {
                         modelData.secondaryActivate()
                     }
@@ -61,4 +71,3 @@ RowLayout {
         opacity: 0.4
     }
 }
-
