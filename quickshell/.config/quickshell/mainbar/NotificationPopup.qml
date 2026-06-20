@@ -119,30 +119,15 @@ Item {
                                 elide:            Text.ElideRight
                             }
 
-                            RowLayout {
+                            Text {
                                 width: parent.width
-                                spacing: 6
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text:   modelData.summary
-                                    color:  theme.foreground
-                                    font.pixelSize:   14
-                                    font.bold:        true
-                                    font.weight:      Font.ExtraBold
-                                    horizontalAlignment: Text.AlignHCenter
-                                    elide:            Text.ElideRight
-                                }
-
-                                Rectangle {
-                                    Layout.alignment: Qt.AlignVCenter
-                                    width:  8
-                                    height: 8
-                                    radius: 4
-                                    color:  modelData.urgency === 1 ? theme.color1
-                                          : modelData.urgency === 0 ? theme.color3
-                                          : theme.color2
-                                }
+                                text:   modelData.summary
+                                color:  theme.foreground
+                                font.pixelSize:   14
+                                font.bold:        true
+                                font.weight:      Font.ExtraBold
+                                horizontalAlignment: Text.AlignHCenter
+                                elide:            Text.ElideRight
                             }
 
                             Text {

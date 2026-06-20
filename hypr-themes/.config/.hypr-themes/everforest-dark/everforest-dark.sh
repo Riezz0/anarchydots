@@ -9,7 +9,7 @@
 #------------------------#
 USER_HOME="$HOME"
 THEME_NAME="everforest-dark"
-THEME_DISPLAY="Everforest Dark Theme"
+THEME_DISPLAY="Everforest Dark"
 THEME_DIR="$USER_HOME/.config/.hypr-themes/$THEME_NAME"
 
 # Wallpaper
@@ -52,9 +52,6 @@ cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/modules/colors.lua"
 cp -r "$THEME_DIR/hyprlook" "$USER_HOME/.config/hypr/modules/look.lua"
 cp -r "$THEME_DIR/kitty" "$USER_HOME/.config/kitty/kitty.conf"
 cp -r "$THEME_DIR/qcol" "$USER_HOME/.config/quickshell/mainbar/Theme.qml"
-cp -r "$THEME_DIR/main-bar" "$USER_HOME/.config/waybar/main-bar/bar-style.css"
-cp -r "$THEME_DIR/power-bar" "$USER_HOME/.config/waybar/power-bar/power-bar-style.css"
-cp -r "$THEME_DIR/theme-bar" "$USER_HOME/.config/waybar/power-bar/theme-bar-style.css"
 cp -r "$THEME_DIR/rofi" "$USER_HOME/.config/rofi/launcher/colors.rasi"
 cp -r "$THEME_DIR/wf-recorder-toggle.sh" "$USER_HOME/.config/scripts/wf-recorder-toggle.sh"
 cp -f "${HOME}"/.cache/wal/pywal.json "${HOME}"/.config/presets/user/pywal.json
@@ -122,7 +119,7 @@ wait
 #------------------------#
 # NOTIFICATION
 #------------------------#
-notify-send "$THEME_DISPLAY Loaded"
+notify-send -a "$THEME_DISPLAY" "Theme Loaded"
 
 #------------------------#
 # NAUTILUS
