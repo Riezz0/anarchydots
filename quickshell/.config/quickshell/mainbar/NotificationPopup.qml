@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Displays floating notification toasts at the top center of the screen.
 // Each notification auto-dismisses after a timeout based on urgency level.
+// Matches swaync notification dimensions (400px wide, 48px icon, 14px font).
 //
 // Required: notifs (Notifications module) from shell.qml
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -64,9 +65,9 @@ Item {
                 id:               toastColumn
                 anchors.top:      parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: 10
-                spacing:          10
-                width:            500
+                anchors.topMargin: 16
+                spacing:          16
+                width:            400
 
                 Repeater {
                     model: popupRoot.toastList
@@ -76,7 +77,7 @@ Item {
                         required property int index
 
                         width:    toastColumn.width
-                        implicitHeight: toastCol.implicitHeight + 32
+                        implicitHeight: toastCol.implicitHeight + 56
                         height:   implicitHeight
                         radius:   5
                         color:    theme.background
@@ -101,41 +102,40 @@ Item {
                             onClicked:    popupRoot.dismissNotif(modelData.id)
                         }
 
-                    ColumnLayout {
-                        id:    toastCol
-                        anchors.fill: parent
-                        anchors.margins: 16
-                        spacing: 6
+                        Column {
+                            id:    toastCol
+                            anchors.fill: parent
+                            anchors.margins: 14
+                            spacing: 4
 
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 10
+                            Text {
+                                width: parent.width
+                                text:   modelData.appName || "Notification"
+                                color:  theme.muted
+                                font.pixelSize:   12
+                                font.bold:        true
+                                font.family:      "JetBrains Mono Nerd Font Mono"
+                                horizontalAlignment: Text.AlignHCenter
+                                elide:            Text.ElideRight
+                            }
 
-                                ColumnLayout {
+                            RowLayout {
+                                width: parent.width
+                                spacing: 6
+
+                                Text {
                                     Layout.fillWidth: true
-                                    spacing: 2
-
-                                    Text {
-                                        text:             modelData.appName || "Notification"
-                                        color:            theme.muted
-                                        font.pixelSize:   13
-                                        font.bold:        true
-                                        font.family:      "JetBrains Mono Nerd Font Mono"
-                                        elide:            Text.ElideRight
-                                        Layout.fillWidth: true
-                                    }
-
-                                    Text {
-                                        text:             modelData.summary
-                                        color:            theme.foreground
-                                        font.pixelSize:   15
-                                        font.bold:        true
-                                        elide:            Text.ElideRight
-                                        Layout.fillWidth: true
-                                    }
+                                    text:   modelData.summary
+                                    color:  theme.foreground
+                                    font.pixelSize:   14
+                                    font.bold:        true
+                                    font.weight:      Font.ExtraBold
+                                    horizontalAlignment: Text.AlignHCenter
+                                    elide:            Text.ElideRight
                                 }
 
                                 Rectangle {
+                                    Layout.alignment: Qt.AlignVCenter
                                     width:  8
                                     height: 8
                                     radius: 4
@@ -146,14 +146,15 @@ Item {
                             }
 
                             Text {
-                                visible:          modelData.body && modelData.body.length > 0
-                                text:             modelData.body || ""
-                                color:            theme.muted
-                                font.pixelSize:   14
+                                visible: modelData.body && modelData.body.length > 0
+                                width:   parent.width
+                                text:    modelData.body || ""
+                                color:   theme.muted
+                                font.pixelSize:   13
                                 wrapMode:         Text.Wrap
                                 maximumLineCount: 3
                                 elide:            Text.ElideRight
-                                Layout.fillWidth: true
+                                horizontalAlignment: Text.AlignHCenter
                             }
                         }
                     }
