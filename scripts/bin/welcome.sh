@@ -1,3 +1,3 @@
 #!/bin/bash
 
-notify-send "Welcome $USER"
+notify-send -a "WELCOME" "Welcome $USER"
