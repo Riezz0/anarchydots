@@ -19,10 +19,12 @@ import Quickshell.Hyprland
 Variants {
     model: [Quickshell.screens[1]]
 
-    PanelWindow {
-        id:     barWindow
-        screen: modelData
-        required property var modelData
+        PanelWindow {
+            id:     barWindow
+            screen: modelData
+            required property var modelData
+            property bool settingsPopupOpen: false
+
 
         anchors { top: true; left: true; right: true }
 
@@ -51,7 +53,7 @@ Variants {
                 }
                 spacing: 10
 
-                // ── Arch Logo ─────────────────────────────────────────────
+                // ── Arch Logo //
                 Rectangle {
                     id:     archBtn
                     width:  40
@@ -245,7 +247,7 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
-                // ── Weather ──────────────────────────────────────────────
+                // ── Weather //─
                 Rectangle {
                     id:     weatherBtn
                     radius: 5
@@ -349,7 +351,7 @@ Variants {
                 // ── Right Spacer ──────────────────────────────────────────
                 Item { Layout.fillWidth: true }
 
-                // ── Network ──────────────────────────────────────────────
+                // ── Network //─
                 Rectangle {
                     id:     netBtn
                     radius: 5
@@ -398,7 +400,7 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
-                // ── Themes ───────────────────────────────────────────────
+                // ── Themes //──
                 Rectangle {
                     id:     themesBtn
                     width:  40
@@ -432,7 +434,7 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
-                // ── Recorder ──────────────────────────────────────────────
+ //─
                 Recorder {
                     Layout.alignment: Qt.AlignVCenter
                 }
@@ -581,7 +583,7 @@ Variants {
                     }
                 }
 
-                // ── Clock ─────────────────────────────────────────────────
+                // ── Clock //────
                 Item {
                     id:     clockBtn
                     width:  clockLabel.implicitWidth + 16
@@ -627,12 +629,13 @@ Variants {
                         font.pixelSize:   20
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape:  Qt.PointingHandCursor
-                        onClicked:    root.togglePowerMenu()
-                    }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  Qt.PointingHandCursor
+                            onClicked:    root.togglePowerMenu()
+                        }
+
                 }
             }
         }

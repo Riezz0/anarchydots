@@ -2,10 +2,10 @@
 // Shell Root - Quickshell Bar Configuration
 // ═══════════════════════════════════════════════════════════════════════════════
 // This is the main entry point. It wires together all modular components:
-//   - Audio, Calendar, SystemStats (data modules)
+//   - Audio, Calendar, SystemStats, Salaat, Themes, Notifications (data modules)
 //   - Theme, Bluetooth, Weather (existing modules)
 //   - Bar, VolumePopup, BluetoothPopup, WeatherPopup, CalendarPopup,
-//     SystemStatsPopup, PowerMenu (UI modules)
+//     SystemStatsPopup, NotificationPopup, NotificationsPopup, PowerMenu (UI modules)
 //
 // Each module is self-contained and can be modified independently.
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -29,19 +29,29 @@ ShellRoot {
     property bool   weatherPopupOpen: false
     property bool   calendarPopupOpen: false
     property bool   tempPopupOpen:    false
+    property bool   salaatPopupOpen:  false
+    property bool   themesPopupOpen:  false
+    property bool   keybindsPopupOpen: false
+    property bool   networkPopupOpen:  false
+    property bool   notificationsPopupOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
     Theme { id: theme }
 
     // ── Data Modules ──────────────────────────────────────────────────────────
-    Audio       { id: audio }
-    Calendar    { id: calendar }
-    SystemStats { id: stats }
+    Audio         { id: audio }
+    Calendar      { id: calendar }
+    SystemStats   { id: stats }
+    Notifications { id: notifs }
 
     // ── Existing Modules ──────────────────────────────────────────────────────
     Bluetooth { id: bt }
     Weather   { id: weather }
+    Keyboard  { id: kbd }
+    Salaat    { id: salaat }
+    Themes    { id: themes }
+    Network   { id: net }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -110,6 +120,37 @@ ShellRoot {
     }
 
     Item {
+        id: salaatPopup
+        property bool isOpen: root.salaatPopupOpen
+        function close() { root.salaatPopupOpen = false }
+    }
+
+    Item {
+        id: themesPopup
+        property bool isOpen: root.themesPopupOpen
+        function close() { root.themesPopupOpen = false }
+    }
+
+    Item {
+        id: keybindsPopup
+        property bool isOpen: root.keybindsPopupOpen
+        function close() { root.keybindsPopupOpen = false }
+        function loadBinds() { /* Handled by KeybindsPopup component */ }
+    }
+
+    Item {
+        id: networkPopup
+        property bool isOpen: root.networkPopupOpen
+        function close() { root.networkPopupOpen = false }
+    }
+
+    Item {
+        id: notificationsPopup
+        property bool isOpen: root.notificationsPopupOpen
+        function close() { root.notificationsPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -123,5 +164,12 @@ ShellRoot {
     WeatherPopup       {}
     CalendarPopup      {}
     SystemStatsPopup   {}
+    SalaatPopup        {}
+    ThemesPopup        {}
+    KeybindsPopup      {}
+    NetworkPopup       {}
+    NotificationPopup  {}
+    NotificationsPopup {}
+    VolumeOsd          {}
     PowerMenu          {}
 }
