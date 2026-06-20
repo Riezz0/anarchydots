@@ -118,7 +118,7 @@ hyprctl setcursor "$CURSOR_THEME" 30
 hyprctl reload
 kill -SIGUSR1 $(pidof kitty)
 pywalfox update & disown 
-swaync-client -rs
+#swaync-client -rs
 #killall waybar
 #bash /home/$USER/.config/scripts/waybar.sh
 killall quickshell
