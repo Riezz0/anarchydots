@@ -21,6 +21,8 @@ Variants {
         visible: notificationsPopup.isOpen
         required property var modelData
 
+        property real maxPanelHeight: Screen.height * 0.6
+
         anchors { top: true; bottom: true; left: true; right: true }
 
         color:     "transparent"
@@ -43,7 +45,7 @@ Variants {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin:  10
             width:    440
-            implicitHeight: notifColumn.implicitHeight + 32
+            implicitHeight: headerColumn.implicitHeight + Math.min(notifListContent.implicitHeight, maxPanelHeight - headerColumn.implicitHeight - 48) + 48
             height:   implicitHeight
             radius:   5
             color:    theme.background
@@ -56,8 +58,10 @@ Variants {
             }
 
             ColumnLayout {
-                id: notifColumn
-                anchors.fill:    parent
+                id:           headerColumn
+                anchors.top:  parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.margins: 16
                 spacing: 0
 
@@ -150,11 +154,36 @@ Variants {
                         onClicked:    notifs.clearAll()
                     }
                 }
+            }
 
-                // ── Notification List ───────────────────────────────────────
-                ColumnLayout {
-                    Layout.fillWidth: true
+            // ── Scrollable Notification List ────────────────────────────────
+            Flickable {
+                id:               notifListArea
+                anchors.top:      headerColumn.bottom
+                anchors.left:     parent.left
+                anchors.right:    parent.right
+                anchors.bottom:   parent.bottom
+                anchors.margins:  16
+                anchors.topMargin: 0
+                contentHeight:    notifListContent.height
+                clip:             true
+                flickableDirection: Flickable.VerticalFlick
+                boundsBehavior:   Flickable.StopAtBounds
+
+                Column {
+                    id:    notifListContent
+                    width: parent.width
                     spacing: 8
+
+                    // ── Empty state ──────────────────────────────────────────
+                    Text {
+                        visible: notifs.trackedCount === 0
+                        text:      "No notifications"
+                        color:     theme.muted
+                        font.pixelSize: 14
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.topMargin: 24
+                    }
 
                     Repeater {
                         model: notifs.trackedCount > 0 ? notifs.activeNotifications : []
@@ -163,8 +192,9 @@ Variants {
                             required property var modelData
                             required property int index
 
-                            Layout.fillWidth: true
+                            width:    notifListContent.width
                             implicitHeight: notifItemContent.implicitHeight + 24
+                            height:   implicitHeight
                             radius: 5
                             color:  Qt.darker(theme.background, 1.15)
                             border {
@@ -174,17 +204,17 @@ Variants {
                                      : theme.color2
                             }
 
-                            ColumnLayout {
+                            Column {
                                 id:    notifItemContent
                                 anchors.fill: parent
                                 anchors.margins: 12
                                 spacing: 4
 
                                 RowLayout {
-                                    Layout.fillWidth: true
+                                    width: parent.width
                                     spacing: 8
 
-                                    // App icon
+                                    // Bell icon
                                     Rectangle {
                                         width:  32
                                         height: 32
@@ -194,15 +224,15 @@ Variants {
 
                                         Text {
                                             anchors.centerIn: parent
-                                            text:           notifs.appIcon(modelData.appName || "")
+                                            text:           "󰂞"
                                             font.pixelSize: 16
                                             color:          theme.color4
                                         }
                                     }
 
                                     // App name + summary
-                                    ColumnLayout {
-                                        Layout.fillWidth: true
+                                    Column {
+                                        width: parent.width - 32 - 8 - 24 - 8
                                         spacing: 2
 
                                         Text {
@@ -212,7 +242,7 @@ Variants {
                                             font.bold:        true
                                             font.family:      "JetBrains Mono Nerd Font Mono"
                                             elide:            Text.ElideRight
-                                            Layout.fillWidth: true
+                                            width:            parent.width
                                         }
 
                                         Text {
@@ -221,7 +251,7 @@ Variants {
                                             font.pixelSize:   14
                                             font.bold:        true
                                             elide:            Text.ElideRight
-                                            Layout.fillWidth: true
+                                            width:            parent.width
                                         }
                                     }
 
@@ -257,21 +287,11 @@ Variants {
                                     wrapMode:         Text.Wrap
                                     maximumLineCount: 3
                                     elide:            Text.ElideRight
-                                    Layout.fillWidth: true
+                                    width:            parent.width
                                 }
                             }
                         }
                     }
-                }
-
-                // ── Empty state ──────────────────────────────────────────────
-                Text {
-                    visible: notifs.trackedCount === 0
-                    text:      "No notifications"
-                    color:     theme.muted
-                    font.pixelSize: 14
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.topMargin: 16
                 }
             }
         }

@@ -54,18 +54,24 @@ Item {
             visible: popupRoot.count > 0
             required property var modelData
 
-            anchors { top: true; bottom: true; left: true; right: true }
+            anchors { top: true }
 
             color:     "transparent"
             focusable: false
+            exclusiveZone: -1
+            width: 432
+            anchors.horizontalCenter: parent.horizontalCenter
 
             WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+            implicitHeight: toastColumn.implicitHeight + 96
 
             Column {
                 id:               toastColumn
                 anchors.top:      parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: 16
+                anchors.topMargin: 80
                 spacing:          16
                 width:            400
 

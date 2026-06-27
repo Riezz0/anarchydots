@@ -120,7 +120,6 @@ pywalfox update & disown
 #bash /home/$USER/.config/scripts/waybar.sh
 killall quickshell
 bash /usr/local/bin/qbarmain.sh
-systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 wait
 
 #------------------------#
@@ -132,4 +131,5 @@ notify-send -a "$THEME_DISPLAY" "Theme Loaded"
 # NAUTILUS
 #------------------------#
 nautilus -q && gtk4-update-icon-cache ~/.config/gtk-4.0
+systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 

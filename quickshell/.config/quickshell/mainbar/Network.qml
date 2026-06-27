@@ -46,7 +46,7 @@ Item {
 
     Process {
         id:      netProc
-        command: ["bash", "-c", "nmcli -t -f TYPE,STATE,DEVICE device | grep ':connected' | grep -v loopback | head -1 | cut -d: -f3"]
+        command: ["bash", "-c", "nmcli -t -f TYPE,STATE,DEVICE device | grep -E ':connected|:connecting|:connected (auto)' | grep -v loopback | head -1 | cut -d: -f3"]
         running: false
 
         property string output: ""
@@ -64,6 +64,33 @@ Item {
                     netDetailProc.output = ""
                     netDetailProc.running = true
                 } else {
+                    netFallbackProc.running = true
+                }
+                netProc.output = ""
+            }
+        }
+    }
+
+    Process {
+        id:      netFallbackProc
+        command: ["bash", "-c", "ip route show default | awk '/default/ {print $5}' | head -1"]
+        running: false
+
+        property string output: ""
+
+        stdout: SplitParser {
+            onRead: line => { netFallbackProc.output = line.trim() }
+        }
+
+        onRunningChanged: {
+            if (!running) {
+                const iface = netFallbackProc.output
+                if (iface && iface !== "" && iface !== "lo") {
+                    networkRoot.interfaceName = iface
+                    netDetailProc.command = ["bash", "-c", "nmcli -t device show " + iface + " 2>/dev/null || ip addr show " + iface]
+                    netDetailProc.output = ""
+                    netDetailProc.running = true
+                } else {
                     networkRoot.connectionType = "disconnected"
                     networkRoot.ipAddress = "--"
                     networkRoot.gateway = "--"
@@ -71,7 +98,7 @@ Item {
                     networkRoot.macAddress = "--"
                     networkRoot.loaded = true
                 }
-                netProc.output = ""
+                netFallbackProc.output = ""
             }
         }
     }
@@ -222,6 +249,7 @@ Item {
 
     function parseDetails(data) {
         const lines = data.trim().split("\n")
+        let foundNmcli = false
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
             const idx = line.indexOf(":")
@@ -230,6 +258,7 @@ Item {
             const val = line.substring(idx + 1).trim()
 
             if (key === "GENERAL.TYPE") {
+                foundNmcli = true
                 if (val === "wifi" || val === "802-11-wireless")
                     networkRoot.connectionType = "wifi"
                 else
@@ -248,11 +277,43 @@ Item {
             }
         }
 
+        if (!foundNmcli) {
+            netIpFallbackProc.running = true
+            return
+        }
+
         networkRoot.loaded = true
 
         if (networkRoot.connectionType === "wifi") {
             wifiProc.output = ""
             wifiProc.running = true
+        }
+    }
+
+    Process {
+        id:      netIpFallbackProc
+        command: ["bash", "-c", "ip -4 addr show " + networkRoot.interfaceName + " 2>/dev/null | grep 'inet ' | awk '{print $2}' | head -1"]
+        running: false
+
+        property string output: ""
+
+        stdout: SplitParser {
+            onRead: line => { netIpFallbackProc.output = line.trim() }
+        }
+
+        onRunningChanged: {
+            if (!running) {
+                const ip = netIpFallbackProc.output
+                if (ip && ip !== "") {
+                    networkRoot.ipAddress = ip.split("/")[0]
+                }
+                networkRoot.connectionType = "ethernet"
+                networkRoot.gateway = "--"
+                networkRoot.dns = "--"
+                networkRoot.macAddress = "--"
+                networkRoot.loaded = true
+                netIpFallbackProc.output = ""
+            }
         }
     }
 
