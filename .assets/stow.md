@@ -29,3 +29,9 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo systemctl enable --now bluetooth
 sudo systemctl enable --now coolercontrold.service
 chsh -s "$(which zsh)"
+
+rm ~/.config/hypr/hyprmon.lua
+
+# Then launch hyprmon to setup display settings for target machine before rebooting
+# Then rm ~/.config/hypr/hyprland.lua.bak.*
+

@@ -54,13 +54,12 @@ Item {
             visible: popupRoot.count > 0
             required property var modelData
 
-            anchors { top: true }
+            anchors { top: true; left: true; right: true }
 
             color:     "transparent"
             focusable: false
             exclusiveZone: -1
-            width: 432
-            anchors.horizontalCenter: parent.horizontalCenter
+            implicitWidth: 432
 
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
