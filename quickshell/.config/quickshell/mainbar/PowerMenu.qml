@@ -110,7 +110,10 @@ Variants {
                         height:           32
                         radius: 5
                         color:            theme.color1
+                        opacity:          cancelMouse.containsMouse ? 0.6 : 1.0
                         Layout.alignment: Qt.AlignHCenter
+
+                        Behavior on opacity { NumberAnimation { duration: 150 } }
 
                         Text {
                             anchors.centerIn: parent
@@ -120,9 +123,11 @@ Variants {
                         }
 
                         MouseArea {
-                            anchors.fill: parent
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked:    powerMenu.close()
+                            id:               cancelMouse
+                            anchors.fill:     parent
+                            cursorShape:      Qt.PointingHandCursor
+                            hoverEnabled:     true
+                            onClicked:        powerMenu.close()
                         }
                     }
                 }
@@ -148,7 +153,10 @@ Variants {
             height:           58
             radius: 5
             color:            powerButtonRoot.bgColor
+            opacity:          buttonMouse.containsMouse ? 0.6 : 1.0
             Layout.alignment: Qt.AlignHCenter
+
+            Behavior on opacity { NumberAnimation { duration: 150 } }
 
             Text {
                 anchors.centerIn: parent
@@ -158,10 +166,11 @@ Variants {
             }
 
             MouseArea {
-                anchors.fill: parent
-                cursorShape:  Qt.PointingHandCursor
-                hoverEnabled: true
-                onClicked:    powerButtonRoot.activated()
+                id:               buttonMouse
+                anchors.fill:     parent
+                cursorShape:      Qt.PointingHandCursor
+                hoverEnabled:     true
+                onClicked:        powerButtonRoot.activated()
             }
         }
 

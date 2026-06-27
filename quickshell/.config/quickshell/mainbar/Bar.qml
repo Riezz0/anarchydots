@@ -619,8 +619,11 @@ Variants {
                     height:           40
                     radius: 5
                     color:            root.powerMenuOpen ? theme.color1 : Qt.darker(theme.background, 0.8)
+                    opacity:          powerBtnMouse.containsMouse ? 0.6 : 1.0
                     border { color: theme.color1; width: 2 }
                     Layout.alignment: Qt.AlignVCenter
+
+                    Behavior on opacity { NumberAnimation { duration: 150 } }
 
                     Text {
                         anchors.centerIn: parent
@@ -630,10 +633,11 @@ Variants {
                     }
 
                         MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked:    root.togglePowerMenu()
+                            id:               powerBtnMouse
+                            anchors.fill:     parent
+                            hoverEnabled:     true
+                            cursorShape:      Qt.PointingHandCursor
+                            onClicked:        root.togglePowerMenu()
                         }
 
                 }
