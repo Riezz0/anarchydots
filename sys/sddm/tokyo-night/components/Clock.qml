@@ -17,10 +17,6 @@ Item {
     property string hourStr: ""
     property string minStr: ""
 
-    WalColors {
-        id: walColors
-    }
-
     function updateTime() {
         var date = new Date();
         var hours = date.getHours();
