@@ -18,7 +18,7 @@ hl.bind("SUPER + G", hl.dsp.exec_cmd("flatpak run org.libretro.RetroArch"),     
 hl.bind("SUPER + B", hl.dsp.exec_cmd("firefox"),                                                                            { description = "Firefox" })
 hl.bind("SUPER + H", hl.dsp.exec_cmd("hyprpicker -a"),                                                                      { description = "Color Picker" })
 hl.bind("SUPER + P", hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | swappy -f -"),                                               { description = "Screenshot" })
-
+hl.bind("SUPER + Y", hl.dsp.exec_cmd("python3 /usr/local/bin/yt-dlp-gui.py"),                                               { description = "YTDLP" })
 -- Window Management
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),                                                                          { description = "Move Window" })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(),                                                                        { description = "Resize Window" })
