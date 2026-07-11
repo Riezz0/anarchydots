@@ -434,7 +434,66 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
- //─
+
+                // ── Updates ──────────────────────────────────────────────
+                Rectangle {
+                    id:     updatesBtn
+                    width:  updatesRow.implicitWidth + 20
+                    height: 40
+                    radius: 5
+                    color:  "transparent"
+                    border { width: 2; color: updates.updatesAvailable ? theme.color3 : theme.color4 }
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Row {
+                        id:               updatesRow
+                        anchors.centerIn: parent
+                        spacing:          6
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           updates.updateIcon()
+                            font.pixelSize: 14
+                            color:          updates.updateColor()
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text:           String(updates.updateCount)
+                            font.pixelSize: 14
+                            font.bold:      true
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                            color:          updates.updatesAvailable ? theme.color3 : theme.muted
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill:     parent
+                        hoverEnabled:     true
+                        cursorShape:      Qt.PointingHandCursor
+                        acceptedButtons:  Qt.LeftButton | Qt.RightButton
+
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.RightButton) {
+                                root.archUpdatePopupOpen = !root.archUpdatePopupOpen
+                            } else {
+                                updates.launchUpdate()
+                            }
+                        }
+
+                        onContainsMouseChanged: {
+                            updatesBtn.hovered = containsMouse
+                            updatesBtn.border.color = containsMouse ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4)
+                        }
+                    }
+
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+                }
+
+                 //─
                 Recorder {
                     Layout.alignment: Qt.AlignVCenter
                 }
