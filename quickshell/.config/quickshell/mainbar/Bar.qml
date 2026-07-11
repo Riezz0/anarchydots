@@ -442,7 +442,7 @@ Variants {
                     height: 40
                     radius: 5
                     color:  "transparent"
-                    border { width: 2; color: updates.updatesAvailable ? theme.color3 : theme.color4 }
+                    border { width: 2; color: updatesBtn.hovered ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4) }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -486,7 +486,6 @@ Variants {
 
                         onContainsMouseChanged: {
                             updatesBtn.hovered = containsMouse
-                            updatesBtn.border.color = containsMouse ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4)
                         }
                     }
 
