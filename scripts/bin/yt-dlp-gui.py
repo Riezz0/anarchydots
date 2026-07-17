@@ -206,13 +206,19 @@ class YtDlpGui(Gtk.Window):
 
         self.mode_audio = Gtk.RadioButton.new_with_label_from_widget(self.mode_video, "Audio Only")
         self.mode_audio.get_style_context().add_class("radio-button")
+        self.mode_audio.connect("toggled", self.on_mode_changed)
         mode_box.pack_start(self.mode_audio, False, False, 0)
 
+        format_stack = Gtk.Stack()
+        format_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        format_stack.set_transition_duration(200)
+        options_box.pack_start(format_stack, True, True, 0)
+
+        video_format_outer = Gtk.Frame(label=" Video Format ")
+        video_format_outer.get_style_context().add_class("frame")
+        format_stack.add_named(video_format_outer, "video")
         video_format_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        self.video_format_frame = Gtk.Frame(label=" Video Format ")
-        self.video_format_frame.get_style_context().add_class("frame")
-        self.video_format_frame.add(video_format_box)
-        options_box.pack_start(self.video_format_frame, True, True, 0)
+        video_format_outer.add(video_format_box)
 
         fmt_label = Gtk.Label(label="Format")
         fmt_label.get_style_context().add_class("label")
@@ -238,13 +244,11 @@ class YtDlpGui(Gtk.Window):
         self.video_quality_combo.set_active(6)
         video_format_box.pack_start(self.video_quality_combo, False, False, 0)
 
+        audio_format_outer = Gtk.Frame(label=" Audio Format ")
+        audio_format_outer.get_style_context().add_class("frame")
+        format_stack.add_named(audio_format_outer, "audio")
         audio_format_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        self.audio_format_frame = Gtk.Frame(label=" Audio Format ")
-        self.audio_format_frame.get_style_context().add_class("frame")
-        self.audio_format_frame.add(audio_format_box)
-        options_box.pack_start(self.audio_format_frame, True, True, 0)
-        self.audio_format_frame.set_no_show_all(True)
-        self.audio_format_frame.hide()
+        audio_format_outer.add(audio_format_box)
 
         audio_fmt_label = Gtk.Label(label="Format")
         audio_fmt_label.get_style_context().add_class("label")
@@ -269,6 +273,8 @@ class YtDlpGui(Gtk.Window):
             self.audio_quality_combo.append_text(q)
         self.audio_quality_combo.set_active(0)
         audio_format_box.pack_start(self.audio_quality_combo, False, False, 0)
+
+        self.format_stack = format_stack
 
         save_frame = Gtk.Frame(label=" Save To ")
         save_frame.get_style_context().add_class("frame")
@@ -338,15 +344,10 @@ class YtDlpGui(Gtk.Window):
 
     def on_mode_changed(self, button):
         if button.get_active():
-            is_video = (button == self.mode_video)
-            self.video_format_frame.set_no_show_all(not is_video)
-            self.audio_format_frame.set_no_show_all(is_video)
-            if is_video:
-                self.video_format_frame.show_all()
-                self.audio_format_frame.hide()
+            if button == self.mode_video:
+                self.format_stack.set_visible_child_name("video")
             else:
-                self.video_format_frame.hide()
-                self.audio_format_frame.show_all()
+                self.format_stack.set_visible_child_name("audio")
 
     def on_browse_clicked(self, button):
         dialog = Gtk.FileChooserDialog(

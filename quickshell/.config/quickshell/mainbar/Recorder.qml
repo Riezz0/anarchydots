@@ -9,8 +9,8 @@ Item {
     property bool recording: false
     property bool hovered: false
 
-    width: 40
-    height: 40
+    implicitWidth: 40
+    implicitHeight: 40
 
     // ── Process to check if wf-recorder is running ─────────────────────────
     Process {

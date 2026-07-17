@@ -167,8 +167,8 @@ Variants {
                 // ── Bluetooth ────────────────────────────────────────────
                 Item {
                     id:     btButton
-                    width:  40
-                    height: 40
+                    implicitWidth:  40
+                    implicitHeight: 40
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -345,10 +345,7 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
-                // ── Left Spacer ───────────────────────────────────────────
-                Item { Layout.fillWidth: true }
-
-                // ── Right Spacer ──────────────────────────────────────────
+                // ── Center Spacer ─────────────────────────────────────────
                 Item { Layout.fillWidth: true }
 
                 // ── Network //─
@@ -438,8 +435,8 @@ Variants {
                 // ── Updates ──────────────────────────────────────────────
                 Rectangle {
                     id:     updatesBtn
-                    width:  updatesRow.implicitWidth + 20
-                    height: 40
+                    implicitWidth:  updatesRow.implicitWidth + 20
+                    implicitHeight: 40
                     radius: 5
                     color:  "transparent"
                     border { width: 2; color: updatesBtn.hovered ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4) }
@@ -492,16 +489,18 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
-                 //─
+                //─
                 Recorder {
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: 40
                     Layout.alignment: Qt.AlignVCenter
                 }
 
                 // ── Notifications ─────────────────────────────────────────
                 Item {
                     id:     notifButton
-                    width:  40
-                    height: 40
+                    implicitWidth:  40
+                    implicitHeight: 40
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -573,8 +572,8 @@ Variants {
                 // ── Volume (Pipewire) ─────────────────────────────────────
                 Item {
                     id:     volumeButton
-                    width:  74
-                    height: 40
+                    implicitWidth:  74
+                    implicitHeight: 40
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -644,8 +643,8 @@ Variants {
                 // ── Clock //────
                 Item {
                     id:     clockBtn
-                    width:  clockLabel.implicitWidth + 16
-                    height: 40
+                    implicitWidth:  clockLabel.implicitWidth + 16
+                    implicitHeight: 40
                     Layout.alignment: Qt.AlignVCenter
 
                     Text {
