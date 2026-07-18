@@ -25,15 +25,19 @@ Variants {
             required property var modelData
             property bool settingsPopupOpen: false
 
+            anchors {
+                top:    barSettings.barPosition === "top"
+                bottom: barSettings.barPosition === "bottom"
+                left:   true
+                right:  true
+            }
 
-        anchors { top: true; left: true; right: true }
+            implicitHeight: 60
+            color:          "transparent"
+            exclusiveZone:  implicitHeight
+            exclusionMode:  ExclusionMode.Normal
 
-        implicitHeight: 60
-        color:          "transparent"
-        exclusiveZone:  implicitHeight
-        exclusionMode:  ExclusionMode.Normal
-
-        margins { left: 10; right: 10; top: 10; bottom: 10 }
+            margins { left: 10; right: 10; top: 10; bottom: 10 }
 
         Rectangle {
             id:           barBackground
@@ -345,6 +349,40 @@ Variants {
                     Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
+                // ── Settings ────────────────────────────────────────────
+                Rectangle {
+                    id:     settingsBtn
+                    width:  40
+                    height: 40
+                    radius: barSettings.barRadius
+                    color:  "transparent"
+                    border { width: 2; color: theme.color5 }
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Text {
+                        anchors.centerIn: parent
+                        text:           "󰒓"
+                        font.pixelSize: 18
+                        color:          theme.color5
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape:  Qt.PointingHandCursor
+                        onClicked:    root.settingsPopupOpen = !root.settingsPopupOpen
+                        onContainsMouseChanged: {
+                            settingsBtn.hovered = containsMouse
+                            settingsBtn.border.color = containsMouse ? theme.muted : theme.color5
+                        }
+                    }
+
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
+                }
+
                 // ── Center Spacer ─────────────────────────────────────────
                 Item { Layout.fillWidth: true }
 
@@ -425,40 +463,6 @@ Variants {
                         onContainsMouseChanged: {
                             themesBtn.hovered = containsMouse
                             themesBtn.border.color = containsMouse ? theme.muted : theme.color6
-                        }
-                    }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
-                }
-
-                // ── Settings ────────────────────────────────────────────
-                Rectangle {
-                    id:     settingsBtn
-                    width:  40
-                    height: 40
-                    radius: barSettings.barRadius
-                    color:  "transparent"
-                    border { width: 2; color: theme.color5 }
-
-                    Layout.alignment: Qt.AlignVCenter
-
-                    property bool hovered: false
-
-                    Text {
-                        anchors.centerIn: parent
-                        text:           "󰒓"
-                        font.pixelSize: 18
-                        color:          theme.color5
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape:  Qt.PointingHandCursor
-                        onClicked:    root.settingsPopupOpen = !root.settingsPopupOpen
-                        onContainsMouseChanged: {
-                            settingsBtn.hovered = containsMouse
-                            settingsBtn.border.color = containsMouse ? theme.muted : theme.color5
                         }
                     }
 
@@ -734,25 +738,25 @@ Variants {
             }
         }
 
-        // ── Salaat Widget (fixed center on screen) ──────────────────────
+        // ── Salaat Widget (centered on screen, above bar) ─────────────
         Rectangle {
             id:     salaatBtn
             width:  200
             height: 40
             radius: barSettings.barRadius
-            color:  "transparent"
+            color:  theme.background
+            opacity: 0.95
             border { width: 2; color: theme.color3 }
+            clip:   true
+            z: 10
 
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top:              parent.top
-            anchors.topMargin:        10
+            anchors.verticalCenter:   parent.verticalCenter
 
             property bool hovered: false
 
             Text {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left:           parent.left
-                anchors.leftMargin:     8
+                anchors.centerIn: parent
                 text:             salaat._displayText || "Loading..."
                 font.pixelSize:   14
                 font.bold:        true
@@ -761,6 +765,7 @@ Variants {
                 elide:            Text.ElideRight
                 width:            parent.width - 16
                 clip:             true
+                horizontalAlignment: Text.AlignHCenter
             }
 
             MouseArea {

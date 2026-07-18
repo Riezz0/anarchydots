@@ -27,9 +27,9 @@ Variants {
             onClicked:    settingsPopup.close()
         }
 
-        property bool appearanceExpanded: false
-        property bool placementExpanded: false
-        property bool monitorMenuOpen: false
+            property bool appearanceExpanded: false
+            property bool placementExpanded: false
+            property bool monitorMenuOpen: false
 
         Rectangle {
             anchors.right:    parent.right
@@ -434,6 +434,72 @@ Variants {
                                 hoverEnabled: true
                                 cursorShape:  Qt.PointingHandCursor
                                 onClicked:    settingsWindow.monitorMenuOpen = !settingsWindow.monitorMenuOpen
+                            }
+                        }
+                    }
+
+                    // ── Bar Position ──────────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 8
+
+                        Text {
+                            text:           "Position:"
+                            font.pixelSize: 13
+                            color:          theme.foreground
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Repeater {
+                            model: [
+                                { label: "Top",    value: "top",    icon: "󰁽" },
+                                { label: "Bottom", value: "bottom", icon: "󰁼" }
+                            ]
+
+                            Rectangle {
+                                required property var modelData
+                                required property int index
+
+                                width: 60
+                                height: 28
+                                radius: 4
+                                color: barSettings.barPosition === modelData.value
+                                    ? theme.color4
+                                    : posArea.containsMouse
+                                        ? Qt.darker(theme.muted, 1.3)
+                                        : Qt.darker(theme.muted, 1.2)
+                                border { width: 1; color: barSettings.barPosition === modelData.value ? theme.color4 : theme.muted }
+
+                                Row {
+                                    anchors.centerIn: parent
+                                    spacing: 4
+
+                                    Text {
+                                        text:           modelData.icon
+                                        font.pixelSize: 12
+                                        color:          barSettings.barPosition === modelData.value ? theme.background : theme.foreground
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text:           modelData.label
+                                        font.pixelSize: 11
+                                        font.bold:      true
+                                        color:          barSettings.barPosition === modelData.value ? theme.background : theme.foreground
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: posArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape:  Qt.PointingHandCursor
+                                    onClicked:    barSettings.setBarPosition(modelData.value)
+                                }
+
+                                Behavior on color { ColorAnimation { duration: 100 } }
                             }
                         }
                     }

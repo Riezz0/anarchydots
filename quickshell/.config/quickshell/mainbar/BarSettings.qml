@@ -9,6 +9,7 @@ Item {
     property int barRadius: 5
     property int hyprlandRadius: 5
     property string barMonitor: "all"
+    property string barPosition: "top"
     property bool _loading: false
 
     readonly property string configPath:
@@ -30,6 +31,9 @@ Item {
                 }
                 if (data && data.barMonitor !== undefined) {
                     settingsRoot.barMonitor = data.barMonitor
+                }
+                if (data && data.barPosition !== undefined) {
+                    settingsRoot.barPosition = data.barPosition
                 }
                 _loading = false
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
@@ -68,6 +72,10 @@ Item {
         settingsRoot.barMonitor = m
     }
 
+    function setBarPosition(pos) {
+        settingsRoot.barPosition = pos
+    }
+
     function applyHyprlandRadius(r) {
         hyprctlProc.command = ["hyprctl", "eval", "hl.config({ decoration = { rounding = " + r + " } })"]
         hyprctlProc.running = true
@@ -86,7 +94,8 @@ Item {
         const json = JSON.stringify({
             barRadius: settingsRoot.barRadius,
             hyprlandRadius: settingsRoot.hyprlandRadius,
-            barMonitor: settingsRoot.barMonitor
+            barMonitor: settingsRoot.barMonitor,
+            barPosition: settingsRoot.barPosition
         })
         settingsWriter.command = ["sh", "-c",
             "mkdir -p ~/.config/quickshell && cat > ~/.config/quickshell/bar-settings.json << 'ENDOFFILE'\n" + json + "\nENDOFFILE"]
@@ -138,6 +147,10 @@ Item {
     }
 
     onHyprlandRadiusChanged: {
+        if (!_loading) save()
+    }
+
+    onBarPositionChanged: {
         if (!_loading) save()
     }
 }
