@@ -112,29 +112,52 @@ Variants {
                                     Rectangle {
                                         width:   parent.width
                                         height:  parent.height - nameLabel.implicitHeight - 10
-                                        radius:  3
+                                        radius:  barSettings.barRadius
                                         color:   Qt.darker(theme.background, 1.3)
-                                        clip:    true
 
-                                        Image {
+                                        Canvas {
+                                            id: thumbCanvas
                                             anchors.fill: parent
-                                            source:       modelData.thumbnail
-                                            fillMode:     Image.PreserveAspectCrop
-                                            smooth:       true
-                                            mipmap:       true
+
+                                            property string imgSource: modelData.thumbnail
+
+                                            onWidthChanged:  requestPaint()
+                                            onHeightChanged: requestPaint()
+                                            onImgSourceChanged: requestPaint()
+
+                                            onPaint: {
+                                                var ctx = getContext("2d")
+                                                var r = barSettings.barRadius
+                                                var w = width
+                                                var h = height
+
+                                                ctx.clearRect(0, 0, w, h)
+
+                                                ctx.beginPath()
+                                                ctx.moveTo(r, 0)
+                                                ctx.lineTo(w - r, 0)
+                                                ctx.arcTo(w, 0, w, r, r)
+                                                ctx.lineTo(w, h - r)
+                                                ctx.arcTo(w, h, w - r, h, r)
+                                                ctx.lineTo(r, h)
+                                                ctx.arcTo(0, h, 0, h - r, r)
+                                                ctx.lineTo(0, r)
+                                                ctx.arcTo(0, 0, r, 0, r)
+                                                ctx.closePath()
+                                                ctx.clip()
+
+                                                try {
+                                                    ctx.drawImage(imgSource, 0, 0, w, h)
+                                                } catch(e) {
+                                                    ctx.fillStyle = theme.muted
+                                                    ctx.fillRect(0, 0, w, h)
+                                                }
+                                            }
 
                                             Rectangle {
                                                 anchors.fill: parent
                                                 color: theme.muted
-                                                visible: parent.status === Image.Error
-
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: modelData.displayName.charAt(0)
-                                                    font.pixelSize: 24
-                                                    font.bold: true
-                                                    color: theme.background
-                                                }
+                                                visible: false
                                             }
                                         }
                                     }
