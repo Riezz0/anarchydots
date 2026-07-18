@@ -12,6 +12,10 @@ Item {
     property string barPosition: "top"
     property int selectedReciter: 0
     property bool autoNext: false
+    property string arabicFont: "Noto Naskh Arabic"
+    property real arabicFontSize: 20
+    property real translationFontSize: 11
+    property bool arabicBold: false
     property bool _loading: false
 
     readonly property string configPath:
@@ -42,6 +46,18 @@ Item {
                 }
                 if (data && data.autoNext !== undefined) {
                     settingsRoot.autoNext = data.autoNext
+                }
+                if (data && data.arabicFont !== undefined) {
+                    settingsRoot.arabicFont = data.arabicFont
+                }
+                if (data && data.arabicFontSize !== undefined) {
+                    settingsRoot.arabicFontSize = data.arabicFontSize
+                }
+                if (data && data.translationFontSize !== undefined) {
+                    settingsRoot.translationFontSize = data.translationFontSize
+                }
+                if (data && data.arabicBold !== undefined) {
+                    settingsRoot.arabicBold = data.arabicBold
                 }
                 _loading = false
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
@@ -105,7 +121,11 @@ Item {
             barMonitor: settingsRoot.barMonitor,
             barPosition: settingsRoot.barPosition,
             selectedReciter: settingsRoot.selectedReciter,
-            autoNext: settingsRoot.autoNext
+            autoNext: settingsRoot.autoNext,
+            arabicFont: settingsRoot.arabicFont,
+            arabicFontSize: settingsRoot.arabicFontSize,
+            translationFontSize: settingsRoot.translationFontSize,
+            arabicBold: settingsRoot.arabicBold
         })
         settingsWriter.command = ["sh", "-c",
             "mkdir -p ~/.config/quickshell && cat > ~/.config/quickshell/bar-settings.json << 'ENDOFFILE'\n" + json + "\nENDOFFILE"]
@@ -169,6 +189,22 @@ Item {
     }
 
     onAutoNextChanged: {
+        if (!_loading) save()
+    }
+
+    onArabicFontChanged: {
+        if (!_loading) save()
+    }
+
+    onArabicFontSizeChanged: {
+        if (!_loading) save()
+    }
+
+    onTranslationFontSizeChanged: {
+        if (!_loading) save()
+    }
+
+    onArabicBoldChanged: {
         if (!_loading) save()
     }
 }

@@ -58,6 +58,7 @@ ShellRoot {
     Updates    { id: updates }
     BarSettings   { id: barSettings }
     QuranPlayer   { id: quranPlayer }
+    QuranText     { id: quranText }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
