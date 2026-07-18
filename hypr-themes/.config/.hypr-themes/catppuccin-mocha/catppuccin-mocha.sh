@@ -47,7 +47,6 @@ cp "$THEME_DIR/hyprlook" "$HOME/.config/hypr/modules/look.lua"
 cp "$THEME_DIR/kitty" "$HOME/.config/kitty/kitty.conf"
 cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
 cp "$THEME_DIR/rofi" "$HOME/.config/rofi/launcher/colors.rasi"
-cp "$THEME_DIR/wf-recorder-toggle.sh" "$HOME/.config/scripts/wf-recorder-toggle.sh"
 cp -f "$HOME/.cache/wal/pywal.json" "$HOME/.config/presets/user/pywal.json"
 cp "$HOME/.cache/wal/colors-discord.css" "$HOME/.config/vesktop/themes/pywal-vencord.theme.css"
 
@@ -105,6 +104,11 @@ pywalfox update & disown
 killall quickshell
 bash /usr/local/bin/qbarmain.sh
 systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
+
+#------------------------#
+# COPY THEME
+#------------------------#
+cp "$THEME_DIR/$THEME_NAME.sh" "/home/$USER/.local/share/themes/hypr-theme-active.sh"
 
 #------------------------#
 # NOTIFICATION
