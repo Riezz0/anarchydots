@@ -188,6 +188,57 @@ Variants {
                         }
                     }
                 }
+
+                // Separator
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 8
+                    Layout.bottomMargin: 8
+                    height: 1
+                    color: theme.muted
+                    opacity: 0.4
+                }
+
+                // Quran Player button
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    radius:   barSettings.barRadius
+                    color: quranPlayerBtnArea.containsMouse ? Qt.darker(theme.color3, 1.3) : "transparent"
+                    border { width: 2; color: theme.color3 }
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 6
+
+                        Text {
+                            text: "󰎈"
+                            font.pixelSize: 14
+                            color: theme.color3
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text: "Quran Player"
+                            font.pixelSize: 14
+                            font.bold: true
+                            font.family: "JetBrains Mono Nerd Font Mono"
+                            color: theme.color3
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    MouseArea {
+                        id: quranPlayerBtnArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            salaatPopup.close()
+                            root.quranPlayerPopupOpen = true
+                        }
+                    }
+                }
             }
         }
     }

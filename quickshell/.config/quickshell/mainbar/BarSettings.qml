@@ -10,6 +10,8 @@ Item {
     property int hyprlandRadius: 5
     property string barMonitor: "all"
     property string barPosition: "top"
+    property int selectedReciter: 0
+    property bool autoNext: false
     property bool _loading: false
 
     readonly property string configPath:
@@ -34,6 +36,12 @@ Item {
                 }
                 if (data && data.barPosition !== undefined) {
                     settingsRoot.barPosition = data.barPosition
+                }
+                if (data && data.selectedReciter !== undefined) {
+                    settingsRoot.selectedReciter = data.selectedReciter
+                }
+                if (data && data.autoNext !== undefined) {
+                    settingsRoot.autoNext = data.autoNext
                 }
                 _loading = false
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
@@ -95,7 +103,9 @@ Item {
             barRadius: settingsRoot.barRadius,
             hyprlandRadius: settingsRoot.hyprlandRadius,
             barMonitor: settingsRoot.barMonitor,
-            barPosition: settingsRoot.barPosition
+            barPosition: settingsRoot.barPosition,
+            selectedReciter: settingsRoot.selectedReciter,
+            autoNext: settingsRoot.autoNext
         })
         settingsWriter.command = ["sh", "-c",
             "mkdir -p ~/.config/quickshell && cat > ~/.config/quickshell/bar-settings.json << 'ENDOFFILE'\n" + json + "\nENDOFFILE"]
@@ -151,6 +161,14 @@ Item {
     }
 
     onBarPositionChanged: {
+        if (!_loading) save()
+    }
+
+    onSelectedReciterChanged: {
+        if (!_loading) save()
+    }
+
+    onAutoNextChanged: {
         if (!_loading) save()
     }
 }

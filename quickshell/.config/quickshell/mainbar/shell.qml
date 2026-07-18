@@ -36,6 +36,7 @@ ShellRoot {
     property bool   notificationsPopupOpen: false
     property bool   archUpdatePopupOpen: false
     property bool   settingsPopupOpen: false
+    property bool   quranPlayerPopupOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ ShellRoot {
     Network   { id: net }
     Updates    { id: updates }
     BarSettings   { id: barSettings }
+    QuranPlayer   { id: quranPlayer }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -167,6 +169,12 @@ ShellRoot {
     }
 
     Item {
+        id: quranPlayerPopup
+        property bool isOpen: root.quranPlayerPopupOpen
+        function close() { root.quranPlayerPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -187,6 +195,7 @@ ShellRoot {
     NotificationPopup  {}
     NotificationsPopup {}
     UpdatesPopup       {}
+    QuranPlayerPopup   {}
     BarSettingsPopup      {}
     VolumeOsd          {}
     PowerMenu          {}
