@@ -297,11 +297,6 @@ Item {
         durationTimer.start()
     }
 
-    property var fadeApplyTimer: Timer {
-        interval: 400; repeat: false; running: false
-        onTriggered: applyFadeIn()
-    }
-
     function togglePause() {
         if (!loaded) return
         ipcCommand({"command":["cycle","pause"]})

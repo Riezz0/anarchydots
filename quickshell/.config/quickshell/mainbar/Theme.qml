@@ -6,15 +6,15 @@ import Quickshell.Io
 Scope {
     id: theme
 
-    property color background: "#090b15"
-    property color foreground: "#c1c2c4"
-    property color color1: "#981C71"
-    property color color2: "#096B94"
-    property color color3: "#EA58B4"
-    property color color4: "#CA4AA7"
-    property color color5: "#614D93"
-    property color color6: "#29ACCC"
-    property color muted: "#585b6c"
+    property color background: "#1d2021"
+    property color foreground: "#d5c4a1"
+    property color color1: "#fb4934"
+    property color color2: "#b8bb26"
+    property color color3: "#fabd2f"
+    property color color4: "#83a598"
+    property color color5: "#d3869b"
+    property color color6: "#8ec07c"
+    property color muted: "#665c54"
 
     readonly property string walColorsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/colors.json"

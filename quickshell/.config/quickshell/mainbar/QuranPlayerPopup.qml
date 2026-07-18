@@ -37,7 +37,6 @@ Variants {
 
             property bool showReciters: false
             property bool showSurahs: true
-            property bool showFx: false
 
             MouseArea {
                 anchors.fill: parent
@@ -55,6 +54,22 @@ Variants {
 
                     Text { text: "Quran Player"; font.pixelSize: 14; font.bold: true; color: theme.color3 }
                     Item { Layout.fillWidth: true }
+
+                    // Auto-next toggle (header)
+                    RowLayout { spacing: 4; Layout.alignment: Qt.AlignVCenter
+                        Rectangle {
+                            width: 24; height: 16; radius: 8
+                            color: barSettings.autoNext ? theme.color3 : Qt.darker(theme.muted, 1.3)
+                            Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                x: barSettings.autoNext ? parent.width - width - 2 : 2
+                                width: 12; height: 12; radius: 6; color: theme.background
+                                Behavior on x { NumberAnimation { duration: 120 } }
+                            }
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: barSettings.autoNext = !barSettings.autoNext }
+                        }
+                        Text { text: "Auto play next"; font.pixelSize: 9; color: theme.muted }
+                    }
 
                     Rectangle {
                         width: 24; height: 24; radius: 12
@@ -206,35 +221,6 @@ Variants {
                         border { width: 2; color: theme.color1 }
                         Text { anchors.centerIn: parent; text: "\u23F9"; font.pixelSize: 18; color: theme.color1 }
                         MouseArea { id: stopArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: quranPlayer.stop() }
-                    }
-                }
-
-                Item { Layout.fillWidth: true; height: 12 }
-
-                // ── Auto-next toggle ──
-                RowLayout {
-                    Layout.fillWidth: true; Layout.preferredHeight: 24; Layout.alignment: Qt.AlignHCenter; spacing: 8
-
-                    Rectangle {
-                        Layout.preferredWidth: 36; Layout.preferredHeight: 20; radius: 10
-                        color: barSettings.autoNext ? theme.color3 : Qt.darker(theme.muted, 1.3)
-
-                        Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
-                            x: barSettings.autoNext ? parent.width - width - 2 : 2
-                            width: 16; height: 16; radius: 8
-                            color: theme.background
-                            Behavior on x { NumberAnimation { duration: 120 } }
-                        }
-                        MouseArea {
-                            anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                            onClicked: barSettings.autoNext = !barSettings.autoNext
-                        }
-                    }
-
-                    Text {
-                        text: "Auto play next"
-                        font.pixelSize: 11; color: theme.muted
                     }
                 }
 
