@@ -114,16 +114,30 @@ Variants {
                                         height:  parent.height - nameLabel.implicitHeight - 10
                                         radius:  barSettings.barRadius
                                         color:   Qt.darker(theme.background, 1.3)
+                                        clip:    true
+
+                                        Image {
+                                            id: thumbImg
+                                            anchors.fill: parent
+                                            source:       modelData.thumbnail
+                                            fillMode:     Image.PreserveAspectCrop
+                                            smooth:       true
+                                            mipmap:       true
+                                            visible:      false
+
+                                            onStatusChanged: {
+                                                if (status === Image.Ready)
+                                                    thumbCanvas.requestPaint()
+                                            }
+                                        }
 
                                         Canvas {
                                             id: thumbCanvas
                                             anchors.fill: parent
 
-                                            property string imgSource: modelData.thumbnail
-
                                             onWidthChanged:  requestPaint()
                                             onHeightChanged: requestPaint()
-                                            onImgSourceChanged: requestPaint()
+                                            Component.onCompleted: requestPaint()
 
                                             onPaint: {
                                                 var ctx = getContext("2d")
@@ -146,9 +160,9 @@ Variants {
                                                 ctx.closePath()
                                                 ctx.clip()
 
-                                                try {
-                                                    ctx.drawImage(imgSource, 0, 0, w, h)
-                                                } catch(e) {
+                                                if (thumbImg.status === Image.Ready) {
+                                                    ctx.drawImage(thumbImg, 0, 0, w, h)
+                                                } else {
                                                     ctx.fillStyle = theme.muted
                                                     ctx.fillRect(0, 0, w, h)
                                                 }
@@ -157,7 +171,15 @@ Variants {
                                             Rectangle {
                                                 anchors.fill: parent
                                                 color: theme.muted
-                                                visible: false
+                                                visible: thumbImg.status !== Image.Ready
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: modelData.displayName.charAt(0)
+                                                    font.pixelSize: 24
+                                                    font.bold: true
+                                                    color: theme.background
+                                                }
                                             }
                                         }
                                     }
