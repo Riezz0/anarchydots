@@ -35,6 +35,7 @@ ShellRoot {
     property bool   networkPopupOpen:  false
     property bool   notificationsPopupOpen: false
     property bool   archUpdatePopupOpen: false
+    property bool   settingsPopupOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -54,6 +55,7 @@ ShellRoot {
     Themes    { id: themes }
     Network   { id: net }
     Updates    { id: updates }
+    BarSettings   { id: barSettings }
 
     // ── Power Menu Functions ──────────────────────────────────────────────────
     function togglePowerMenu() { powerMenuOpen = !powerMenuOpen }
@@ -159,6 +161,12 @@ ShellRoot {
     }
 
     Item {
+        id: settingsPopup
+        property bool isOpen: root.settingsPopupOpen
+        function close() { root.settingsPopupOpen = false }
+    }
+
+    Item {
         id: powerMenu
         property bool isOpen: root.powerMenuOpen
         function close() { root.closePowerMenu() }
@@ -179,6 +187,7 @@ ShellRoot {
     NotificationPopup  {}
     NotificationsPopup {}
     UpdatesPopup       {}
+    BarSettingsPopup      {}
     VolumeOsd          {}
     PowerMenu          {}
 }

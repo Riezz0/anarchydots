@@ -28,3 +28,5 @@ Notifications 1.0 Notifications.qml
 NotificationPopup 1.0 NotificationPopup.qml
 NotificationsPopup 1.0 NotificationsPopup.qml
 UpdatesPopup 1.0 UpdatesPopup.qml
+BarSettings 1.0 BarSettings.qml
+BarSettingsPopup 1.0 BarSettingsPopup.qml

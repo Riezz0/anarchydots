@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: [Quickshell.screens[1]]
+    model: barSettings.popupScreens()
 
     PanelWindow {
         screen:  modelData
@@ -32,7 +32,7 @@ Variants {
             anchors.bottomMargin: 10
             width:    520
             height:   popupColumn.implicitHeight + 32
-            radius: 5
+            radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
             border { width: 2; color: theme.color6 }
@@ -97,7 +97,7 @@ Variants {
 
                                 width:  (gridContent.width - 16) / 3
                                 height: 140
-                                radius: 5
+                                radius:   barSettings.barRadius
                                 color:  "transparent"
                                 border { width: 2; color: theme.muted }
 

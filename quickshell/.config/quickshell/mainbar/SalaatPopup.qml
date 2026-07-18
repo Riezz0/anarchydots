@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 
 Variants {
-    model: [Quickshell.screens[1]]
+    model: barSettings.popupScreens()
 
     PanelWindow {
         screen:  modelData
@@ -33,7 +33,7 @@ Variants {
             width:    320
             implicitHeight: popupColumn.implicitHeight + 32
             height:   implicitHeight
-            radius: 5
+            radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
             border { width: 2; color: theme.color3 }
@@ -89,7 +89,7 @@ Variants {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 32
                         Layout.bottomMargin: 4
-                        radius: 5
+                        radius:   barSettings.barRadius
                         color: modelData.name === salaat.nextPrayer
                             ? Qt.darker(theme.color3, 1.5)
                             : "transparent"
@@ -139,7 +139,7 @@ Variants {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
-                        radius: 5
+                        radius:   barSettings.barRadius
                         color: "transparent"
                         border { width: 2; color: theme.color4 }
 
@@ -165,7 +165,7 @@ Variants {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
-                        radius: 5
+                        radius:   barSettings.barRadius
                         color: "transparent"
                         border { width: 2; color: theme.color5 }
 
