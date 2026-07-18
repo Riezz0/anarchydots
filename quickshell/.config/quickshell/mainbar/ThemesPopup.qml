@@ -114,17 +114,11 @@ Variants {
                                         height:  parent.height - nameLabel.implicitHeight - 10
                                         radius:  barSettings.barRadius
                                         color:   Qt.darker(theme.background, 1.3)
-                                        clip:    true
 
                                         Image {
-                                            id: thumbImg
-                                            anchors.fill: parent
-                                            source:       modelData.thumbnail
-                                            fillMode:     Image.PreserveAspectCrop
-                                            smooth:       true
-                                            mipmap:       true
-                                            visible:      false
-
+                                            id: thumbLoader
+                                            source:  modelData.thumbnail
+                                            visible: false
                                             onStatusChanged: {
                                                 if (status === Image.Ready)
                                                     thumbCanvas.requestPaint()
@@ -135,9 +129,19 @@ Variants {
                                             id: thumbCanvas
                                             anchors.fill: parent
 
+                                            property string imgSource: modelData.thumbnail
+
                                             onWidthChanged:  requestPaint()
                                             onHeightChanged: requestPaint()
-                                            Component.onCompleted: requestPaint()
+                                            onImgSourceChanged: { requestPaint(); retryTimer.restart() }
+                                            Component.onCompleted: { requestPaint(); retryTimer.restart() }
+
+                                            Timer {
+                                                id: retryTimer
+                                                interval: 500
+                                                repeat: false
+                                                onTriggered: thumbCanvas.requestPaint()
+                                            }
 
                                             onPaint: {
                                                 var ctx = getContext("2d")
@@ -160,18 +164,16 @@ Variants {
                                                 ctx.closePath()
                                                 ctx.clip()
 
-                                                if (thumbImg.status === Image.Ready) {
-                                                    ctx.drawImage(thumbImg, 0, 0, w, h)
-                                                } else {
-                                                    ctx.fillStyle = theme.muted
-                                                    ctx.fillRect(0, 0, w, h)
-                                                }
+                                                if (thumbLoader.status === Image.Ready)
+                                                    ctx.drawImage(thumbLoader, 0, 0, w, h)
+                                                else if (imgSource !== "")
+                                                    ctx.drawImage(imgSource, 0, 0, w, h)
                                             }
 
                                             Rectangle {
                                                 anchors.fill: parent
                                                 color: theme.muted
-                                                visible: thumbImg.status !== Image.Ready
+                                                visible: thumbLoader.status !== Image.Ready
 
                                                 Text {
                                                     anchors.centerIn: parent
