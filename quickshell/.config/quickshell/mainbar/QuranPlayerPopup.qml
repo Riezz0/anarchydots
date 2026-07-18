@@ -41,8 +41,9 @@ Variants {
             property bool showReciters: false
             property bool showSurahs: true
             property bool showText: false
-            property bool showTransSelector: false
-            property bool showFontSettings: false
+            property bool showCogSettings: false
+            property bool showTransGroup: false
+            property bool showFontGroup: false
 
             MouseArea {
                 anchors.fill: parent
@@ -452,7 +453,7 @@ Variants {
                     Layout.margins: 16
                     spacing: 0
 
-                    // ── Text panel header ──
+                    // ── Text panel header (fixed) ──
                     RowLayout {
                         Layout.fillWidth: true; Layout.bottomMargin: 8
 
@@ -490,17 +491,21 @@ Variants {
                         }
                         Text { text: "Tr"; font.pixelSize: 9; color: theme.muted; Layout.rightMargin: 4 }
 
-                        // Translation selector toggle
+                        Item { Layout.fillWidth: true }
+
+                        // Cog settings (centered)
                         Rectangle {
                             Layout.alignment: Qt.AlignVCenter
                             width: 24; height: 24; radius: 12
-                            color: transSelBtn.containsMouse ? Qt.darker(theme.muted, 1.3) : theme.muted
-                            Text { anchors.centerIn: parent; text: "\u2699"; font.pixelSize: 12; color: theme.foreground }
+                            color: cogBtnArea.containsMouse ? Qt.darker(theme.muted, 1.3) : (popupRoot.showCogSettings ? theme.color3 : theme.muted)
+                            Text { anchors.centerIn: parent; text: "\u2699"; font.pixelSize: 12; color: popupRoot.showCogSettings ? theme.background : theme.foreground }
                             MouseArea {
-                                id: transSelBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                onClicked: popupRoot.showTransSelector = !popupRoot.showTransSelector
+                                id: cogBtnArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                onClicked: popupRoot.showCogSettings = !popupRoot.showCogSettings
                             }
                         }
+
+                        Item { Layout.fillWidth: true }
 
                         // Close text panel
                         Rectangle {
@@ -517,192 +522,254 @@ Variants {
 
                     Rectangle { Layout.fillWidth: true; Layout.bottomMargin: 8; height: 1; color: theme.muted; opacity: 0.4 }
 
-                    // ── Translation selector (collapsible) ──
-                    ColumnLayout {
-                        visible: popupRoot.showTransSelector
-                        Layout.fillWidth: true; Layout.bottomMargin: 8; spacing: 2
-
-                        Repeater {
-                            model: quranText.translations
-
-                            Rectangle {
-                                required property var modelData
-                                property bool selected: modelData.id === quranText.selectedTranslation
-                                Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 4
-                                color: selected ? Qt.darker(theme.color3, 1.5)
-                                    : transItemArea.containsMouse ? Qt.darker(theme.background, 1.3) : "transparent"
-
-                                RowLayout {
-                                    anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
-                                    Text {
-                                        text: modelData.name
-                                        font.pixelSize: 10
-                                        color: selected ? theme.color3 : theme.foreground
-                                        elide: Text.ElideRight; Layout.fillWidth: true
-                                    }
-                                    Text {
-                                        text: modelData.lang
-                                        font.pixelSize: 8; color: theme.muted
-                                    }
-                                    Text {
-                                        visible: selected
-                                        text: "\u2713"; font.pixelSize: 11; color: theme.color3
-                                    }
-                                }
-                                MouseArea {
-                                    id: transItemArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        quranText.changeTranslation(modelData.id)
-                                        popupRoot.showTransSelector = false
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // ── Font settings toggle ──
-                    Rectangle {
-                        Layout.fillWidth: true; Layout.preferredHeight: 26; radius: 4
-                        color: fontSettingsBtn.containsMouse ? Qt.darker(theme.muted, 1.2) : "transparent"
-                        RowLayout {
-                            anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
-                            Text { text: "Font Settings"; font.pixelSize: 10; font.bold: true; color: theme.color3 }
-                            Item { Layout.fillWidth: true }
-                            Text { text: popupRoot.showFontSettings ? "\u25B2" : "\u25BC"; font.pixelSize: 8; color: theme.muted }
-                        }
-                        MouseArea {
-                            id: fontSettingsBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                            onClicked: popupRoot.showFontSettings = !popupRoot.showFontSettings
-                        }
-                    }
-
-                    // ── Font settings panel (collapsible) ──
-                    ColumnLayout {
-                        visible: popupRoot.showFontSettings
-                        Layout.fillWidth: true; Layout.bottomMargin: 8; spacing: 6
-
-                        // Arabic font picker
-                        Text { text: "Arabic Font"; font.pixelSize: 9; color: theme.muted; Layout.topMargin: 4 }
-                        Repeater {
-                            model: [
-                                "Noto Naskh Arabic",
-                                "Noto Kufi Arabic",
-                                "Noto Sans Arabic",
-                                "Noto Sans Arabic UI",
-                                "Noto Naskh Arabic UI",
-                                "Al Majeed Quranic Font",
-                                "KFGQPC Uthmanic Script HAFS",
-                                "DejaVu Sans"
-                            ]
-                            Rectangle {
-                                required property string modelData
-                                property bool isSelected: modelData === barSettings.arabicFont
-                                Layout.fillWidth: true; Layout.preferredHeight: 26; radius: 4
-                                color: isSelected ? Qt.darker(theme.color3, 1.5)
-                                    : fontItemArea.containsMouse ? Qt.darker(theme.background, 1.3) : "transparent"
-                                RowLayout {
-                                    anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
-                                    Text {
-                                        text: modelData
-                                        font.pixelSize: 10; font.family: modelData
-                                        color: isSelected ? theme.color3 : theme.foreground
-                                        elide: Text.ElideRight; Layout.fillWidth: true
-                                    }
-                                    Text { visible: isSelected; text: "\u2713"; font.pixelSize: 11; color: theme.color3 }
-                                }
-                                MouseArea {
-                                    id: fontItemArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onClicked: barSettings.arabicFont = modelData
-                                }
-                            }
-                        }
-
-                        Item { Layout.fillWidth: true; height: 4 }
-
-                        // Arabic font size
-                        RowLayout {
-                            Layout.fillWidth: true; spacing: 8
-                            Text { text: "Arabic"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
-                            Text { text: Math.round(barSettings.arabicFontSize); font.pixelSize: 9; color: theme.color3; Layout.preferredWidth: 20 }
-                            Rectangle {
-                                Layout.fillWidth: true; Layout.preferredHeight: 16; color: "transparent"
-                                property real lo: 14; property real hi: 32
-                                function pct() { return (barSettings.arabicFontSize - lo) / (hi - lo) }
-                                Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width; height: 3; radius: 1; color: Qt.darker(theme.muted, 1.3)
-                                    Rectangle { width: parent.parent.pct() * parent.width; height: parent.height; radius: 1; color: theme.color3 }
-                                }
-                                Rectangle { x: parent.pct() * (parent.width - 12); anchors.verticalCenter: parent.verticalCenter; width: 12; height: 12; radius: 6; color: theme.color3 }
-                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                                    onPressed: function(mouse) { updateArabicSize(mouse.x) }
-                                    onPositionChanged: function(mouse) { if (pressed) updateArabicSize(mouse.x) }
-                                    function updateArabicSize(mx) {
-                                        var clamped = Math.max(0, Math.min(parent.width - 12, mx - 6))
-                                        barSettings.arabicFontSize = Math.round((clamped / (parent.width - 12) * (parent.hi - parent.lo) + parent.lo) * 2) / 2
-                                    }
-                                }
-                            }
-                        }
-
-                        // Translation font size
-                        RowLayout {
-                            Layout.fillWidth: true; spacing: 8
-                            Text { text: "Trans"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
-                            Text { text: Math.round(barSettings.translationFontSize); font.pixelSize: 9; color: theme.color3; Layout.preferredWidth: 20 }
-                            Rectangle {
-                                Layout.fillWidth: true; Layout.preferredHeight: 16; color: "transparent"
-                                property real lo: 8; property real hi: 18
-                                function pct() { return (barSettings.translationFontSize - lo) / (hi - lo) }
-                                Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width; height: 3; radius: 1; color: Qt.darker(theme.muted, 1.3)
-                                    Rectangle { width: parent.parent.pct() * parent.width; height: parent.height; radius: 1; color: theme.color3 }
-                                }
-                                Rectangle { x: parent.pct() * (parent.width - 12); anchors.verticalCenter: parent.verticalCenter; width: 12; height: 12; radius: 6; color: theme.color3 }
-                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                                    onPressed: function(mouse) { updateTransSize(mouse.x) }
-                                    onPositionChanged: function(mouse) { if (pressed) updateTransSize(mouse.x) }
-                                    function updateTransSize(mx) {
-                                        var clamped = Math.max(0, Math.min(parent.width - 12, mx - 6))
-                                        barSettings.translationFontSize = Math.round((clamped / (parent.width - 12) * (parent.hi - parent.lo) + parent.lo) * 2) / 2
-                                    }
-                                }
-                            }
-                        }
-
-                        Item { Layout.fillWidth: true; height: 2 }
-
-                        // Bold / Normal toggle
-                        RowLayout {
-                            Layout.fillWidth: true; spacing: 8
-                            Text { text: "Weight"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
-                            Rectangle {
-                                Layout.preferredWidth: 56; Layout.preferredHeight: 20; radius: 10
-                                color: !barSettings.arabicBold ? theme.color3 : Qt.darker(theme.muted, 1.3)
-                                Text { anchors.centerIn: parent; text: "Normal"; font.pixelSize: 9; color: theme.background; font.bold: true }
-                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: barSettings.arabicBold = false }
-                            }
-                            Rectangle {
-                                Layout.preferredWidth: 44; Layout.preferredHeight: 20; radius: 10
-                                color: barSettings.arabicBold ? theme.color3 : Qt.darker(theme.muted, 1.3)
-                                Text { anchors.centerIn: parent; text: "Bold"; font.pixelSize: 9; color: theme.background; font.bold: true }
-                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: barSettings.arabicBold = true }
-                            }
-                        }
-                    }
-
-                    // ── Verses ──
+                    // ── Scrollable content below header ──
                     Flickable {
                         id: textFlick
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        contentHeight: versesCol.implicitHeight
+                        contentHeight: textInnerCol.implicitHeight
                         clip: true
                         flickableDirection: Flickable.VerticalFlick
                         boundsBehavior: Flickable.StopAtBounds
 
                         ColumnLayout {
-                            id: versesCol
+                            id: textInnerCol
                             width: textFlick.width
                             spacing: 0
 
+                            // ══════════════════════════════════════════════
+                            // Cog Settings Panel (collapsible)
+                            // ══════════════════════════════════════════════
+                            ColumnLayout {
+                                visible: popupRoot.showCogSettings
+                                Layout.fillWidth: true; Layout.bottomMargin: 8; spacing: 0
+
+                                // ── Translations Group ──
+                                Rectangle {
+                                    Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 4
+                                    color: transGroupBtn.containsMouse ? Qt.darker(theme.muted, 1.2) : "transparent"
+                                    RowLayout {
+                                        anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                        Text { text: "Translations"; font.pixelSize: 10; font.bold: true; color: theme.color3 }
+                                        Text { text: quranText.translationName(); font.pixelSize: 9; color: theme.muted; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: popupRoot.showTransGroup ? "\u25B2" : "\u25BC"; font.pixelSize: 8; color: theme.muted }
+                                    }
+                                    MouseArea {
+                                        id: transGroupBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                        onClicked: popupRoot.showTransGroup = !popupRoot.showTransGroup
+                                    }
+                                }
+
+                                ColumnLayout {
+                                    visible: popupRoot.showTransGroup
+                                    Layout.fillWidth: true; Layout.bottomMargin: 8; spacing: 2
+
+                                    Repeater {
+                                        model: quranText.translations
+
+                                        Rectangle {
+                                            required property var modelData
+                                            property bool selected: modelData.id === quranText.selectedTranslation
+                                            Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 4
+                                            color: selected ? Qt.darker(theme.color3, 1.5)
+                                                : transItemArea.containsMouse ? Qt.darker(theme.background, 1.3) : "transparent"
+
+                                            RowLayout {
+                                                anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                                Text {
+                                                    text: modelData.name
+                                                    font.pixelSize: 10
+                                                    color: selected ? theme.color3 : theme.foreground
+                                                    elide: Text.ElideRight; Layout.fillWidth: true
+                                                }
+                                                Text {
+                                                    text: modelData.lang
+                                                    font.pixelSize: 8; color: theme.muted
+                                                }
+                                                Text {
+                                                    visible: selected
+                                                    text: "\u2713"; font.pixelSize: 11; color: theme.color3
+                                                }
+                                            }
+                                            MouseArea {
+                                                id: transItemArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                                onClicked: {
+                                                    quranText.changeTranslation(modelData.id)
+                                                    popupRoot.showTransGroup = false
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Rectangle { Layout.fillWidth: true; height: 1; color: theme.muted; opacity: 0.3; Layout.bottomMargin: 4 }
+
+                                // ── Font Settings Group ──
+                                Rectangle {
+                                    Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 4
+                                    color: fontGroupBtn.containsMouse ? Qt.darker(theme.muted, 1.2) : "transparent"
+                                    RowLayout {
+                                        anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                        Text { text: "Font Settings"; font.pixelSize: 10; font.bold: true; color: theme.color3 }
+                                        Text { text: barSettings.arabicFont; font.pixelSize: 9; color: theme.muted; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: popupRoot.showFontGroup ? "\u25B2" : "\u25BC"; font.pixelSize: 8; color: theme.muted }
+                                    }
+                                    MouseArea {
+                                        id: fontGroupBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                        onClicked: popupRoot.showFontGroup = !popupRoot.showFontGroup
+                                    }
+                                }
+
+                                ColumnLayout {
+                                    visible: popupRoot.showFontGroup
+                                    Layout.fillWidth: true; Layout.bottomMargin: 8; spacing: 6
+
+                                    // Preview text
+                                    Rectangle {
+                                        Layout.fillWidth: true; Layout.preferredHeight: previewCol.implicitHeight + 20; radius: 6
+                                        color: Qt.darker(theme.background, 1.2)
+                                        clip: true
+                                        ColumnLayout {
+                                            id: previewCol
+                                            anchors.fill: parent; anchors.margins: 10; spacing: 4
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: "\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064E\u0647\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0652\u0645\u064E\u0646\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650"
+                                                font.pixelSize: barSettings.arabicFontSize
+                                                font.family: barSettings.arabicFont
+                                                font.weight: barSettings.arabicBold ? Font.Bold : Font.Normal
+                                                color: theme.foreground
+                                                horizontalAlignment: Text.AlignRight
+                                                LayoutMirroring.enabled: true
+                                            }
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: quranText.showTranslation ? "In the name of Allah, the Entirely Merciful, the Especially Merciful." : ""
+                                                visible: quranText.showTranslation
+                                                font.pixelSize: barSettings.translationFontSize
+                                                color: theme.muted
+                                                wrapMode: Text.WordWrap
+                                            }
+                                        }
+                                    }
+
+                                    // Arabic font picker
+                                    Text { text: "Arabic Font"; font.pixelSize: 9; color: theme.muted; Layout.topMargin: 4 }
+                                    Repeater {
+                                        model: [
+                                            "Noto Naskh Arabic",
+                                            "Noto Kufi Arabic",
+                                            "Noto Sans Arabic",
+                                            "Noto Sans Arabic UI",
+                                            "Noto Naskh Arabic UI",
+                                            "Al Majeed Quranic Font",
+                                            "KFGQPC Uthmanic Script HAFS",
+                                            "Amiri",
+                                            "Scheherazade New",
+                                            "Lateef",
+                                            "Cairo",
+                                            "Aref Ruqaa",
+                                            "Mada",
+                                            "Sahel"
+                                        ]
+                                        Rectangle {
+                                            required property string modelData
+                                            property bool isSelected: modelData === barSettings.arabicFont
+                                            Layout.fillWidth: true; Layout.preferredHeight: 26; radius: 4
+                                            color: isSelected ? Qt.darker(theme.color3, 1.5)
+                                                : fontItemArea.containsMouse ? Qt.darker(theme.background, 1.3) : "transparent"
+                                            RowLayout {
+                                                anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                                Text {
+                                                    text: modelData
+                                                    font.pixelSize: 10; font.family: modelData
+                                                    color: isSelected ? theme.color3 : theme.foreground
+                                                    elide: Text.ElideRight; Layout.fillWidth: true
+                                                }
+                                                Text { visible: isSelected; text: "\u2713"; font.pixelSize: 11; color: theme.color3 }
+                                            }
+                                            MouseArea {
+                                                id: fontItemArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                                onClicked: barSettings.arabicFont = modelData
+                                            }
+                                        }
+                                    }
+
+                                    Item { Layout.fillWidth: true; height: 4 }
+
+                                    // Arabic font size
+                                    RowLayout {
+                                        Layout.fillWidth: true; spacing: 8
+                                        Text { text: "Arabic"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
+                                        Text { text: Math.round(barSettings.arabicFontSize); font.pixelSize: 9; color: theme.color3; Layout.preferredWidth: 20 }
+                                        Rectangle {
+                                            Layout.fillWidth: true; Layout.preferredHeight: 16; color: "transparent"
+                                            property real lo: 14; property real hi: 32
+                                            function pct() { return (barSettings.arabicFontSize - lo) / (hi - lo) }
+                                            Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width; height: 3; radius: 1; color: Qt.darker(theme.muted, 1.3)
+                                                Rectangle { width: parent.parent.pct() * parent.width; height: parent.height; radius: 1; color: theme.color3 }
+                                            }
+                                            Rectangle { x: parent.pct() * (parent.width - 12); anchors.verticalCenter: parent.verticalCenter; width: 12; height: 12; radius: 6; color: theme.color3 }
+                                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                                onPressed: function(mouse) { updateArabicSize(mouse.x) }
+                                                onPositionChanged: function(mouse) { if (pressed) updateArabicSize(mouse.x) }
+                                                function updateArabicSize(mx) {
+                                                    var clamped = Math.max(0, Math.min(parent.width - 12, mx - 6))
+                                                    barSettings.arabicFontSize = Math.round((clamped / (parent.width - 12) * (parent.hi - parent.lo) + parent.lo) * 2) / 2
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Translation font size
+                                    RowLayout {
+                                        Layout.fillWidth: true; spacing: 8
+                                        Text { text: "Trans"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
+                                        Text { text: Math.round(barSettings.translationFontSize); font.pixelSize: 9; color: theme.color3; Layout.preferredWidth: 20 }
+                                        Rectangle {
+                                            Layout.fillWidth: true; Layout.preferredHeight: 16; color: "transparent"
+                                            property real lo: 8; property real hi: 18
+                                            function pct() { return (barSettings.translationFontSize - lo) / (hi - lo) }
+                                            Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width; height: 3; radius: 1; color: Qt.darker(theme.muted, 1.3)
+                                                Rectangle { width: parent.parent.pct() * parent.width; height: parent.height; radius: 1; color: theme.color3 }
+                                            }
+                                            Rectangle { x: parent.pct() * (parent.width - 12); anchors.verticalCenter: parent.verticalCenter; width: 12; height: 12; radius: 6; color: theme.color3 }
+                                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                                onPressed: function(mouse) { updateTransSize(mouse.x) }
+                                                onPositionChanged: function(mouse) { if (pressed) updateTransSize(mouse.x) }
+                                                function updateTransSize(mx) {
+                                                    var clamped = Math.max(0, Math.min(parent.width - 12, mx - 6))
+                                                    barSettings.translationFontSize = Math.round((clamped / (parent.width - 12) * (parent.hi - parent.lo) + parent.lo) * 2) / 2
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    Item { Layout.fillWidth: true; height: 2 }
+
+                                    // Bold / Normal toggle
+                                    RowLayout {
+                                        Layout.fillWidth: true; spacing: 8
+                                        Text { text: "Weight"; font.pixelSize: 9; color: theme.muted; Layout.preferredWidth: 46 }
+                                        Rectangle {
+                                            Layout.preferredWidth: 56; Layout.preferredHeight: 20; radius: 10
+                                            color: !barSettings.arabicBold ? theme.color3 : Qt.darker(theme.muted, 1.3)
+                                            Text { anchors.centerIn: parent; text: "Normal"; font.pixelSize: 9; color: theme.background; font.bold: true }
+                                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: barSettings.arabicBold = false }
+                                        }
+                                        Rectangle {
+                                            Layout.preferredWidth: 44; Layout.preferredHeight: 20; radius: 10
+                                            color: barSettings.arabicBold ? theme.color3 : Qt.darker(theme.muted, 1.3)
+                                            Text { anchors.centerIn: parent; text: "Bold"; font.pixelSize: 9; color: theme.background; font.bold: true }
+                                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: barSettings.arabicBold = true }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // ══════════════════════════════════════════════
+                            // Verses
+                            // ══════════════════════════════════════════════
                             Repeater {
                                 model: quranText.verses
 
@@ -743,7 +810,7 @@ Variants {
                                         visible: quranText.showTranslation && modelData.translation !== ""
                                         Layout.fillWidth: true
                                         text: modelData.translation
-                                        font.pixelSize: 11
+                                        font.pixelSize: barSettings.translationFontSize
                                         color: theme.muted
                                         wrapMode: Text.WordWrap
                                     }
