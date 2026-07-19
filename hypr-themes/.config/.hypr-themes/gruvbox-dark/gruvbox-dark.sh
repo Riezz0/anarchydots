@@ -33,12 +33,15 @@ KVANTUM_DIR="$USER_HOME/.config/Kvantum/pywal"
 awww img "$WALL" --transition-fps 144 --transition-step 255 --transition-type random
 cp -r "$WALL" "/home/$USER/.config/hypr/lock.png"
 cp -r "$WALL" "/home/$USER/.config/activebg/Wall.png"
+cp "$WALL" "/var/local/sddm-wallpaper/background.jpg"
 
 #------------------------#
 # SET COLOR SCHEME
 #------------------------#
 cp -r "$THEME_DIR/pywal" "$PYWAL"
 wal --theme "$PYWAL"  # synchronous to ensure cache files exist
+cp ~/.cache/wal/colors.qml /var/local/sddm-wallpaper/PywalColors.qml
+
 
 #------------------------#
 # MAKE DIRECTORIES
