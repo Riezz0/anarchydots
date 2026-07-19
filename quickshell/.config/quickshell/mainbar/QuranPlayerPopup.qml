@@ -458,7 +458,7 @@ Variants {
                         Layout.fillWidth: true; Layout.bottomMargin: 8
 
                         ColumnLayout {
-                            Layout.fillWidth: true; spacing: 1
+                            spacing: 1
                             Text {
                                 text: quranPlayer.currentSurah > 0
                                     ? quranPlayer.currentSurah + ". " + quranPlayer.surahName(quranPlayer.currentSurah)
@@ -634,13 +634,14 @@ Variants {
                                             anchors.fill: parent; anchors.margins: 10; spacing: 4
                                             Text {
                                                 Layout.fillWidth: true
-                                                text: "\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064E\u0647\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0652\u0645\u064E\u0646\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650"
+                                                text: "<div dir=\"rtl\">\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064E\u0647\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0652\u0645\u064E\u0646\u0650 \u0627\u0644\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650</div>"
+                                                textFormat: Text.RichText
                                                 font.pixelSize: barSettings.arabicFontSize
                                                 font.family: barSettings.arabicFont
                                                 font.weight: barSettings.arabicBold ? Font.Bold : Font.Normal
                                                 color: theme.foreground
                                                 horizontalAlignment: Text.AlignRight
-                                                LayoutMirroring.enabled: true
+                                                wrapMode: Text.WordWrap
                                             }
                                             Text {
                                                 Layout.fillWidth: true
@@ -649,6 +650,7 @@ Variants {
                                                 font.pixelSize: barSettings.translationFontSize
                                                 color: theme.muted
                                                 wrapMode: Text.WordWrap
+                                                horizontalAlignment: Text.AlignRight
                                             }
                                         }
                                     }
@@ -664,11 +666,9 @@ Variants {
                                             "Noto Naskh Arabic UI",
                                             "Al Majeed Quranic Font",
                                             "KFGQPC Uthmanic Script HAFS",
-                                            "Amiri",
                                             "Scheherazade New",
                                             "Lateef",
                                             "Cairo",
-                                            "Aref Ruqaa",
                                             "Mada",
                                             "Sahel"
                                         ]
@@ -796,7 +796,8 @@ Variants {
                                     // Arabic text
                                     Text {
                                         Layout.fillWidth: true
-                                        text: modelData.arabic
+                                        text: "<div dir=\"rtl\">" + modelData.arabic + "</div>"
+                                        textFormat: Text.RichText
                                         font.pixelSize: barSettings.arabicFontSize
                                         font.family: barSettings.arabicFont
                                         font.weight: barSettings.arabicBold ? Font.Bold : Font.Normal
@@ -813,6 +814,7 @@ Variants {
                                         font.pixelSize: barSettings.translationFontSize
                                         color: theme.muted
                                         wrapMode: Text.WordWrap
+                                        horizontalAlignment: Text.AlignRight
                                     }
 
                                     Item { Layout.fillWidth: true; height: 8 }
