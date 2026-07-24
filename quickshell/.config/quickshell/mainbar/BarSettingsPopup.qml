@@ -414,7 +414,7 @@ Variants {
                             }
 
                             Text {
-                                text:           "Reduce blue light (wl-sunset)"
+                                text:           "Reduce blue light for better sleep"
                                 font.pixelSize: 10
                                 color:          theme.muted
                             }
