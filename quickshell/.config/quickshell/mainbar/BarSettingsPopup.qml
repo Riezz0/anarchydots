@@ -28,6 +28,7 @@ Variants {
         }
 
             property bool appearanceExpanded: false
+            property bool displayExpanded: false
             property bool placementExpanded: false
             property bool monitorMenuOpen: false
 
@@ -338,6 +339,110 @@ Variants {
 
                                 Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
                                 Text { text: modelData; font.pixelSize: 9; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
+                            }
+                        }
+                    }
+                }
+
+                // ════════════════════════════════════════════════════════
+                // Display Settings Section (Collapsible)
+                // ════════════════════════════════════════════════════════
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 32
+                    radius: 4
+                    color: displayHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+
+                    Row {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 6
+
+                        Text {
+                            text:           settingsWindow.displayExpanded ? "▼" : "▶"
+                            font.pixelSize: 10
+                            color:          theme.color2
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text:           "󰖨"
+                            font.pixelSize: 14
+                            color:          theme.color2
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text:           "Display Settings"
+                            font.pixelSize: 13
+                            font.bold:      true
+                            color:          theme.color2
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    MouseArea {
+                        id: displayHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape:  Qt.PointingHandCursor
+                        onClicked:    settingsWindow.displayExpanded = !settingsWindow.displayExpanded
+                    }
+                }
+
+                Item { Layout.fillWidth: true; height: 8; visible: settingsWindow.displayExpanded }
+
+                // ── Display Settings Content ────────────────────────────
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    visible: settingsWindow.displayExpanded
+                    spacing: 0
+
+                    // ── Nightlight Toggle ──────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: 8
+
+                        Column {
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            Text {
+                                text:           "Night Light"
+                                font.pixelSize: 13
+                                color:          theme.foreground
+                            }
+
+                            Text {
+                                text:           "Reduce blue light (wl-sunset)"
+                                font.pixelSize: 10
+                                color:          theme.muted
+                            }
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Rectangle {
+                            width: 44
+                            height: 24
+                            radius: 12
+                            color: barSettings.nightlightEnabled ? theme.color2 : Qt.darker(theme.muted, 1.2)
+                            border { width: 1; color: barSettings.nightlightEnabled ? theme.color2 : theme.muted }
+
+                            Rectangle {
+                                x: barSettings.nightlightEnabled ? parent.width - width - 2 : 2
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 20
+                                height: 20
+                                radius: 10
+                                color: theme.foreground
+                                Behavior on x { NumberAnimation { duration: 120 } }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape:  Qt.PointingHandCursor
+                                onClicked:    barSettings.setNightlight(!barSettings.nightlightEnabled)
                             }
                         }
                     }

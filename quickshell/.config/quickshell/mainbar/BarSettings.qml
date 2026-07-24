@@ -16,6 +16,7 @@ Item {
     property real arabicFontSize: 20
     property real translationFontSize: 11
     property bool arabicBold: false
+    property bool nightlightEnabled: false
     property bool _loading: false
 
     readonly property string configPath:
@@ -59,8 +60,15 @@ Item {
                 if (data && data.arabicBold !== undefined) {
                     settingsRoot.arabicBold = data.arabicBold
                 }
+                if (data && data.nightlightEnabled !== undefined) {
+                    settingsRoot.nightlightEnabled = data.nightlightEnabled
+                }
                 _loading = false
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
+                if (settingsRoot.nightlightEnabled) {
+                    nightlightProc.command = ["wlsunset", "-t", "2400", "-T", "4000"]
+                    nightlightProc.running = true
+                }
             } catch (e) {
                 _loading = false
             }
@@ -76,6 +84,19 @@ Item {
     Process {
         id: hyprctlProc
         running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: nightlightProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: nightlightKill
+        running: false
+        command: ["sh", "-c", "pkill wlsunset"]
         stdout: SplitParser { onRead: line => {} }
     }
 
@@ -98,6 +119,16 @@ Item {
 
     function setBarPosition(pos) {
         settingsRoot.barPosition = pos
+    }
+
+    function setNightlight(enabled) {
+        settingsRoot.nightlightEnabled = enabled
+        if (enabled) {
+            nightlightProc.command = ["wlsunset", "-t", "2400", "-T", "4000"]
+            nightlightProc.running = true
+        } else {
+            nightlightKill.running = true
+        }
     }
 
     function applyHyprlandRadius(r) {
@@ -125,7 +156,8 @@ Item {
             arabicFont: settingsRoot.arabicFont,
             arabicFontSize: settingsRoot.arabicFontSize,
             translationFontSize: settingsRoot.translationFontSize,
-            arabicBold: settingsRoot.arabicBold
+            arabicBold: settingsRoot.arabicBold,
+            nightlightEnabled: settingsRoot.nightlightEnabled
         })
         settingsWriter.command = ["sh", "-c",
             "mkdir -p ~/.config/quickshell && cat > ~/.config/quickshell/bar-settings.json << 'ENDOFFILE'\n" + json + "\nENDOFFILE"]
@@ -205,6 +237,10 @@ Item {
     }
 
     onArabicBoldChanged: {
+        if (!_loading) save()
+    }
+
+    onNightlightEnabledChanged: {
         if (!_loading) save()
     }
 }
