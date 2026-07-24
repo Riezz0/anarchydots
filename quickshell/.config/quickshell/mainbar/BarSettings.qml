@@ -66,8 +66,9 @@ Item {
                 _loading = false
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
                 if (settingsRoot.nightlightEnabled) {
-                    nightlightProc.command = ["wlsunset", "-t", "2400", "-T", "4000"]
-                    nightlightProc.running = true
+                    nightlightToggleProc.command = ["nohup", "setsid", "bash", "-c",
+                        "hyprsunset -t 4000 </dev/null >/dev/null 2>&1"]
+                    nightlightToggleProc.running = true
                 }
             } catch (e) {
                 _loading = false
@@ -88,15 +89,14 @@ Item {
     }
 
     Process {
-        id: nightlightProc
+        id: nightlightToggleProc
         running: false
         stdout: SplitParser { onRead: line => {} }
     }
 
     Process {
-        id: nightlightKill
+        id: nightlightStopProc
         running: false
-        command: ["sh", "-c", "pkill wlsunset"]
         stdout: SplitParser { onRead: line => {} }
     }
 
@@ -124,10 +124,12 @@ Item {
     function setNightlight(enabled) {
         settingsRoot.nightlightEnabled = enabled
         if (enabled) {
-            nightlightProc.command = ["wlsunset", "-t", "2400", "-T", "4000"]
-            nightlightProc.running = true
+            nightlightToggleProc.command = ["nohup", "setsid", "bash", "-c",
+                "hyprsunset -t 4000 </dev/null >/dev/null 2>&1"]
+            nightlightToggleProc.running = true
         } else {
-            nightlightKill.running = true
+            nightlightStopProc.command = ["pkill", "hyprsunset"]
+            nightlightStopProc.running = true
         }
     }
 
