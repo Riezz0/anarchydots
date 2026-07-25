@@ -99,6 +99,14 @@ cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/quickshell/assets/arch.
 #------------------------#
 # REFRESH INTERFACES
 #------------------------#
+#------------------------#
+# RGB LIGHTING
+#------------------------#
+apply-pywal-rgb color2
+
+#------------------------#
+# REFRESH INTERFACES
+#------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
 hyprctl reload
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true

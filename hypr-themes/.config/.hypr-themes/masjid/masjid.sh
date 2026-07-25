@@ -97,6 +97,11 @@ cp "$THEME_DIR/masjid.png" "$HOME/.config/fastfetch/arch.png"
 cp "$THEME_DIR/masjid.png" "$HOME/.config/quickshell/assets/arch.png"
 
 #------------------------#
+# RGB LIGHTING
+#------------------------#
+apply-pywal-rgb color2
+
+#------------------------#
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30

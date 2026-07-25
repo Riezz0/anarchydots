@@ -104,6 +104,11 @@ cp -r "$THEME_DIR/arch-everforest-dark.png" "/home/$USER/.config/fastfetch/arch.
 cp -r "$THEME_DIR/arch-everforest-dark.png" "/home/$USER/.config/quickshell/assets/arch.png"
 
 #------------------------#
+# RGB LIGHTING
+#------------------------#
+apply-pywal-rgb color2
+
+#------------------------#
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30

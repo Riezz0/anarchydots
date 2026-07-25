@@ -110,6 +110,11 @@ cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/quickshell/assets/a
 # cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
 
 #------------------------#
+# RGB LIGHTING
+#------------------------#
+apply-pywal-rgb color2
+
+#------------------------#
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30

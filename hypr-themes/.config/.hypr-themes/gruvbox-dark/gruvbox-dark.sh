@@ -106,6 +106,14 @@ cp -r "$THEME_DIR/arch-gruvbox-dark.png" "/home/$USER/.config/quickshell/assets/
 #------------------------#
 # REFRESH INTERFACES
 #------------------------#
+#------------------------#
+# RGB LIGHTING
+#------------------------#
+apply-pywal-rgb color2
+
+#------------------------#
+# REFRESH INTERFACES
+#------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
 hyprctl reload
 kill -SIGUSR1 $(pidof kitty)

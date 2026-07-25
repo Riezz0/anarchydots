@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# apply-pywal-rgb
+# Sets all OpenRGB devices to pywal color2
+# Usage: apply-pywal-rgb [color_key]
+#   color_key: pywal color to use (default: color2)
+#   e.g. apply-pywal-rgb color4
+
+COLOR_KEY="${1:-color2}"
+WAL_COLORS="$HOME/.cache/wal/colors.json"
+
+if [ ! -f "$WAL_COLORS" ]; then
+    echo "pywal colors not found at $WAL_COLORS" >&2
+    exit 1
+fi
+
+# Start openrgb server if not running
+if ! pgrep -x openrgb > /dev/null 2>&1; then
+    openrgb --server 2>/dev/null &
+    sleep 1
+fi
+
+# Verify server is reachable
+if ! openrgb --list-devices > /dev/null 2>&1; then
+    echo "OpenRGB server not reachable" >&2
+    exit 1
+fi
+
+# Extract the hex color
+HEX=$(python3 -c "
+import json, sys
+with open('$WAL_COLORS') as f:
+    data = json.load(f)
+color = data['colors'].get('$COLOR_KEY')
+if not color:
+    print('Invalid color key: $COLOR_KEY', file=sys.stderr)
+    sys.exit(1)
+print(color.lstrip('#'))
+" 2>&1)
+
+if [ $? -ne 0 ]; then
+    echo "Failed to read color: $HEX" >&2
+    exit 1
+fi
+
+# Set all devices to this color using 'direct' mode (works for Corsair RAM + motherboard)
+openrgb --color "$HEX" --mode direct 2>/dev/null
+
+echo "RGB set to $COLOR_KEY ($HEX)"
