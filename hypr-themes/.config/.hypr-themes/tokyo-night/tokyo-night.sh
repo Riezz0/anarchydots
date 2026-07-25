@@ -99,15 +99,15 @@ rm -rf ~/.cache/fastfetch
 cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/fastfetch/arch.png"
 
 #------------------------#
-# WAYBAR ICON
+# BAR ICON
 #------------------------#
-cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
+# cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
 cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/quickshell/assets/arch.png"
 
 #------------------------#
 # WAYBAR LOGO 
 #------------------------#
-cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
+# cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
 
 #------------------------#
 # REFRESH INTERFACES

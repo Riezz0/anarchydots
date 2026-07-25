@@ -91,9 +91,9 @@ rm -rf "$HOME/.cache/fastfetch"
 cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/fastfetch/arch.png"
 
 #------------------------#
-# WAYBAR ICON
+# BAR ICON
 #------------------------#
-cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/waybar/icons/arch.png"
+# cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/waybar/icons/arch.png"
 cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/quickshell/assets/arch.png"
 
 #------------------------#
