@@ -99,14 +99,6 @@ cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/quickshell/assets/arch.
 #------------------------#
 # REFRESH INTERFACES
 #------------------------#
-#------------------------#
-# RGB LIGHTING
-#------------------------#
-apply-pywal-rgb color2
-
-#------------------------#
-# REFRESH INTERFACES
-#------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
 hyprctl reload
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true
@@ -126,7 +118,17 @@ cp "$THEME_DIR/$THEME_NAME.sh" "/home/$USER/.local/share/themes/hypr-theme-activ
 notify-send -a "$THEME_DISPLAY" "Theme Loaded"
 
 #------------------------#
-# NAUTILUS
+# REFRESH GTK APPS
 #------------------------#
-nautilus -q && gtk4-update-icon-cache "$HOME/.config/gtk-4.0"
+gtk4-update-icon-cache "$HOME/.config/gtk-4.0" 2>/dev/null || true
+gtk-update-icon-cache "$HOME/.config/gtk-3.0" 2>/dev/null || true
+killall -q nautilus 2>/dev/null || true
+killall -q nemo 2>/dev/null || true
+killall -q thunar 2>/dev/null || true
+killall -q gnome-text-editor 2>/dev/null || true
+killall -q gnome-calculator 2>/dev/null || true
+killall -q gnome-calendar 2>/dev/null || true
+killall -q evince 2>/dev/null || true
+killall -q eog 2>/dev/null || true
+killall -q file-roller 2>/dev/null || true
 
