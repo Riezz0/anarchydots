@@ -488,6 +488,172 @@ Variants {
                     }
                 }
 
+                // Separator
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 1
+                    color: theme.muted
+                    opacity: 0.4
+                }
+
+                // Drives Section Header
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    Text {
+                        text: "󰋊"
+                        font.pixelSize: 16
+                        color: theme.color4
+                    }
+
+                    Text {
+                        text: "Drives"
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: theme.foreground
+                        Layout.fillWidth: true
+                    }
+                }
+
+                // Scrollable Drives List
+                Flickable {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 200
+                    contentHeight: drivesCol.implicitHeight
+                    clip: true
+                    flickableDirection: Flickable.VerticalFlick
+
+                    ColumnLayout {
+                        id: drivesCol
+                        width: parent.width
+                        spacing: 6
+
+                        Repeater {
+                            model: stats.drives.length
+
+                            Rectangle {
+                                required property int index
+                                property var d: stats.drives[index]
+
+                                Layout.fillWidth: true
+                                implicitHeight: driveContent.implicitHeight + 12
+                                radius: 4
+                                color: Qt.darker(theme.background, 1.3)
+
+                                ColumnLayout {
+                                    id: driveContent
+                                    anchors.fill: parent
+                                    anchors.margins: 8
+                                    spacing: 4
+
+                                    RowLayout {
+                                        Layout.fillWidth: true
+
+                                        Text {
+                                            text: d.name
+                                            font.pixelSize: 13
+                                            font.bold: true
+                                            font.family: "JetBrains Mono Nerd Font Mono"
+                                            color: theme.color4
+                                        }
+
+                                        Item { Layout.fillWidth: true }
+
+                                        Text {
+                                            text: d.size || ""
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            font.family: "JetBrains Mono Nerd Font Mono"
+                                            color: theme.foreground
+                                        }
+                                    }
+
+                                    // Usage bar - only if mounted
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 8
+                                        visible: d.total !== "--"
+
+                                        Text {
+                                            text: "Used:"
+                                            font.pixelSize: 11
+                                            color: theme.muted
+                                            Layout.preferredWidth: 35
+                                        }
+
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            implicitHeight: 6
+                                            radius: 3
+                                            color: Qt.darker(theme.background, 1.5)
+
+                                            Rectangle {
+                                                anchors { left: parent.left; top: parent.top; bottom: parent.bottom }
+                                                width: {
+                                                    if (!d.totalBytes || d.totalBytes <= 0) return 0
+                                                    return parent.width * Math.min(d.usedBytes / d.totalBytes, 1)
+                                                }
+                                                radius: 3
+                                                color: {
+                                                    if (!d.totalBytes || d.totalBytes <= 0) return theme.muted
+                                                    var p = d.usedBytes / d.totalBytes
+                                                    if (p >= 0.9) return theme.color1
+                                                    if (p >= 0.7) return theme.color3
+                                                    return theme.color2
+                                                }
+                                            }
+                                        }
+
+                                        Text {
+                                            text: d.used || "--"
+                                            font.pixelSize: 11
+                                            font.family: "JetBrains Mono Nerd Font Mono"
+                                            color: theme.foreground
+                                            Layout.preferredWidth: 55
+                                            horizontalAlignment: Text.AlignRight
+                                        }
+                                    }
+
+                                    // Free - only if mounted
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 8
+                                        visible: d.total !== "--"
+
+                                        Text {
+                                            text: "Free:"
+                                            font.pixelSize: 11
+                                            color: theme.muted
+                                            Layout.preferredWidth: 35
+                                        }
+
+                                        Item { Layout.fillWidth: true }
+
+                                        Text {
+                                            text: d.avail || "--"
+                                            font.pixelSize: 11
+                                            font.family: "JetBrains Mono Nerd Font Mono"
+                                            color: theme.color2
+                                            Layout.preferredWidth: 55
+                                            horizontalAlignment: Text.AlignRight
+                                        }
+                                    }
+
+                                    // Unmounted label
+                                    Text {
+                                        visible: d.total === "--"
+                                        text: "Not mounted"
+                                        font.pixelSize: 11
+                                        font.italic: true
+                                        color: theme.muted
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Close button
                 Rectangle {
                     Layout.fillWidth: true
