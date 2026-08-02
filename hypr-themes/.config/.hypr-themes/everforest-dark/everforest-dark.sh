@@ -40,7 +40,7 @@ cp "$WALL" "/var/local/sddm-wallpaper/background.jpg"
 #------------------------#
 cp -r "$THEME_DIR/pywal" "$PYWAL"
 wal --theme "$PYWAL"  # synchronous to ensure cache files exist
-cp ~/.cache/wal/colors.json /var/local/sddm-wallpaper/colors.json
+cp ~/.cache/wal/colors.qml /var/local/sddm-wallpaper/PywalColors.qml
 
 #------------------------#
 # MAKE DIRECTORIES
