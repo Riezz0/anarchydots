@@ -193,6 +193,7 @@ Variants {
                         anchors.fill: parent
                         color:        "transparent"
                         radius: barSettings.barRadius
+                        property bool hovered: false
                         border {
                             width: barSettings.borderThickness
                             color: theme.color2
@@ -204,7 +205,8 @@ Variants {
                             anchors.centerIn: parent
                             text:           bt.btIcon()
                             font.pixelSize: 18
-                            color:          bt.btColor()
+                            color:          btRect.hovered ? theme.foreground : bt.btColor()
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
                     }
 
@@ -223,6 +225,7 @@ Variants {
                         }
 
                         onContainsMouseChanged: {
+                            btRect.hovered = containsMouse
                             btRect.border.color = containsMouse ? theme.muted : theme.color2
                         }
                     }
@@ -245,7 +248,7 @@ Variants {
                         anchors.centerIn: parent
                         text:           "󰍛"
                         font.pixelSize: 18
-                        color:          tempModule.hovered ? Qt.lighter(theme.color4, 1.3) : theme.color4
+                            color:          tempModule.hovered ? theme.foreground : theme.color4
                         Behavior on color { ColorAnimation { duration: 120 } }
                     }
 
@@ -285,7 +288,8 @@ Variants {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           weather.weatherIconText()
                             font.pixelSize: 14
-                            color:          theme.color4
+                            color:          weatherBtn.hovered ? theme.foreground : theme.color4
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
                         Text {
@@ -334,7 +338,8 @@ Variants {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           kbd.layoutIcon()
                             font.pixelSize: 14
-                            color:          kbd.layoutColor()
+                            color:          kbdBtn.hovered ? theme.foreground : kbd.layoutColor()
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
                         Text {
@@ -378,7 +383,8 @@ Variants {
                         anchors.centerIn: parent
                         text:           "󰒓"
                         font.pixelSize: 18
-                        color:          theme.color5
+                        color:          settingsBtn.hovered ? theme.foreground : theme.color5
+                        Behavior on color { ColorAnimation { duration: 120 } }
                     }
 
                     MouseArea {
@@ -420,7 +426,8 @@ Variants {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           net.networkIcon()
                             font.pixelSize: 14
-                            color:          net.networkColor()
+                            color:          netBtn.hovered ? theme.foreground : net.networkColor()
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
                         Text {
@@ -464,7 +471,8 @@ Variants {
                         anchors.centerIn: parent
                         text:           "󰔉"
                         font.pixelSize: 18
-                        color:          theme.color6
+                        color:          themesBtn.hovered ? theme.foreground : theme.color6
+                        Behavior on color { ColorAnimation { duration: 120 } }
                     }
 
                     MouseArea {
@@ -503,7 +511,8 @@ Variants {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           updates.updateIcon()
                             font.pixelSize: 14
-                            color:          updates.updateColor()
+                            color:          updatesBtn.hovered ? theme.foreground : updates.updateColor()
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
                         Text {
@@ -573,7 +582,8 @@ Variants {
                             anchors.centerIn: parent
                             text:           notifs.notifIcon()
                             font.pixelSize: 18
-                            color:          notifs.notifColor()
+                            color:          notifButton.hovered ? theme.foreground : notifs.notifColor()
+                            Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
                         // Unread badge
@@ -631,6 +641,7 @@ Variants {
                         anchors.fill: parent
                         color:        "transparent"
                         radius: barSettings.barRadius
+                        property bool hovered: false
                         border {
                             width: barSettings.borderThickness
                             color: audio.volumeMuted ? theme.color1 : theme.color4
@@ -646,7 +657,8 @@ Variants {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text:           audio.volumeIcon()
                                 font.pixelSize: 18
-                                color:          audio.volumeMuted ? theme.color1 : theme.color2
+                                color:          volumeRect.hovered ? theme.foreground : (audio.volumeMuted ? theme.color1 : theme.color2)
+                                Behavior on color { ColorAnimation { duration: 120 } }
                             }
 
                             Text {
@@ -682,6 +694,7 @@ Variants {
                         }
 
                         onContainsMouseChanged: {
+                            volumeRect.hovered = containsMouse
                             volumeRect.border.color = containsMouse
                                 ? theme.muted
                                 : (audio.volumeMuted ? theme.color1 : theme.color4)
@@ -772,7 +785,8 @@ Variants {
                 font.pixelSize:   14
                 font.bold:        true
                 font.family:      "JetBrains Mono Nerd Font Mono"
-                color:            theme.muted
+                color:            salaatBtn.hovered ? theme.foreground : theme.muted
+                Behavior on color { ColorAnimation { duration: 120 } }
                 elide:            Text.ElideRight
                 width:            parent.width - 16
                 clip:             true
