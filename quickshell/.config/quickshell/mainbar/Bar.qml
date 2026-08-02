@@ -14,6 +14,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 
 Variants {
     model: barSettings.popupScreens()
@@ -37,6 +38,12 @@ Variants {
             exclusionMode:  ExclusionMode.Normal
 
             margins { left: 10; right: 10; top: 10; bottom: 10 }
+
+            Process {
+                id: bluemanProc
+                command: ["blueman-manager"]
+                running: false
+            }
 
         Rectangle {
             id:           barBackground
@@ -211,7 +218,7 @@ Variants {
                             if (mouse.button === Qt.RightButton) {
                                 bt.toggle()
                             } else {
-                                root.btPopupOpen = !root.btPopupOpen
+                                bluemanProc.running = true
                             }
                         }
 
