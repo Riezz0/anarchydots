@@ -435,7 +435,7 @@ Variants {
 
                             Column {
                                 required property int modelData
-                                x: (modelData / 5) * (parent.width - 16) + 8
+                                x: (modelData / 5) * parent.width
                                 spacing: 2
 
                                 Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
@@ -536,7 +536,7 @@ Variants {
 
                             Column {
                                 required property int modelData
-                                x: (modelData / 5) * (parent.width - 16) + 8
+                                x: (modelData / 5) * parent.width
                                 spacing: 2
 
                                 Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
@@ -637,7 +637,7 @@ Variants {
 
                             Column {
                                 required property int modelData
-                                x: (modelData / 100) * (parent.width - 16) + 8
+                                x: (modelData / 100) * parent.width
                                 spacing: 2
 
                                 Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
@@ -738,7 +738,7 @@ Variants {
 
                             Column {
                                 required property int modelData
-                                x: (modelData / 100) * (parent.width - 16) + 8
+                                x: (modelData / 100) * parent.width
                                 spacing: 2
 
                                 Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }

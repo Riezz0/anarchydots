@@ -224,7 +224,7 @@ Item {
         const override = "hl.config({ general = { border_size = " + t + " } })"
         const cmd = "if grep -q 'border_size' '" + luaPath + "'; then " +
                     "sed -i 's/border_size\\s*=\\s*[0-9]\\+/border_size = " + t + "/g' '" + luaPath + "'; " +
-                    "else echo '\\n" + override + "' >> '" + luaPath + "'; fi"
+                    "else echo '" + override + "' >> '" + luaPath + "'; fi"
         sedBorderProc.command = ["sh", "-c", cmd]
         sedBorderProc.running = true
     }
@@ -235,7 +235,7 @@ Item {
         const cmd = "if grep -q 'rounding' '" + luaPath + "'; then " +
                     "sed -i 's/rounding\\s*=\\s*[0-9]\\+/rounding = " + r + "/g' '" + luaPath + "' && " +
                     "sed -i 's/rounding_power\\s*=\\s*[0-9]\\+/rounding_power = " + r + "/g' '" + luaPath + "'; " +
-                    "else echo '\\n" + override + "' >> '" + luaPath + "'; fi"
+                    "else echo '" + override + "' >> '" + luaPath + "'; fi"
         hyprctlProc.command = ["sh", "-c", cmd]
         hyprctlProc.running = true
     }

@@ -20,7 +20,8 @@ alias gc="git commit --allow-empty-message -m "
 alias gp="git push -u origin main"
 
 export PATH="$HOME/.local/bin:$PATH"
-export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
+
+# opencode
+export PATH=/home/riezzo/.opencode/bin:$PATH
+export PATH="$HOME/.npm-global/bin:$HOME/go/bin:$HOME/.local/bin:/usr/lib/qt6/bin:$PATH"
+

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to your text file
-TEXT_FILE="/usr/local/bin/dhikr.txt"
+TEXT_FILE="$HOME/.config/scripts/dhikr.txt"
 
 # Check if file exists
 if [ ! -f "$TEXT_FILE" ]; then
