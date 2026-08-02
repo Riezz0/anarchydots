@@ -19,7 +19,6 @@ allow_special_workspaces = false
 match_by = "class"
 margin = 250
 offset = "125px"
-force_monitor = "DP-2"
 lazy = true
 
 [scratchpads.vimpad]
@@ -34,7 +33,6 @@ allow_special_workspaces = false
 match_by = "class"
 margin = 250
 offset = "120px"
-force_monitor = "DP-2"
 lazy = true
 
 [scratchpads.nautipad]
@@ -49,7 +47,6 @@ allow_special_workspaces = false
 match_by = "class"
 offset = "125px"
 margin = 250
-force_monitor = "DP-2"
 
 [scratchpads.HyprThemer]
 command = "python3 /usr/local/bin/themer.py"
@@ -63,7 +60,6 @@ multi = false
 hide_delay = 0
 allow_special_workspaces = false
 match_by = "class"
-force_monitor = "DP-2"
 
 [scratchpads.HyprBinds]
 command = "python3 /usr/local/bin/binds.py"
@@ -77,7 +73,6 @@ multi = false
 hide_delay = 0
 allow_special_workspaces = true
 match_by = "class"
-force_monitor = "DP-2"
 unfocus = "empty"
 process_tracking = false
 
@@ -94,7 +89,6 @@ hide_delay = 0
 allow_special_workspaces = false
 match_by = "class"
 process_tracking = false
-force_monitor = "DP-2"
 
 [scratchpads.pyprpad]
 command = "chromium --app=http://127.0.0.1:18099"
@@ -107,7 +101,6 @@ multi = false
 allow_special_workspaces = false
 match_by = "title"
 title = "pypr-gui"
-force_monitor = "DP-2"
 
 [scratchpads.quranpad]
 command = "chromium --app=https://www.quranwbw.com"
