@@ -49,7 +49,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color4 }
+            border { width: barSettings.borderThickness; color: theme.color4 }
 
             MouseArea {
                 anchors.fill: parent
@@ -70,7 +70,7 @@ Variants {
                     Rectangle {
                         width: 28; height: 28; radius: barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: theme.color4 }
+                        border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -98,7 +98,7 @@ Variants {
                     Rectangle {
                         width: 28; height: 28; radius: barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: theme.color4 }
+                        border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -201,7 +201,7 @@ Variants {
                     implicitHeight: 28
                     radius:   barSettings.barRadius
                     color: "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Text {
                         anchors.centerIn: parent

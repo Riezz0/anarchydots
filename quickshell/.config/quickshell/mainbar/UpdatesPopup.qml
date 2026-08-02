@@ -49,7 +49,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: updates.updatesAvailable ? theme.color3 : theme.color2 }
+            border { width: barSettings.borderThickness; color: updates.updatesAvailable ? theme.color3 : theme.color2 }
 
             MouseArea {
                 anchors.fill: parent
@@ -98,7 +98,7 @@ Variants {
                     implicitHeight: 32
                     radius:   barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: updates.checking ? theme.muted : theme.color4 }
+                    border { width: barSettings.borderThickness; color: updates.checking ? theme.muted : theme.color4 }
 
                     Text {
                         anchors.centerIn: parent
@@ -139,7 +139,7 @@ Variants {
                             implicitHeight: entryRow.implicitHeight + 12
                             radius: 4
                             color:  Qt.darker(theme.background, 1.2)
-                            border { width: 1; color: theme.color4 }
+                            border { width: barSettings.borderThickness; color: theme.color4 }
 
                             RowLayout {
                                 id:               entryRow
@@ -174,7 +174,7 @@ Variants {
                     implicitHeight: 40
                     radius:   barSettings.barRadius
                     color:  updates.updatesAvailable ? Qt.rgba(theme.color3.r, theme.color3.g, theme.color3.b, 0.15) : "transparent"
-                    border { width: 2; color: updates.updatesAvailable ? theme.color3 : theme.muted }
+                    border { width: barSettings.borderThickness; color: updates.updatesAvailable ? theme.color3 : theme.muted }
 
                     Text {
                         anchors.centerIn: parent

@@ -49,7 +49,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color2 }
+            border { width: barSettings.borderThickness; color: theme.color2 }
 
             MouseArea {
                 anchors.fill: parent
@@ -98,7 +98,7 @@ Variants {
                     implicitHeight: 32
                     radius:   barSettings.barRadius
                     color:  bt.enabled ? theme.color2 : "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Text {
                         anchors.centerIn: parent
@@ -138,7 +138,7 @@ Variants {
                             implicitHeight: 48
                             radius:   barSettings.barRadius
                             color:  modelData.connected ? Qt.darker(theme.background, 1.2) : "transparent"
-                            border { width: 2; color: modelData.connected ? theme.color2 : theme.color4 }
+                            border { width: barSettings.borderThickness; color: modelData.connected ? theme.color2 : theme.color4 }
 
                             RowLayout {
                                 anchors.fill:         parent
@@ -174,7 +174,7 @@ Variants {
                                     height: 30
                                     radius:   barSettings.barRadius
                                     color:  modelData.connected ? theme.color1 : "transparent"
-                                    border { width: 2; color: theme.color4 }
+                                    border { width: barSettings.borderThickness; color: theme.color4 }
                                     Layout.alignment:   Qt.AlignVCenter
                                     Layout.rightMargin: 4
 

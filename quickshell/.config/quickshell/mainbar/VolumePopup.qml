@@ -49,7 +49,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.90
-            border { width: 2; color: theme.color2 }
+            border { width: barSettings.borderThickness; color: theme.color2 }
 
             MouseArea {
                 anchors.fill: parent
@@ -97,7 +97,7 @@ Variants {
                     implicitHeight: 14
                     radius:   barSettings.barRadius
                     color:  Qt.darker(theme.background, 1.3)
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Rectangle {
                         anchors {
@@ -141,7 +141,7 @@ Variants {
                         implicitHeight: 28
                         radius:   barSettings.barRadius
                         color:  audio.volumeMuted ? theme.color1 : "transparent"
-                        border { width: 2; color: theme.color4 }
+                        border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -163,7 +163,7 @@ Variants {
                         implicitHeight: 28
                         radius:   barSettings.barRadius
                         color:  "transparent"
-                        border { width: 2; color: theme.color4 }
+                        border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent

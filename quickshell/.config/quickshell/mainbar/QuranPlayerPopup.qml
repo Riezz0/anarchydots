@@ -34,7 +34,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color3 }
+            border { width: barSettings.borderThickness; color: theme.color3 }
 
             Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
 
@@ -228,7 +228,7 @@ Variants {
                         Rectangle {
                             Layout.preferredWidth: 44; Layout.preferredHeight: 36; radius: barSettings.barRadius
                             color: prevArea.containsMouse ? Qt.darker(theme.color3, 1.3) : "transparent"
-                            border { width: 2; color: theme.color3 }
+                            border { width: barSettings.borderThickness; color: theme.color3 }
                             Text { anchors.centerIn: parent; text: "\u23EE"; font.pixelSize: 18; color: theme.color3 }
                             MouseArea { id: prevArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: quranPlayer.prev() }
                         }
@@ -244,7 +244,7 @@ Variants {
                         Rectangle {
                             Layout.preferredWidth: 44; Layout.preferredHeight: 36; radius: barSettings.barRadius
                             color: nextArea.containsMouse ? Qt.darker(theme.color3, 1.3) : "transparent"
-                            border { width: 2; color: theme.color3 }
+                            border { width: barSettings.borderThickness; color: theme.color3 }
                             Text { anchors.centerIn: parent; text: "\u23ED"; font.pixelSize: 18; color: theme.color3 }
                             MouseArea { id: nextArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: quranPlayer.next() }
                         }
@@ -257,7 +257,7 @@ Variants {
                         Rectangle {
                             Layout.preferredWidth: 44; Layout.preferredHeight: 36; radius: barSettings.barRadius
                             color: stopArea.containsMouse ? Qt.darker(theme.color1, 1.3) : "transparent"
-                            border { width: 2; color: theme.color1 }
+                            border { width: barSettings.borderThickness; color: theme.color1 }
                             Text { anchors.centerIn: parent; text: "\u23F9"; font.pixelSize: 18; color: theme.color1 }
                             MouseArea { id: stopArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: quranPlayer.stop() }
                         }

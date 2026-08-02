@@ -41,10 +41,16 @@ Variants {
         Rectangle {
             id:           barBackground
             anchors.fill: parent
-            color:        theme.background
-            opacity:      0.95
+            color:        "transparent"
             radius: barSettings.barRadius
-            border { color: theme.color2; width: 2 }
+
+            Rectangle {
+                anchors.fill: parent
+                color:        theme.background
+                opacity:      barSettings.barOpacity
+                radius: barSettings.barRadius
+                border { color: theme.color2; width: barSettings.borderThickness }
+            }
 
             RowLayout {
                 anchors {
@@ -63,7 +69,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color2 }
+                    border { width: barSettings.borderThickness; color: theme.color2 }
 
                     property bool hovered: false
 
@@ -97,7 +103,7 @@ Variants {
                     id:     workspaceContainer
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { color: theme.color4; width: 2 }
+                    border { color: theme.color4; width: barSettings.borderThickness }
 
                     Layout.alignment: Qt.AlignVCenter
                     implicitWidth:    workspaceRow.implicitWidth + 20
@@ -181,7 +187,7 @@ Variants {
                         color:        "transparent"
                         radius: barSettings.barRadius
                         border {
-                            width: 2
+                            width: barSettings.borderThickness
                             color: theme.color2
                         }
 
@@ -222,7 +228,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color2 }
+                    border { width: barSettings.borderThickness; color: theme.color2 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -255,7 +261,7 @@ Variants {
                     id:     weatherBtn
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
                     implicitHeight:   40
@@ -306,7 +312,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -355,7 +361,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color5 }
+                    border { width: barSettings.borderThickness; color: theme.color5 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -390,7 +396,7 @@ Variants {
                     id:     netBtn
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
                     implicitHeight:   40
@@ -441,7 +447,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color6 }
+                    border { width: barSettings.borderThickness; color: theme.color6 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -475,7 +481,7 @@ Variants {
                     implicitHeight: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: updatesBtn.hovered ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4) }
+                    border { width: barSettings.borderThickness; color: updatesBtn.hovered ? theme.muted : (updates.updatesAvailable ? theme.color3 : theme.color4) }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -548,7 +554,7 @@ Variants {
                         color:        "transparent"
                         radius: barSettings.barRadius
                         border {
-                            width: 2
+                            width: barSettings.borderThickness
                             color: notifButton.hovered ? theme.muted
                                  : notifs.hasUnread ? theme.color1
                                  : theme.color4
@@ -619,7 +625,7 @@ Variants {
                         color:        "transparent"
                         radius: barSettings.barRadius
                         border {
-                            width: 2
+                            width: barSettings.borderThickness
                             color: audio.volumeMuted ? theme.color1 : theme.color4
                         }
 
@@ -711,9 +717,9 @@ Variants {
                     width:            40
                     height:           40
                     radius: barSettings.barRadius
-                    color:            root.powerMenuOpen ? theme.color1 : Qt.darker(theme.background, 0.8)
+                    color:            root.powerMenuOpen ? theme.color1 : "transparent"
                     opacity:          powerBtnMouse.containsMouse ? 0.6 : 1.0
-                    border { color: theme.color1; width: 2 }
+                    border { color: theme.color1; width: barSettings.borderThickness }
                     Layout.alignment: Qt.AlignVCenter
 
                     Behavior on opacity { NumberAnimation { duration: 150 } }
@@ -743,9 +749,8 @@ Variants {
             width:  200
             height: 40
             radius: barSettings.barRadius
-            color:  theme.background
-            opacity: 0.95
-            border { width: 2; color: theme.color3 }
+            color:  "transparent"
+            border { width: barSettings.borderThickness; color: theme.color3 }
             clip:   true
             z: 10
 

@@ -35,7 +35,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color6 }
+            border { width: barSettings.borderThickness; color: theme.color6 }
 
             MouseArea {
                 anchors.fill: parent
@@ -99,7 +99,7 @@ Variants {
                                 height: 140
                                 radius:   barSettings.barRadius
                                 color:  "transparent"
-                                border { width: 2; color: theme.muted }
+                                border { width: barSettings.borderThickness; color: theme.muted }
 
                                 property bool hovered: false
 

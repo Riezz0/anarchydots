@@ -56,7 +56,7 @@ Variants {
                 height:       powerColumn.implicitHeight + 40
             radius:   barSettings.barRadius
                 color:        theme.background
-                border { color: theme.color2; width: 2 }
+                border { color: theme.color2; width: barSettings.borderThickness }
 
                 MouseArea {
                     anchors.fill: parent

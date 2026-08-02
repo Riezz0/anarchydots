@@ -88,7 +88,7 @@ Item {
                         color:    theme.background
                         opacity:  0.95
                         border {
-                            width: 2
+                            width: barSettings.borderThickness
                             color: modelData.urgency === 1 ? theme.color1
                                  : modelData.urgency === 0 ? Qt.darker(theme.color4, 0.7)
                                  : theme.color2

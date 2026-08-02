@@ -49,7 +49,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color2 }
+            border { width: barSettings.borderThickness; color: theme.color2 }
 
             MouseArea {
                 anchors.fill: parent
@@ -98,7 +98,7 @@ Variants {
                     implicitHeight: detailsColumn.implicitHeight + 20
                     radius:   barSettings.barRadius
                     color:  Qt.darker(theme.background, 1.2)
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     ColumnLayout {
                         id: detailsColumn
@@ -165,7 +165,7 @@ Variants {
                     implicitHeight: trafficRow.implicitHeight + 20
                     radius:   barSettings.barRadius
                     color:  Qt.darker(theme.background, 1.2)
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     RowLayout {
                         id: trafficRow
@@ -249,7 +249,7 @@ Variants {
                             implicitHeight: 40
                             radius:   barSettings.barRadius
                             color:  isActive ? Qt.darker(theme.background, 1.3) : "transparent"
-                            border { width: 2; color: isActive ? theme.color2 : theme.color4 }
+                            border { width: barSettings.borderThickness; color: isActive ? theme.color2 : theme.color4 }
 
                             RowLayout {
                                 anchors.fill:         parent
@@ -303,7 +303,7 @@ Variants {
                                     visible: !isActive
                                     width: 70; height: 26; radius: 4
                                     color:  "transparent"
-                                    border { width: 2; color: theme.color4 }
+                                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                                     Text {
                                         anchors.centerIn: parent
@@ -339,7 +339,7 @@ Variants {
                     implicitHeight: dnsRow.implicitHeight + 20
                     radius:   barSettings.barRadius
                     color:  Qt.darker(theme.background, 1.2)
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     RowLayout {
                         id: dnsRow
@@ -352,7 +352,7 @@ Variants {
                             implicitHeight: 32
                             radius: 4
                             color:  Qt.darker(theme.background, 1.5)
-                            border { width: 1; color: theme.color4 }
+                            border { width: barSettings.borderThickness; color: theme.color4 }
 
                             TextInput {
                                 id: dnsInput
@@ -388,7 +388,7 @@ Variants {
                             implicitWidth: 60; implicitHeight: 32
                             radius: 4
                             color:  "transparent"
-                            border { width: 2; color: theme.color4 }
+                            border { width: barSettings.borderThickness; color: theme.color4 }
 
                             Text {
                                 anchors.centerIn: parent
@@ -413,7 +413,7 @@ Variants {
                             implicitWidth: 60; implicitHeight: 32
                             radius: 4
                             color:  "transparent"
-                            border { width: 2; color: theme.color1 }
+                            border { width: barSettings.borderThickness; color: theme.color1 }
 
                             Text {
                                 anchors.centerIn: parent
@@ -441,7 +441,7 @@ Variants {
                     implicitHeight: 32
                     radius:   barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Text {
                         anchors.centerIn: parent

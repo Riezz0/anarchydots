@@ -64,7 +64,7 @@ Variants {
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
 
-            border { width: 2; color: theme.color5 }
+            border { width: barSettings.borderThickness; color: theme.color5 }
 
             Row {
                 id:               osdRow

@@ -225,7 +225,7 @@ Item {
                     height:           700
             radius:   barSettings.barRadius
                     color:            theme.background
-                    border { color: theme.color2; width: 2 }
+                    border { color: theme.color2; width: barSettings.borderThickness }
 
                     MouseArea {
                         anchors.fill: parent
@@ -270,7 +270,7 @@ Item {
                                     anchors.margins: -4
                                     radius:          3
                                     color:           "transparent"
-                                    border { color: theme.muted; width: 2 }
+                                    border { color: theme.muted; width: barSettings.borderThickness }
                                     z:               -1
                                 }
                             }

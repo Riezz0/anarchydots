@@ -48,7 +48,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color4 }
+            border { width: barSettings.borderThickness; color: theme.color4 }
 
             MouseArea {
                 anchors.fill: parent
@@ -660,7 +660,7 @@ Variants {
                     implicitHeight: 32
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Text {
                         anchors.centerIn: parent

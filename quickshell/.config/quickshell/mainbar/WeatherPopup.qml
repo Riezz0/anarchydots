@@ -50,7 +50,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color4 }
+            border { width: barSettings.borderThickness; color: theme.color4 }
 
             MouseArea {
                 anchors.fill: parent
@@ -126,7 +126,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -166,7 +166,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -206,7 +206,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -246,7 +246,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -286,7 +286,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -326,7 +326,7 @@ Variants {
                         Layout.alignment: Qt.AlignHCenter
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: Qt.darker(theme.muted, 1.5) }
+                        border { width: barSettings.borderThickness; color: Qt.darker(theme.muted, 1.5) }
 
                         Column {
                             anchors.centerIn: parent
@@ -400,7 +400,7 @@ Variants {
                     implicitHeight: 32
                     radius:   barSettings.barRadius
                     color:  "transparent"
-                    border { width: 2; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: theme.color4 }
 
                     Text {
                         anchors.centerIn: parent

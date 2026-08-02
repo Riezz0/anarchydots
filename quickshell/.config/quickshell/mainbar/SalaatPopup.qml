@@ -36,7 +36,7 @@ Variants {
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
-            border { width: 2; color: theme.color3 }
+            border { width: barSettings.borderThickness; color: theme.color3 }
 
             MouseArea {
                 anchors.fill: parent
@@ -141,7 +141,7 @@ Variants {
                         Layout.preferredHeight: 36
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: theme.color4 }
+                        border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
                             anchors.centerIn: parent
@@ -167,7 +167,7 @@ Variants {
                         Layout.preferredHeight: 36
                         radius:   barSettings.barRadius
                         color: "transparent"
-                        border { width: 2; color: theme.color5 }
+                        border { width: barSettings.borderThickness; color: theme.color5 }
 
                         Text {
                             anchors.centerIn: parent
@@ -205,7 +205,7 @@ Variants {
                     Layout.preferredHeight: 36
                     radius:   barSettings.barRadius
                     color: quranPlayerBtnArea.containsMouse ? Qt.darker(theme.color3, 1.3) : "transparent"
-                    border { width: 2; color: theme.color3 }
+                    border { width: barSettings.borderThickness; color: theme.color3 }
 
                     Row {
                         anchors.centerIn: parent
