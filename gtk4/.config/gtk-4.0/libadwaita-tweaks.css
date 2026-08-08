@@ -71,3 +71,18 @@ headerbar.default-decoration windowcontrols.end {
 tooltip.background.chromium {
   background-color: RGB(0 0 6/80%);
 }
+
+/* Context menu / popover overrides - must load after libadwaita.css */
+popover > contents {
+  border: 2px solid var(--accent-bg-color) !important;
+  box-shadow: none !important;
+}
+popover.menu modelbutton:hover,
+popover.menu modelbutton:selected {
+  background-color: var(--accent-bg-color) !important;
+  color: var(--accent-fg-color) !important;
+}
+popover menu menuitem:hover {
+  background-color: var(--accent-bg-color) !important;
+  color: var(--accent-fg-color) !important;
+}
