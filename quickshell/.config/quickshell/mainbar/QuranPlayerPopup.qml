@@ -8,8 +8,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: quranPlayerPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -21,9 +23,21 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: quranPlayerPopup
+            function onIsOpenChanged() {
+                if (quranPlayerPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    quranPlayerPopup.close()
+            opacity: quranPlayerPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
@@ -33,9 +47,12 @@ Variants {
             height: 500
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  quranPlayerPopup.isOpen ? 0.95 : 0
+            scale:    quranPlayerPopup.isOpen ? 1.0 : 0.95
             border { width: barSettings.borderThickness; color: theme.color3 }
 
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
             Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
 
             property bool showReciters: false

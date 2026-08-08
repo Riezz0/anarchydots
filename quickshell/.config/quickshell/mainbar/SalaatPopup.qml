@@ -8,8 +8,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: salaatPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -21,12 +23,25 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: salaatPopup
+            function onIsOpenChanged() {
+                if (salaatPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    salaatPopup.close()
+            opacity: salaatPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
+            id: salaatPanel
             anchors.top:        parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin:  10
@@ -35,8 +50,14 @@ Variants {
             height:   implicitHeight
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  salaatPopup.isOpen ? 0.95 : 0
+            scale:    salaatPopup.isOpen ? 1.0 : 0.95
+            y:        salaatPopup.isOpen ? 0 : -20
             border { width: barSettings.borderThickness; color: theme.color3 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
             MouseArea {
                 anchors.fill: parent

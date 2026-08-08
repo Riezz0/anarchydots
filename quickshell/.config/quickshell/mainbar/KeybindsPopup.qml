@@ -189,8 +189,10 @@ Item {
 
         PanelWindow {
             screen:  modelData
-            visible: keybindsRoot.isOpen
+            visible: panelVisible
             required property var modelData
+
+            property bool panelVisible: false
 
             anchors { top: true; bottom: true; left: true; right: true }
 
@@ -202,10 +204,21 @@ Item {
                 ? WlrKeyboardFocus.OnDemand
                 : WlrKeyboardFocus.None
 
+            Connections {
+                target: keybindsRoot
+                function onIsOpenChanged() {
+                    if (keybindsRoot.isOpen) { panelVisible = true }
+                    else { hideTimer.start() }
+                }
+            }
+
+            Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
             // Dim backdrop
             Rectangle {
                 anchors.fill: parent
-                color:        Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.72)
+                color:        Qt.rgba(theme.background.r, theme.background.g, theme.background.b, keybindsRoot.isOpen ? 0.72 : 0)
+                Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
                 MouseArea {
                     anchors.fill: parent
@@ -220,12 +233,18 @@ Item {
                 Keys.onEscapePressed: keybindsRoot.close()
 
                 Rectangle {
+                    id: keybindsDialog
                     anchors.centerIn: parent
                     width:            1200
                     height:           700
             radius:   barSettings.barRadius
                     color:            theme.background
+                    opacity:          keybindsRoot.isOpen ? 1.0 : 0
+                    scale:            keybindsRoot.isOpen ? 1.0 : 0.95
                     border { color: theme.color2; width: barSettings.borderThickness }
+
+                    Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                    Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
                     MouseArea {
                         anchors.fill: parent

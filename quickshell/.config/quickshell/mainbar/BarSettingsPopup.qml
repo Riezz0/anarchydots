@@ -9,8 +9,10 @@ Variants {
     PanelWindow {
         id: settingsWindow
         screen:  modelData
-        visible: settingsPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -22,9 +24,21 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: settingsPopup
+            function onIsOpenChanged() {
+                if (settingsPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    settingsPopup.close()
+            opacity: settingsPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
             property bool appearanceExpanded: false
@@ -33,6 +47,7 @@ Variants {
             property bool monitorMenuOpen: false
 
         Rectangle {
+            id: settingsPanel
             anchors.right:    parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 10
@@ -40,8 +55,14 @@ Variants {
             height:   settingsCol.implicitHeight + 32
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  settingsPopup.isOpen ? 0.95 : 0
+            scale:    settingsPopup.isOpen ? 1.0 : 0.95
+            x:        settingsPopup.isOpen ? 0 : 20
             border { width: barSettings.borderThickness; color: theme.color5 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on x       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
             ColumnLayout {
                 id:   settingsCol

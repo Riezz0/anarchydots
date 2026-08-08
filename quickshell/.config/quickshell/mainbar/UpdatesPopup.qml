@@ -20,8 +20,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: archUpdatePopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -33,9 +35,21 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: archUpdatePopup
+            function onIsOpenChanged() {
+                if (archUpdatePopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    archUpdatePopup.close()
+            opacity: archUpdatePopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
@@ -48,8 +62,14 @@ Variants {
             height:   Math.min(implicitHeight, Screen.height - 40)
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  archUpdatePopup.isOpen ? 0.95 : 0
+            scale:    archUpdatePopup.isOpen ? 1.0 : 0.95
+            y:        archUpdatePopup.isOpen ? 0 : -20
             border { width: barSettings.borderThickness; color: updates.updatesAvailable ? theme.color3 : theme.color2 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
             MouseArea {
                 anchors.fill: parent

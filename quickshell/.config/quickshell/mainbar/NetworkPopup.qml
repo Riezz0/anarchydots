@@ -20,8 +20,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: networkPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -33,9 +35,21 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: networkPopup
+            function onIsOpenChanged() {
+                if (networkPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    networkPopup.close()
+            opacity: networkPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
@@ -48,6 +62,14 @@ Variants {
             height:   implicitHeight
             radius:   barSettings.barRadius
             color:    theme.background
+            opacity:  networkPopup.isOpen ? 0.95 : 0
+            scale:    networkPopup.isOpen ? 1.0 : 0.95
+            y:        networkPopup.isOpen ? 0 : -20
+            border { width: barSettings.borderThickness; color: theme.color4 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
             opacity:  0.95
             border { width: barSettings.borderThickness; color: theme.color2 }
 

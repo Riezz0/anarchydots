@@ -86,12 +86,21 @@ Item {
                         height:   implicitHeight
                         radius:   barSettings.barRadius
                         color:    theme.background
-                        opacity:  0.95
+                        opacity:  0
+                        y:        -10
                         border {
                             width: barSettings.borderThickness
                             color: modelData.urgency === 1 ? theme.color1
                                  : modelData.urgency === 0 ? Qt.darker(theme.color4, 0.7)
                                  : theme.color2
+                        }
+
+                        Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                        Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+
+                        Component.onCompleted: {
+                            opacity = 0.95
+                            y = 0
                         }
 
                         Timer {

@@ -20,8 +20,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: statsPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -33,12 +35,25 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: statsPopup
+            function onIsOpenChanged() {
+                if (statsPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    statsPopup.close()
+            opacity: statsPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
+            id: statsPanel
             anchors.top:        parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin:  10
@@ -47,8 +62,14 @@ Variants {
             height:   implicitHeight
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  statsPopup.isOpen ? 0.95 : 0
+            scale:    statsPopup.isOpen ? 1.0 : 0.95
+            y:        statsPopup.isOpen ? 0 : -20
             border { width: barSettings.borderThickness; color: theme.color4 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
             MouseArea {
                 anchors.fill: parent

@@ -8,8 +8,10 @@ Variants {
 
     PanelWindow {
         screen:  modelData
-        visible: themesPopup.isOpen
+        visible: panelVisible
         required property var modelData
+
+        property bool panelVisible: false
 
         anchors { top: true; bottom: true; left: true; right: true }
 
@@ -21,12 +23,25 @@ Variants {
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None
 
+        Connections {
+            target: themesPopup
+            function onIsOpenChanged() {
+                if (themesPopup.isOpen) { panelVisible = true }
+                else { hideTimer.start() }
+            }
+        }
+
+        Timer { id: hideTimer; interval: 220; onTriggered: panelVisible = false }
+
         MouseArea {
             anchors.fill: parent
             onClicked:    themesPopup.close()
+            opacity: themesPopup.isOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
         Rectangle {
+            id: themesPanel
             anchors.bottom:     parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottomMargin: 10
@@ -34,8 +49,14 @@ Variants {
             height:   popupColumn.implicitHeight + 32
             radius:   barSettings.barRadius
             color:    theme.background
-            opacity:  0.95
+            opacity:  themesPopup.isOpen ? 0.95 : 0
+            scale:    themesPopup.isOpen ? 1.0 : 0.95
+            y:        themesPopup.isOpen ? 0 : 20
             border { width: barSettings.borderThickness; color: theme.color6 }
+
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on y       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
             MouseArea {
                 anchors.fill: parent
