@@ -59,6 +59,7 @@ Item {
             color:     "transparent"
             focusable: false
             exclusiveZone: -1
+            mask: Region { item: toastColumn; intersection: Intersection.Combine }
             implicitWidth: 432
 
             WlrLayershell.layer: WlrLayer.Overlay

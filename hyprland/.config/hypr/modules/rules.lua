@@ -9,9 +9,9 @@ float = true, size = "1000 500", center = true, opacity = "1",
 animation = "slide top", border_color = theme.color2 .. " " .. theme.color15 })
 
 -- Nautilus
-hl.window_rule({ name = "nautilusrules", match = { class = "org.gnome.Nautilus" },float = true, size = "1200 700", 
-center = true, opacity = "1", animation = "slide top",
-border_color = theme.color2 .. " " .. theme.color15 })
+hl.window_rule({ name = "nautirules", match = { class = "org.gnome.Nautilus" },
+float = true, size = "1000 500", center = true, opacity = "1", 
+animation = "slide top", border_color = theme.color2 .. " " .. theme.color15 })
 
 -- Neovim
 hl.window_rule({ name = "nvimrules", match = { class = "vimpad" },float = true, size = "1200 700", 
