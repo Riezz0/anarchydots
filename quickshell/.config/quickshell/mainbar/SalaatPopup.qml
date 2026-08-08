@@ -153,7 +153,7 @@ Variants {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
                         radius:   barSettings.barRadius
-                        color: "transparent"
+                        color: quranBtnArea.containsMouse ? Qt.darker(theme.color4, 1.3) : "transparent"
                         border { width: barSettings.borderThickness; color: theme.color4 }
 
                         Text {
@@ -166,7 +166,9 @@ Variants {
                         }
 
                         MouseArea {
+                            id: quranBtnArea
                             anchors.fill: parent
+                            hoverEnabled: true
                             cursorShape:  Qt.PointingHandCursor
                             onClicked: {
                                 salaatPopup.close()
@@ -179,7 +181,7 @@ Variants {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
                         radius:   barSettings.barRadius
-                        color: "transparent"
+                        color: sunnahBtnArea.containsMouse ? Qt.darker(theme.color5, 1.3) : "transparent"
                         border { width: barSettings.borderThickness; color: theme.color5 }
 
                         Text {
@@ -192,7 +194,9 @@ Variants {
                         }
 
                         MouseArea {
+                            id: sunnahBtnArea
                             anchors.fill: parent
+                            hoverEnabled: true
                             cursorShape:  Qt.PointingHandCursor
                             onClicked: {
                                 salaatPopup.close()
