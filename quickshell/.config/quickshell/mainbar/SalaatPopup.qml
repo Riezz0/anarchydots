@@ -50,12 +50,24 @@ Variants {
                 spacing: 0
 
                 // Header
-                Text {
-                    text:           "Prayer Times"
-                    font.pixelSize: 14
-                    font.bold:      true
-                    color:          theme.foreground
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
                     Layout.bottomMargin: 4
+
+                    Text {
+                        text:           "󰽥"
+                        font.pixelSize: 22
+                        color:          theme.color3
+                    }
+
+                    Text {
+                        text:           "Prayer Times"
+                        font.pixelSize: 16
+                        font.bold:      true
+                        color:          theme.foreground
+                        Layout.fillWidth: true
+                    }
                 }
 
                 Text {

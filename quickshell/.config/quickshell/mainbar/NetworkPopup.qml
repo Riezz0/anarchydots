@@ -71,6 +71,7 @@ Variants {
                     Text {
                         text:           net.networkIcon()
                         font.pixelSize: 24
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          net.networkColor()
                     }
 

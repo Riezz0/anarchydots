@@ -97,7 +97,7 @@ Variants {
                         }
 
                         PowerButton {
-                            icon:        "󰍀"
+                            icon:        "󰌾"
                             label:       "Lock"
                             bgColor:     theme.color4
                             textColor:   theme.background
@@ -162,6 +162,7 @@ Variants {
                 anchors.centerIn: parent
                 text:             powerButtonRoot.icon
                 font.pixelSize:   40
+                font.family:      "JetBrains Mono Nerd Font Mono"
                 color:            powerButtonRoot.textColor
             }
 

@@ -74,7 +74,7 @@ Variants {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "󰁍"
+                            text: "󰅁"
                             font.pixelSize: 14
                             color: theme.color4
                         }
@@ -102,7 +102,7 @@ Variants {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "󰁔"
+                            text: "󰅂"
                             font.pixelSize: 14
                             color: theme.color4
                         }

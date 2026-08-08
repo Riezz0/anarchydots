@@ -54,6 +54,12 @@ Variants {
                     Layout.fillWidth: true
 
                     Text {
+                        text:           "󰒓"
+                        font.pixelSize: 20
+                        color:          theme.color5
+                    }
+
+                    Text {
                         text:           "Settings"
                         font.pixelSize: 16
                         font.bold:      true
@@ -109,7 +115,7 @@ Variants {
                         }
 
                         Text {
-                            text:           "󰔉"
+                            text:           "󰏘"
                             font.pixelSize: 14
                             color:          theme.color6
                             anchors.verticalCenter: parent.verticalCenter
@@ -770,7 +776,7 @@ Variants {
                         }
 
                         Text {
-                            text:           "󰖨"
+                            text:           "󰍹"
                             font.pixelSize: 14
                             color:          theme.color2
                             anchors.verticalCenter: parent.verticalCenter

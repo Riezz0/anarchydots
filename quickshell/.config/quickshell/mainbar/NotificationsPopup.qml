@@ -74,6 +74,7 @@ Variants {
                     Text {
                         text:           notifs.notifIcon()
                         font.pixelSize: 24
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          notifs.notifColor()
                     }
 

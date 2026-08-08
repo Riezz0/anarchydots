@@ -469,7 +469,7 @@ Variants {
 
                     Text {
                         anchors.centerIn: parent
-                        text:           "󰔉"
+                        text:           "󰏘"
                         font.pixelSize: 18
                         color:          themesBtn.hovered ? theme.foreground : theme.color6
                         Behavior on color { ColorAnimation { duration: 120 } }

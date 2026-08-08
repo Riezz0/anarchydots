@@ -71,6 +71,7 @@ Variants {
                     Text {
                         text:           weather.weatherIconText()
                         font.pixelSize: 36
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          theme.color4
                     }
 

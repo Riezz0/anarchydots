@@ -71,6 +71,7 @@ Variants {
                     Text {
                         text:           bt.btIcon()
                         font.pixelSize: 24
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          bt.enabled ? theme.color2 : theme.muted
                     }
 

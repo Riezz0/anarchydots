@@ -70,6 +70,7 @@ Variants {
                     Text {
                         text:           audio.volumeIcon()
                         font.pixelSize: 22
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          audio.volumeMuted ? theme.color1 : theme.color2
                     }
 
