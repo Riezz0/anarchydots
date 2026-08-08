@@ -134,7 +134,7 @@ Variants {
                             spacing: 8
 
                             Text {
-                                text:           "󱥋"
+                                text:           "󰔏"
                                 font.pixelSize: 24
                                 font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          theme.color6
@@ -254,7 +254,7 @@ Variants {
                             spacing: 8
 
                             Text {
-                                text:           "󰖂"
+                                text:           "󰊚"
                                 font.pixelSize: 24
                                 font.family:    "JetBrains Mono Nerd Font Mono"
                                 color:          theme.color2

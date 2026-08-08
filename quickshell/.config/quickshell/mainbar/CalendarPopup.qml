@@ -76,6 +76,7 @@ Variants {
                             anchors.centerIn: parent
                             text: "󰅁"
                             font.pixelSize: 14
+                            font.family: "JetBrains Mono Nerd Font Mono"
                             color: theme.color4
                         }
 
@@ -104,6 +105,7 @@ Variants {
                             anchors.centerIn: parent
                             text: "󰅂"
                             font.pixelSize: 14
+                            font.family: "JetBrains Mono Nerd Font Mono"
                             color: theme.color4
                         }
 

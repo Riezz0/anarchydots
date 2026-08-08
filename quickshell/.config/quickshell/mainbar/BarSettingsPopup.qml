@@ -56,6 +56,7 @@ Variants {
                     Text {
                         text:           "󰒓"
                         font.pixelSize: 20
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          theme.color5
                     }
 
@@ -117,6 +118,7 @@ Variants {
                         Text {
                             text:           "󰏘"
                             font.pixelSize: 14
+                            font.family:    "JetBrains Mono Nerd Font Mono"
                             color:          theme.color6
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -778,6 +780,7 @@ Variants {
                         Text {
                             text:           "󰍹"
                             font.pixelSize: 14
+                            font.family:    "JetBrains Mono Nerd Font Mono"
                             color:          theme.color2
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -882,6 +885,7 @@ Variants {
                         Text {
                             text:           "󰍹"
                             font.pixelSize: 14
+                            font.family:    "JetBrains Mono Nerd Font Mono"
                             color:          theme.color4
                             anchors.verticalCenter: parent.verticalCenter
                         }

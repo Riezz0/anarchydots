@@ -45,7 +45,7 @@ Variants {
             anchors.topMargin:     10
             width:    420
             implicitHeight: updatesColumn.implicitHeight + 32
-            height:   Math.min(implicitHeight, Quickshell.screens[1].height - 40)
+            height:   Math.min(implicitHeight, Screen.height - 40)
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  0.95
@@ -71,6 +71,7 @@ Variants {
                     Text {
                         text:           updates.updateIcon()
                         font.pixelSize: 24
+                        font.family:    "JetBrains Mono Nerd Font Mono"
                         color:          updates.updateColor()
                     }
 
@@ -122,7 +123,7 @@ Variants {
                     Layout.bottomMargin: 12
                     Layout.preferredHeight: Math.min(
                         updatesList.contentHeight,
-                        Quickshell.screens[1].height - 320
+                        Screen.height - 320
                     )
                     clip: true
 

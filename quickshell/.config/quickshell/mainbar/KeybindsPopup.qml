@@ -246,6 +246,7 @@ Item {
                             Text {
                                 text:             "󰌌"
                                 font.pixelSize:   22
+                                font.family:      "JetBrains Mono Nerd Font Mono"
                                 color:            theme.color2
                             }
 

@@ -68,7 +68,7 @@ Variants {
                     RowLayout {
                         Layout.fillWidth: true; Layout.bottomMargin: 12
 
-                        Text { text: "󰂺"; font.pixelSize: 16; color: theme.color3 }
+                        Text { text: "󰂺"; font.pixelSize: 16; font.family: "JetBrains Mono Nerd Font Mono"; color: theme.color3 }
                         Text { text: "Quran Player"; font.pixelSize: 14; font.bold: true; color: theme.color3 }
                         Item { Layout.fillWidth: true }
 
