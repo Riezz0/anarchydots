@@ -1,0 +1,195 @@
+:root {
+  /* Pywal colors */
+  --wal-background: #090b15;
+  --wal-foreground: #c1c2c4;
+  --wal-color0: #090b15;
+  --wal-color1: #981C71;
+  --wal-color2: #096B94;
+  --wal-color3: #614D93;
+  --wal-color4: #CA4AA7;
+  --wal-color5: #EA58B4;
+  --wal-color6: #29ACCC;
+  --wal-color7: #c1c2c4;
+  --wal-color8: #585b6c;
+  --wal-color9: #981C71;
+  --wal-color10: #096B94;
+  --wal-color11: #614D93;
+  --wal-color12: #CA4AA7;
+  --wal-color13: #EA58B4;
+  --wal-color14: #29ACCC;
+  --wal-color15: #c1c2c4;
+
+  /* Adwaita color palette using pywal */
+  --blue-1: #CA4AA7;
+  --blue-2: #CA4AA7;
+  --blue-3: #CA4AA7;
+  --blue-4: #CA4AA7;
+  --blue-5: #CA4AA7;
+  --green-1: #096B94;
+  --green-2: #096B94;
+  --green-3: #096B94;
+  --green-4: #096B94;
+  --green-5: #096B94;
+  --yellow-1: #614D93;
+  --yellow-2: #614D93;
+  --yellow-3: #614D93;
+  --yellow-4: #614D93;
+  --yellow-5: #614D93;
+  --orange-1: #614D93;
+  --orange-2: #614D93;
+  --orange-3: #614D93;
+  --orange-4: #614D93;
+  --orange-5: #614D93;
+  --red-1: #981C71;
+  --red-2: #981C71;
+  --red-3: #981C71;
+  --red-4: #981C71;
+  --red-5: #981C71;
+  --purple-1: #EA58B4;
+  --purple-2: #EA58B4;
+  --purple-3: #EA58B4;
+  --purple-4: #EA58B4;
+  --purple-5: #EA58B4;
+  --brown-1: #614D93;
+  --brown-2: #614D93;
+  --brown-3: #614D93;
+  --brown-4: #614D93;
+  --brown-5: #614D93;
+  --light-1: #c1c2c4;
+  --light-2: #c1c2c4;
+  --light-3: #585b6c;
+  --light-4: #585b6c;
+  --light-5: #585b6c;
+  --dark-1: #585b6c;
+  --dark-2: #585b6c;
+  --dark-3: #090b15;
+  --dark-4: #090b15;
+  --dark-5: #090b15;
+}
+
+/* Named colors */
+@define-color blue_1 var(--blue-1);
+@define-color blue_2 var(--blue-2);
+@define-color blue_3 var(--blue-3);
+@define-color blue_4 var(--blue-4);
+@define-color blue_5 var(--blue-5);
+@define-color green_1 var(--green-1);
+@define-color green_2 var(--green-2);
+@define-color green_3 var(--green-3);
+@define-color green_4 var(--green-4);
+@define-color green_5 var(--green-5);
+@define-color yellow_1 var(--yellow-1);
+@define-color yellow_2 var(--yellow-2);
+@define-color yellow_3 var(--yellow-3);
+@define-color yellow_4 var(--yellow-4);
+@define-color yellow_5 var(--yellow-5);
+@define-color orange_1 var(--orange-1);
+@define-color orange_2 var(--orange-2);
+@define-color orange_3 var(--orange-3);
+@define-color orange_4 var(--orange-4);
+@define-color orange_5 var(--orange-5);
+@define-color red_1 var(--red-1);
+@define-color red_2 var(--red-2);
+@define-color red_3 var(--red-3);
+@define-color red_4 var(--red-4);
+@define-color red_5 var(--red-5);
+@define-color purple_1 var(--purple-1);
+@define-color purple_2 var(--purple-2);
+@define-color purple_3 var(--purple-3);
+@define-color purple_4 var(--purple-4);
+@define-color purple_5 var(--purple-5);
+@define-color brown_1 var(--brown-1);
+@define-color brown_2 var(--brown-2);
+@define-color brown_3 var(--brown-3);
+@define-color brown_4 var(--brown-4);
+@define-color brown_5 var(--brown-5);
+@define-color light_1 var(--light-1);
+@define-color light_2 var(--light-2);
+@define-color light_3 var(--light-3);
+@define-color light_4 var(--light-4);
+@define-color light_5 var(--light-5);
+@define-color dark_1 var(--dark-1);
+@define-color dark_2 var(--dark-2);
+@define-color dark_3 var(--dark-3);
+@define-color dark_4 var(--dark-4);
+@define-color dark_5 var(--dark-5);
+
+/* GTK Named Colors */
+@define-color destructive_bg_color var(--red-3);
+@define-color destructive_fg_color white;
+@define-color destructive_hover_bg_color var(--red-2);
+@define-color destructive_hover_fg_color white;
+@define-color destructive_active_bg_color var(--red-4);
+@define-color destructive_active_fg_color white;
+@define-color destructive_selected_bg_color var(--red-3);
+@define-color destructive_selected_fg_color white;
+
+@define-color suggested_bg_color var(--blue-3);
+@define-color suggested_fg_color white;
+@define-color suggested_hover_bg_color var(--blue-2);
+@define-color suggested_hover_fg_color white;
+@define-color suggested_active_bg_color var(--blue-4);
+@define-color suggested_active_fg_color white;
+@define-color suggested_selected_bg_color var(--blue-3);
+@define-color suggested_selected_fg_color white;
+
+@define-color success_bg_color var(--green-3);
+@define-color success_fg_color white;
+@define-color success_hover_bg_color var(--green-2);
+@define-color success_hover_fg_color white;
+@define-color success_active_bg_color var(--green-4);
+@define-color success_active_fg_color white;
+@define-color success_selected_bg_color var(--green-3);
+@define-color success_selected_fg_color white;
+
+@define-color warning_bg_color var(--yellow-3);
+@define-color warning_fg_color black;
+@define-color warning_hover_bg_color var(--yellow-2);
+@define-color warning_hover_fg_color black;
+@define-color warning_active_bg_color var(--yellow-4);
+@define-color warning_active_fg_color black;
+@define-color warning_selected_bg_color var(--yellow-3);
+@define-color warning_selected_fg_color black;
+
+@define-color error_bg_color var(--red-3);
+@define-color error_fg_color white;
+@define-color error_hover_bg_color var(--red-2);
+@define-color error_hover_fg_color white;
+@define-color error_active_bg_color var(--red-4);
+@define-color error_active_fg_color white;
+@define-color error_selected_bg_color var(--red-3);
+@define-color error_selected_fg_color white;
+
+@define-color window_bg_color #090b15;
+@define-color window_fg_color #c1c2c4;
+@define-color view_bg_color #585b6c;
+@define-color view_fg_color #c1c2c4;
+@define-color headerbar_bg_color #090b15;
+@define-color headerbar_fg_color #c1c2c4;
+@define-color headerbar_border_color #585b6c;
+@define-color headerbar_backdrop_color #090b15;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
+@define-color card_bg_color #585b6c;
+@define-color card_fg_color #c1c2c4;
+@define-color card_shade_color rgba(0, 0, 0, 0.36);
+@define-color dialog_bg_color #090b15;
+@define-color dialog_fg_color #c1c2c4;
+@define-color popover_bg_color #090b15;
+@define-color popover_fg_color #c1c2c4;
+@define-color shade_color rgba(0, 0, 0, 0.36);
+@define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
+@define-color accent_bg_color var(--blue-3);
+@define-color accent_fg_color white;
+@define-color accent_color var(--blue-3);
+@define-color accent_hover_bg_color var(--blue-2);
+@define-color accent_active_bg_color var(--blue-4);
+@define-color accent_selected_bg_color var(--blue-3);
+
+/* Sidebar */
+@define-color sidebar_bg_color #585b6c;
+@define-color sidebar_fg_color #c1c2c4;
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.25);
+@define-color sidebar_backdrop_color #585b6c;
+
+/* Sheets */
+@define-color sheet_background_color #090b15;
