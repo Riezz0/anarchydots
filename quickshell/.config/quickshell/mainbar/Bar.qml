@@ -145,9 +145,9 @@ Variants {
                             Rectangle {
                                 required property int index
                                 property int workspaceId: index + 1
-                                width:  barSettings.workspaceStyle === "dots" ? 25 : 25
-                                height: barSettings.workspaceStyle === "dots" ? 10 : 25
-                                radius: barSettings.workspaceStyle === "dots" ? 5 : barSettings.barRadius
+                                width:  25
+                                height: 25
+                                radius: barSettings.barRadius
 
                                 property bool isActive: Hyprland.focusedWorkspace
                                     && Hyprland.focusedWorkspace.id === workspaceId
@@ -161,7 +161,8 @@ Variants {
                                     return false
                                 }
 
-                                color:        isActive ? theme.color2 : (barSettings.workspaceStyle === "dots" ? (hasWindows ? Qt.darker(theme.background, 1.25) : theme.muted) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent"))
+                                color: barSettings.workspaceStyle === "dots" ? "transparent" : (isActive ? theme.color2 : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent"))
+                                border.width: barSettings.workspaceStyle === "dots" ? 0 : 0
 
                                 Text {
                                     anchors.centerIn: parent
@@ -170,6 +171,24 @@ Variants {
                                     color:            parent.isActive ? theme.background : (parent.hasWindows ? theme.color4 : theme.muted)
                                     font.pixelSize:   14
                                     font.bold:        true
+                                }
+
+                                Rectangle {
+                                    anchors.centerIn: parent
+                                    visible:          barSettings.workspaceStyle === "dots" && !parent.isActive
+                                    width: 14
+                                    height: 14
+                                    radius: 7
+                                    color: parent.hasWindows ? Qt.darker(theme.background, 1.25) : theme.muted
+                                }
+
+                                Rectangle {
+                                    anchors.centerIn: parent
+                                    visible:          barSettings.workspaceStyle === "dots" && parent.isActive
+                                    width: 20
+                                    height: 14
+                                    radius: 7
+                                    color: theme.color2
                                 }
 
                                 MouseArea {
