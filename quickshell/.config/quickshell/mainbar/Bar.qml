@@ -189,37 +189,6 @@ Variants {
                     }
                 }
 
-                // ── Sidebar Trigger ───────────────────────────────────────
-                Rectangle {
-                    id:     sideBtn
-                    width:  40
-                    height: 40
-                    radius: barSettings.barRadius
-                    color:  "transparent"
-                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
-
-                    Layout.alignment: Qt.AlignVCenter
-
-                    property bool hovered: false
-
-                    Text {
-                        anchors.centerIn: parent
-                        text:           "󰀙"
-                        font.pixelSize: 18
-                        color:          sideBtn.hovered ? theme.foreground : theme.color4
-                        Behavior on color { ColorAnimation { duration: 120 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape:  Qt.PointingHandCursor
-                        onClicked:    root.sideWidgetOpen = !root.sideWidgetOpen
-                        onContainsMouseChanged: {
-                            sideBtn.hovered = containsMouse
-                        }
-                    }
-                }
 
                 // ── Settings ────────────────────────────────────────────
                 Rectangle {
@@ -345,12 +314,6 @@ Variants {
                 }
 
                 //─
-                Recorder {
-                    Layout.preferredWidth: 40
-                    Layout.preferredHeight: 40
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
                 // ── Notifications ─────────────────────────────────────────
                 Item {
                     id:     notifButton
@@ -381,6 +344,7 @@ Variants {
                             Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
+                        // Unread badge
                         Rectangle {
                             visible: notifs.trackedCount > 0
                             width:   16
@@ -521,6 +485,47 @@ Variants {
                     }
                 }
 
+                // ── Widgets Toggle ─────────────────────────────────────────
+                Rectangle {
+                    id:     widgetsBtn
+                    width:  40
+                    height: 40
+                    radius: barSettings.barRadius
+                    color:  "transparent"
+                    border { width: barSettings.borderThickness; color: widgetsBtn.hovered || root.sidePanelOpen || root.widget2Open ? theme.muted : theme.color4 }
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    property bool hovered: false
+
+                    Text {
+                        anchors.centerIn: parent
+                        text:           "󰕰"
+                        font.pixelSize: 18
+                        color:          widgetsBtn.hovered || root.sidePanelOpen || root.widget2Open ? theme.foreground : theme.color4
+                        Behavior on color { ColorAnimation { duration: 120 } }
+                    }
+
+                    MouseArea {
+                        anchors.fill:     parent
+                        hoverEnabled:     true
+                        cursorShape:      Qt.PointingHandCursor
+                        acceptedButtons:  Qt.LeftButton | Qt.RightButton
+
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.RightButton) {
+                                root.toggleWidget2()
+                            } else {
+                                root.toggleSidePanel()
+                            }
+                        }
+
+                        onContainsMouseChanged: {
+                            widgetsBtn.hovered = containsMouse
+                        }
+                    }
+                }
+
                 // ── Power Button ──────────────────────────────────────────
                 Rectangle {
                     width:            40
@@ -552,46 +557,14 @@ Variants {
             }
         }
 
-        // ── Salaat Widget (centered on screen, above bar) ─────────────
-        Rectangle {
-            id:     salaatBtn
-            width:  200
-            height: 40
-            radius: barSettings.barRadius
-            color:  "transparent"
-            border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color3 }
-            clip:   true
+        // ── User Avatar (centered) ────────────────────────────
+        UserAvatar {
+            id:     userBtn
             z: 10
-            visible: barSettings.loaded
+            visible: true
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter:   parent.verticalCenter
-
-            property bool hovered: false
-
-            Text {
-                anchors.centerIn: parent
-                text:             salaat._displayText || "Loading..."
-                font.pixelSize:   14
-                font.bold:        true
-                font.family:      "JetBrains Mono Nerd Font Mono"
-                color:            salaatBtn.hovered ? theme.foreground : theme.muted
-                Behavior on color { ColorAnimation { duration: 120 } }
-                elide:            Text.ElideRight
-                width:            parent.width - 16
-                clip:             true
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape:  Qt.PointingHandCursor
-                onClicked:    root.salaatPopupOpen = !root.salaatPopupOpen
-                onContainsMouseChanged: {
-                    salaatBtn.hovered = containsMouse
-                }
-            }
         }
     }
 }

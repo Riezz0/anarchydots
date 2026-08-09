@@ -586,4 +586,8 @@ Item {
     onNightlightEnabledChanged: {
         if (!_loading) save()
     }
+
+    onWorkspaceStyleChanged: {
+        if (!_loading) save()
+    }
 }
