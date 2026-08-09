@@ -567,7 +567,7 @@ Variants {
             opacity: 0.85
             border { width: barSettings.borderThickness; color: activeWindowBtn.hovered ? theme.muted : theme.color4 }
 
-            implicitWidth: 400
+            implicitWidth: 200
             implicitHeight: 40
 
             anchors.horizontalCenter: parent.horizontalCenter
