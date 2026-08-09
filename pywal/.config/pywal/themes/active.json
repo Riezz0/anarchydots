@@ -1,25 +1,29 @@
 {
+    "checksum": "aa2f3dc2803da4c9d1a84c9ec855788b",
+    "wallpaper": "/home/riezzo/mydots/hypr-themes/.config/.hypr-themes/mars/thumbnail.png",
+    "alpha": "100",
+
     "special": {
-        "background": "#0c131e",
-        "foreground": "#c2c4c6",
-        "cursor": "#c2c4c6"
+        "background": "#251810",
+        "foreground": "#c8c5c3",
+        "cursor": "#c8c5c3"
     },
     "colors": {
-        "color0": "#0c131e",
-        "color1": "#4a3e43",
-        "color2": "#64442d",
-        "color3": "#6f514e",
-        "color4": "#785a63",
-        "color5": "#5d6260",
-        "color6": "#816d70",
-        "color7": "#8f939a",
-        "color8": "#5c6370",
-        "color9": "#63535A",
-        "color10": "#865B3C",
-        "color11": "#946C69",
-        "color12": "#A17985",
-        "color13": "#7C8381",
-        "color14": "#AD9296",
-        "color15": "#c2c4c6"
+        "color0": "#251810",
+        "color1": "#9f4817",
+        "color2": "#6c5636",
+        "color3": "#5b6358",
+        "color4": "#806f4d",
+        "color5": "#a27645",
+        "color6": "#8e8366",
+        "color7": "#9c9692",
+        "color8": "#74665f",
+        "color9": "#D5611F",
+        "color10": "#917349",
+        "color11": "#7A8576",
+        "color12": "#AB9467",
+        "color13": "#D89E5C",
+        "color14": "#BEAF89",
+        "color15": "#c8c5c3"
     }
 }

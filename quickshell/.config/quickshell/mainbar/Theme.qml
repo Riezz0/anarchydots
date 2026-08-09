@@ -6,18 +6,21 @@ import Quickshell.Io
 Scope {
     id: theme
 
-    property color background: "#0c131e"
-    property color foreground: "#c2c4c6"
-    property color color1: "#64442d"
-    property color color2: "#5d6260"
-    property color color3: "#A17985"
-    property color color4: "#865B3C"
-    property color color5: "#816d70"
-    property color color6: "#AD9296"
-    property color muted: "#8f939a"
+    property color background: "#1d2021"
+    property color foreground: "#d5c4a1"
+    property color color1: "#fb4934"
+    property color color2: "#b8bb26"
+    property color color3: "#fabd2f"
+    property color color4: "#83a598"
+    property color color5: "#d3869b"
+    property color color6: "#8ec07c"
+    property color muted: "#665c54"
 
     readonly property string walColorsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/colors.json"
+
+    readonly property string reloadTriggerPath:
+        StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/reload.trigger"
 
     function applyWalColors() {
         if (!colorFile.loaded)
@@ -27,13 +30,12 @@ Scope {
             const data = JSON.parse(colorFile.text())
             background = data.special.background
             foreground = data.special.foreground
-            accent = data.colors.color4
-            red = data.colors.color1
-            green = data.colors.color2
-            yellow = data.colors.color3
-            blue = data.colors.color4
-            magenta = data.colors.color5
-            cyan = data.colors.color6
+            color1 = data.colors.color1
+            color2 = data.colors.color2
+            color3 = data.colors.color3
+            color4 = data.colors.color4
+            color5 = data.colors.color5
+            color6 = data.colors.color6
             muted = data.colors.color8
         } catch (e) {
             console.warn("powerbar: failed to parse pywal colors:", e)
@@ -46,5 +48,19 @@ Scope {
         watchChanges: true
         onLoaded: theme.applyWalColors()
         onFileChanged: theme.applyWalColors()
+    }
+
+    FileView {
+        id: reloadTrigger
+        path: theme.reloadTriggerPath
+        watchChanges: true
+        onFileChanged: colorFile.reload()
+    }
+
+    Timer {
+        interval: 5000
+        running: true
+        repeat: true
+        onTriggered: colorFile.reload()
     }
 }

@@ -34,6 +34,7 @@ cp "$WALL" "/var/local/sddm-wallpaper/background.jpg"
 #------------------------#
 cp "$THEME_DIR/pywal" "$PYWAL"
 wal --theme "$PYWAL"
+date +%s > "$HOME/.cache/wal/reload.trigger"
 cp ~/.cache/wal/colors.qml /var/local/sddm-wallpaper/PywalColors.qml
 
 #------------------------#
@@ -48,7 +49,7 @@ cp "$THEME_DIR/hypr-colors" "$HOME/.config/hypr/modules/colors.lua"
 cp "$THEME_DIR/hyprlook" "$HOME/.config/hypr/modules/look.lua"
 bash ~/.config/.hypr-themes/patch-look.sh
 cp "$THEME_DIR/kitty" "$HOME/.config/kitty/kitty.conf"
-cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
+# REMOVED: cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
 cp "$THEME_DIR/rofi" "$HOME/.config/rofi/launcher/colors.rasi"
 cp -f "$HOME/.cache/wal/pywal.json" "$HOME/.config/presets/user/pywal.json"
 cp "$HOME/.cache/wal/colors-discord.css" "$HOME/.config/vesktop/themes/pywal-vencord.theme.css"
@@ -104,8 +105,8 @@ hyprctl setcursor "$CURSOR_THEME" 30
 hyprctl reload
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true
 pywalfox update & disown
-killall quickshell
-bash /usr/local/bin/qbarmain.sh
+# REMOVED: killall quickshell
+# REMOVED: bash /usr/local/bin/qbarmain.sh
 systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 
 #------------------------#

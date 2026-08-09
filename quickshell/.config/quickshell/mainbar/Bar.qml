@@ -81,12 +81,21 @@ Variants {
                     border { width: barSettings.borderThickness; color: theme.color2 }
 
                     property bool hovered: false
+                    property string archLogoPath: "file://" + Quickshell.env("HOME") + "/.config/quickshell/assets/arch.png"
+                    property int archLogoVersion: 0
+
+                    FileView {
+                        id: archLogoWatcher
+                        path: Quickshell.env("HOME") + "/.config/quickshell/assets/arch.png"
+                        watchChanges: true
+                        onFileChanged: archBtn.archLogoVersion++
+                    }
 
                     Image {
                         anchors.centerIn:  parent
                         width:             30
                         height:            30
-                        source:            "file://" + Quickshell.env("HOME") + "/.config/quickshell/assets/arch.png"
+                        source:            archBtn.archLogoPath + "?v=" + archBtn.archLogoVersion
                         smooth:            true
                         mipmap:            true
                         fillMode:          Image.PreserveAspectFit
