@@ -16,7 +16,7 @@ inactive_opacity  = 0.85,
                color        = 0xee1a1a1a, },
 
     blur = {enabled   = true,
-            size      = 14,
+            size      = 20,
 passes = 3,
 vibrancy  = 0.6, },},
 
