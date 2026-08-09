@@ -41,7 +41,7 @@ cp "$WALL" "/var/local/sddm-wallpaper/background.jpg"
 #------------------------#
 cp -r "$THEME_DIR/pywal" "$PYWAL"
 wal --theme "$PYWAL"  # synchronous to ensure cache files exist
-date +%s > "$HOME/.cache/wal/reload.trigger"
+cat "$HOME/.cache/wal/colors.json" > "$HOME/.cache/wal/theme-colors.json"
 cp ~/.cache/wal/colors.qml /var/local/sddm-wallpaper/PywalColors.qml
 
 #------------------------#

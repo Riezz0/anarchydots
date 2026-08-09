@@ -19,13 +19,8 @@ Scope {
     readonly property string walColorsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/colors.json"
 
-    readonly property string reloadTriggerPath:
-        StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/reload.trigger"
-
     function applyWalColors() {
-        if (!colorFile.loaded)
-            return
-
+        if (!colorFile.loaded) return
         try {
             const data = JSON.parse(colorFile.text())
             background = data.special.background
@@ -37,6 +32,7 @@ Scope {
             color5 = data.colors.color5
             color6 = data.colors.color6
             muted = data.colors.color8
+            console.log("theme: applied colors bg=" + background + " c4=" + color4)
         } catch (e) {
             console.warn("powerbar: failed to parse pywal colors:", e)
         }
@@ -50,17 +46,11 @@ Scope {
         onFileChanged: theme.applyWalColors()
     }
 
-    FileView {
-        id: reloadTrigger
-        path: theme.reloadTriggerPath
-        watchChanges: true
-        onFileChanged: colorFile.reload()
-    }
-
     Timer {
-        interval: 5000
+        interval: 1000
         running: true
         repeat: true
         onTriggered: colorFile.reload()
     }
 }
+

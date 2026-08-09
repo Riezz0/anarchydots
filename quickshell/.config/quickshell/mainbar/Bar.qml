@@ -78,7 +78,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color2 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color2 }
 
                     property bool hovered: false
                     property string archLogoPath: "file://" + Quickshell.env("HOME") + "/.config/quickshell/assets/arch.png"
@@ -111,9 +111,6 @@ Variants {
                         onExited:     archBtn.hovered = false
                         onClicked:    { root.keybindsPopupOpen = !root.keybindsPopupOpen }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
-                    onHoveredChanged: { border.color = hovered ? theme.muted : theme.color2 }
                 }
 
                 // ── Workspaces ────────────────────────────────────────────
@@ -207,10 +204,8 @@ Variants {
                         property bool hovered: false
                         border {
                             width: barSettings.borderThickness
-                            color: theme.color2
+                            color: hovered ? theme.muted : theme.color2
                         }
-
-                        Behavior on border.color { ColorAnimation { duration: 120 } }
 
                         Text {
                             anchors.centerIn: parent
@@ -237,7 +232,6 @@ Variants {
 
                         onContainsMouseChanged: {
                             btRect.hovered = containsMouse
-                            btRect.border.color = containsMouse ? theme.muted : theme.color2
                         }
                     }
                 }
@@ -249,7 +243,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color2 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color2 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -270,11 +264,8 @@ Variants {
                         onClicked:    root.tempPopupOpen = !root.tempPopupOpen
                         onContainsMouseChanged: {
                             tempModule.hovered = containsMouse
-                            tempModule.border.color = containsMouse ? theme.muted : theme.color2
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Weather //─
@@ -282,7 +273,7 @@ Variants {
                     id:     weatherBtn
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
                     implicitHeight:   40
@@ -320,11 +311,8 @@ Variants {
                         onClicked:       root.weatherPopupOpen = !root.weatherPopupOpen
                         onContainsMouseChanged: {
                             weatherBtn.hovered = containsMouse
-                            weatherBtn.border.color = containsMouse ? theme.muted : theme.color4
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Keyboard Layout ──────────────────────────────────────
@@ -334,7 +322,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -370,11 +358,8 @@ Variants {
                         onClicked:       root.runCommand("python3 ~/.config/xkb/symbols/my_ar.py")
                         onContainsMouseChanged: {
                             kbdBtn.hovered = containsMouse
-                            kbdBtn.border.color = containsMouse ? theme.muted : theme.color4
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Settings ────────────────────────────────────────────
@@ -384,7 +369,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color5 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color5 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -405,11 +390,8 @@ Variants {
                         onClicked:    root.settingsPopupOpen = !root.settingsPopupOpen
                         onContainsMouseChanged: {
                             settingsBtn.hovered = containsMouse
-                            settingsBtn.border.color = containsMouse ? theme.muted : theme.color5
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Center Spacer ─────────────────────────────────────────
@@ -420,7 +402,7 @@ Variants {
                     id:     netBtn
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color4 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
                     implicitHeight:   40
@@ -458,11 +440,8 @@ Variants {
                         onClicked:       root.networkPopupOpen = !root.networkPopupOpen
                         onContainsMouseChanged: {
                             netBtn.hovered = containsMouse
-                            netBtn.border.color = containsMouse ? theme.muted : theme.color4
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Themes //──
@@ -472,7 +451,7 @@ Variants {
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: theme.color6 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color6 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -493,11 +472,8 @@ Variants {
                         onClicked:    root.themesPopupOpen = !root.themesPopupOpen
                         onContainsMouseChanged: {
                             themesBtn.hovered = containsMouse
-                            themesBtn.border.color = containsMouse ? theme.muted : theme.color6
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 // ── Updates ──────────────────────────────────────────────
@@ -554,8 +530,6 @@ Variants {
                             updatesBtn.hovered = containsMouse
                         }
                     }
-
-                    Behavior on border.color { ColorAnimation { duration: 120 } }
                 }
 
                 //─
@@ -586,8 +560,6 @@ Variants {
                                  : notifs.hasUnread ? theme.color1
                                  : theme.color4
                         }
-
-                        Behavior on border.color { ColorAnimation { duration: 120 } }
 
                         Text {
                             anchors.centerIn: parent
@@ -655,10 +627,8 @@ Variants {
                         property bool hovered: false
                         border {
                             width: barSettings.borderThickness
-                            color: audio.volumeMuted ? theme.color1 : theme.color4
+                            color: hovered ? theme.muted : (audio.volumeMuted ? theme.color1 : theme.color4)
                         }
-
-                        Behavior on border.color { ColorAnimation { duration: 120 } }
 
                         Row {
                             anchors.centerIn: parent
@@ -706,9 +676,6 @@ Variants {
 
                         onContainsMouseChanged: {
                             volumeRect.hovered = containsMouse
-                            volumeRect.border.color = containsMouse
-                                ? theme.muted
-                                : (audio.volumeMuted ? theme.color1 : theme.color4)
                         }
                     }
                 }
@@ -781,7 +748,7 @@ Variants {
             height: 40
             radius: barSettings.barRadius
             color:  "transparent"
-            border { width: barSettings.borderThickness; color: theme.color3 }
+            border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color3 }
             clip:   true
             z: 10
             visible: barSettings.loaded
@@ -812,11 +779,8 @@ Variants {
                 onClicked:    root.salaatPopupOpen = !root.salaatPopupOpen
                 onContainsMouseChanged: {
                     salaatBtn.hovered = containsMouse
-                    salaatBtn.border.color = containsMouse ? theme.muted : theme.color3
                 }
             }
-
-            Behavior on border.color { ColorAnimation { duration: 120 } }
         }
     }
 }

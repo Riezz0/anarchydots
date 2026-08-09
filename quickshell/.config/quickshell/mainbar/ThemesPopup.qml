@@ -133,7 +133,7 @@ Variants {
                                 height: 140
                                 radius:   barSettings.barRadius
                                 color:  "transparent"
-                                border { width: barSettings.borderThickness; color: theme.muted }
+                                border { width: barSettings.borderThickness; color: hovered ? theme.color6 : theme.muted }
 
                                 property bool hovered: false
 
@@ -240,15 +240,12 @@ Variants {
                                     cursorShape:  Qt.PointingHandCursor
                                     onContainsMouseChanged: {
                                         parent.hovered = containsMouse
-                                        parent.border.color = containsMouse ? theme.color6 : theme.muted
                                     }
                                     onClicked: {
                                         themes.applyTheme(modelData.script)
                                         themesPopup.close()
                                     }
                                 }
-
-                                Behavior on border.color { ColorAnimation { duration: 120 } }
                             }
                         }
                     }
