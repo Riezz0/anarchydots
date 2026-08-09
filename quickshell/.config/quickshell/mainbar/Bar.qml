@@ -16,6 +16,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 
+
 Variants {
     model: barSettings.popupScreens()
 
@@ -43,38 +44,6 @@ Variants {
                 id: bluemanProc
                 command: ["blueman-manager"]
                 running: false
-            }
-
-            property var scratchpadOpenClasses: []
-
-            Process {
-                id: clientsProc
-                command: ["hyprctl", "clients", "-j"]
-                running: false
-                stdout: StdioCollector {
-                    onStreamFinished: {
-                        try {
-                            var data = JSON.parse(text())
-                            var found = []
-                            for (var i = 0; i < data.length; i++) {
-                                var cls = data[i].class || ""
-                                if (cls === "nautipad" || cls === "termpad" || cls === "vimpad" || cls === "codipad")
-                                    found.push(cls)
-                            }
-                            barWindow.scratchpadOpenClasses = found
-                        } catch(e) {}
-                    }
-                }
-            }
-
-            Timer {
-                interval: 1000
-                running: true
-                repeat: true
-                onTriggered: {
-                    clientsProc.running = false
-                    clientsProc.running = true
-                }
             }
 
         Rectangle {
