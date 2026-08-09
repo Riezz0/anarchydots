@@ -189,62 +189,14 @@ Variants {
                     }
                 }
 
-                // ── Bluetooth ────────────────────────────────────────────
-                Item {
-                    id:     btButton
-                    implicitWidth:  40
-                    implicitHeight: 40
-
-                    Layout.alignment: Qt.AlignVCenter
-
-                    Rectangle {
-                        id:           btRect
-                        anchors.fill: parent
-                        color:        "transparent"
-                        radius: barSettings.barRadius
-                        property bool hovered: false
-                        border {
-                            width: barSettings.borderThickness
-                            color: hovered ? theme.muted : theme.color2
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text:           bt.btIcon()
-                            font.pixelSize: 18
-                            color:          btRect.hovered ? theme.foreground : bt.btColor()
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill:     parent
-                        hoverEnabled:     true
-                        cursorShape:      Qt.PointingHandCursor
-                        acceptedButtons:  Qt.LeftButton | Qt.RightButton
-
-                        onClicked: mouse => {
-                            if (mouse.button === Qt.RightButton) {
-                                bt.toggle()
-                            } else {
-                                bluemanProc.running = true
-                            }
-                        }
-
-                        onContainsMouseChanged: {
-                            btRect.hovered = containsMouse
-                        }
-                    }
-                }
-
-                // ── System Resources ─────────────────────────────────────
+                // ── Sidebar Trigger ───────────────────────────────────────
                 Rectangle {
-                    id:     tempModule
+                    id:     sideBtn
                     width:  40
                     height: 40
                     radius: barSettings.barRadius
                     color:  "transparent"
-                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color2 }
+                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
 
                     Layout.alignment: Qt.AlignVCenter
 
@@ -252,9 +204,9 @@ Variants {
 
                     Text {
                         anchors.centerIn: parent
-                        text:           "󰍛"
+                        text:           "󰀙"
                         font.pixelSize: 18
-                            color:          tempModule.hovered ? theme.foreground : theme.color4
+                        color:          sideBtn.hovered ? theme.foreground : theme.color4
                         Behavior on color { ColorAnimation { duration: 120 } }
                     }
 
@@ -262,103 +214,9 @@ Variants {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape:  Qt.PointingHandCursor
-                        onClicked:    root.tempPopupOpen = !root.tempPopupOpen
+                        onClicked:    root.sideWidgetOpen = !root.sideWidgetOpen
                         onContainsMouseChanged: {
-                            tempModule.hovered = containsMouse
-                        }
-                    }
-                }
-
-                // ── Weather //─
-                Rectangle {
-                    id:     weatherBtn
-                    radius: barSettings.barRadius
-                    color:  "transparent"
-                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
-
-                    Layout.alignment: Qt.AlignVCenter
-                    implicitHeight:   40
-                    implicitWidth:    weatherRow.implicitWidth + 28
-
-                    property bool hovered: false
-
-                    Row {
-                        id:               weatherRow
-                        anchors.centerIn: parent
-                        spacing:          6
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           weather.weatherIconText()
-                            font.pixelSize: 14
-                            color:          weatherBtn.hovered ? theme.foreground : theme.color4
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                        }
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           weather.loaded ? weather.tempDisplay() : "--"
-                            font.pixelSize: 14
-                            font.bold:      true
-                            font.family:    "JetBrains Mono Nerd Font Mono"
-                            color:          theme.muted
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill:    parent
-                        hoverEnabled:    true
-                        cursorShape:     Qt.PointingHandCursor
-                        onClicked:       root.weatherPopupOpen = !root.weatherPopupOpen
-                        onContainsMouseChanged: {
-                            weatherBtn.hovered = containsMouse
-                        }
-                    }
-                }
-
-                // ── Keyboard Layout ──────────────────────────────────────
-                Rectangle {
-                    id:     kbdBtn
-                    width:  kbdRow.implicitWidth + 20
-                    height: 40
-                    radius: barSettings.barRadius
-                    color:  "transparent"
-                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
-
-                    Layout.alignment: Qt.AlignVCenter
-
-                    property bool hovered: false
-
-                    Row {
-                        id:               kbdRow
-                        anchors.centerIn: parent
-                        spacing:          6
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           kbd.layoutIcon()
-                            font.pixelSize: 14
-                            color:          kbdBtn.hovered ? theme.foreground : kbd.layoutColor()
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                        }
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           kbd.loaded ? kbd.layoutLabel : "--"
-                            font.pixelSize: 13
-                            font.bold:      true
-                            font.family:    "JetBrains Mono Nerd Font Mono"
-                            color:          theme.muted
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill:    parent
-                        hoverEnabled:    true
-                        cursorShape:     Qt.PointingHandCursor
-                        onClicked:       root.runCommand("python3 ~/.config/xkb/symbols/my_ar.py")
-                        onContainsMouseChanged: {
-                            kbdBtn.hovered = containsMouse
+                            sideBtn.hovered = containsMouse
                         }
                     }
                 }
@@ -397,53 +255,6 @@ Variants {
 
                 // ── Center Spacer ─────────────────────────────────────────
                 Item { Layout.fillWidth: true }
-
-                // ── Network //─
-                Rectangle {
-                    id:     netBtn
-                    radius: barSettings.barRadius
-                    color:  "transparent"
-                    border { width: barSettings.borderThickness; color: hovered ? theme.muted : theme.color4 }
-
-                    Layout.alignment: Qt.AlignVCenter
-                    implicitHeight:   40
-                    implicitWidth:    netRow.implicitWidth + 28
-
-                    property bool hovered: false
-
-                    Row {
-                        id:               netRow
-                        anchors.centerIn: parent
-                        spacing:          6
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           net.networkIcon()
-                            font.pixelSize: 14
-                            color:          netBtn.hovered ? theme.foreground : net.networkColor()
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                        }
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text:           net.loaded ? net.displayText() : "--"
-                            font.pixelSize: 12
-                            font.bold:      true
-                            font.family:    "JetBrains Mono Nerd Font Mono"
-                            color:          theme.muted
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill:    parent
-                        hoverEnabled:    true
-                        cursorShape:     Qt.PointingHandCursor
-                        onClicked:       root.networkPopupOpen = !root.networkPopupOpen
-                        onContainsMouseChanged: {
-                            netBtn.hovered = containsMouse
-                        }
-                    }
-                }
 
                 // ── Themes //──
                 Rectangle {
@@ -570,7 +381,6 @@ Variants {
                             Behavior on color { ColorAnimation { duration: 120 } }
                         }
 
-                        // Unread badge
                         Rectangle {
                             visible: notifs.trackedCount > 0
                             width:   16

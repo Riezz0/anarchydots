@@ -6,43 +6,43 @@ Issues caused by theming should be reported to Gradience repository, and not to 
 https://github.com/GradienceTeam/Gradience
 */
 
-@define-color accent_color #7fbbb3;
-@define-color accent_bg_color #7fbbb3;
-@define-color accent_fg_color #d8eae8;
-@define-color destructive_color #dbbc7f;
-@define-color destructive_bg_color #dbbc7f;
-@define-color destructive_fg_color #f4ead8;
-@define-color success_color #d39bb6;
-@define-color success_bg_color #d39bb6;
-@define-color success_fg_color #9da9a0;
-@define-color warning_color #83c092;
-@define-color warning_bg_color #83c092;
-@define-color warning_fg_color #9da9a0;
-@define-color error_color #dbbc7f;
-@define-color error_bg_color #dbbc7f;
-@define-color error_fg_color #9da9a0;
-@define-color window_bg_color #272e33;
-@define-color window_fg_color #9da9a0;
-@define-color view_bg_color #293035;
-@define-color view_fg_color #9da9a0;
-@define-color headerbar_bg_color #272e33;
-@define-color headerbar_fg_color #9da9a0;
-@define-color headerbar_border_color #2d3439;
-@define-color headerbar_backdrop_color #7fbbb3;
-@define-color headerbar_shade_color #2b3237;
-@define-color card_bg_color #2b3237;
-@define-color card_fg_color #9da9a0;
-@define-color card_shade_color #293035;
-@define-color dialog_bg_color #272e33;
-@define-color dialog_fg_color #9da9a0;
-@define-color popover_bg_color #272e33;
-@define-color popover_fg_color #9da9a0;
-@define-color shade_color #272e33;
-@define-color scrollbar_outline_color #7fbbb3;
-@define-color sidebar_bg_color #272e33;
-@define-color sidebar_fg_color #9da9a0;
-@define-color sidebar_backdrop_color #293035;
-@define-color sidebar_shade_color #2b3237;
+@define-color accent_color #AB9467;
+@define-color accent_bg_color #AB9467;
+@define-color accent_fg_color #e5ded1;
+@define-color destructive_color #7A8576;
+@define-color destructive_bg_color #5b6358;
+@define-color destructive_fg_color #d7dad5;
+@define-color success_color #D89E5C;
+@define-color success_bg_color #D89E5C;
+@define-color success_fg_color #c8c5c3;
+@define-color warning_color #BEAF89;
+@define-color warning_bg_color #8e8366;
+@define-color warning_fg_color #c8c5c3;
+@define-color error_color #7A8576;
+@define-color error_bg_color #5b6358;
+@define-color error_fg_color #c8c5c3;
+@define-color window_bg_color #251810;
+@define-color window_fg_color #c8c5c3;
+@define-color view_bg_color #271a12;
+@define-color view_fg_color #c8c5c3;
+@define-color headerbar_bg_color #251810;
+@define-color headerbar_fg_color #c8c5c3;
+@define-color headerbar_border_color #2b1e17;
+@define-color headerbar_backdrop_color #806f4d;
+@define-color headerbar_shade_color #291c14;
+@define-color card_bg_color #291c14;
+@define-color card_fg_color #c8c5c3;
+@define-color card_shade_color #271a12;
+@define-color dialog_bg_color #251810;
+@define-color dialog_fg_color #c8c5c3;
+@define-color popover_bg_color #251810;
+@define-color popover_fg_color #c8c5c3;
+@define-color shade_color #251810;
+@define-color scrollbar_outline_color #AB9467;
+@define-color sidebar_bg_color #251810;
+@define-color sidebar_fg_color #c8c5c3;
+@define-color sidebar_backdrop_color #271a12;
+@define-color sidebar_shade_color #291c14;
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
 @define-color blue_3 #3584e4;
@@ -88,7 +88,7 @@ https://github.com/GradienceTeam/Gradience
 @define-color dark_3 #33d17a;
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
-/* Sidebar hover gets a 15% transparent shade of your accent color */ .navigation-sidebar row:hover { background-color: alpha(#7fbbb3, 0.15); } /* Main panel items get full accent background and dark text on hover */ listview row:hover, gridview child:hover, listview row:hover label, gridview child:hover label { background-color: #7fbbb3; color: #272e33; } /* Thicker 2px accent border for GTK4 popovers */ popover contents { border: 2px solid #7fbbb3; box-shadow: none; } /* Color context menu items on hover */ popover contents modelbutton:hover { background-color: #7fbbb3; color: #272e33; } /* Libadwaita Tab Bar Overrides */ tabbar { background-color: #272e33; } tabbar tab { padding: 4px 12px; color: alpha(#9da9a0, 0.5); background-color: transparent; } tabbar tab:checked { color: #272e33; background-color: #7fbbb3; } tabbar tab:hover:not(:checked) { background-color: alpha(#7fbbb3, 0.12); color: #9da9a0; } /* Window Frame Accent Line */ window.main-window, window.dialog { border: 1.5px solid #7fbbb3; border-radius: 0px; } /* Clean Path-bar Breadcrumbs Buttons */ .path-bar button { background-color: alpha(#9da9a0, 0.04); border-radius: 0px; margin: 0 2px; padding: 4px 8px; transition: all 0.15s ease; } .path-bar button:hover { background-color: #7fbbb3; color: #272e33; } /* Input Fields & Focus Glows */ entry, textview text { border: 1px solid alpha(#9da9a0, 0.1); border-radius: 0px; } entry:focus, textview text:focus { border-color: #7fbbb3; box-shadow: 0 0 0 2px alpha(#7fbbb3, 0.2); } /* Text Selection Highlights */ selection { background-color: #7fbbb3; color: #272e33; } /* Notification Styling */ .background .app-notification, .app-notification, .osd .app-notification { background-color: #7fbbb3 !important; color: #272e33 !important; } .background .app-notification button, .app-notification button, .osd .app-notification button { background-color: alpha(#272e33, 0.2) !important; color: #272e33 !important; border: none !important; } .background .app-notification button:hover, .app-notification button:hover, .osd .app-notification button:hover { background-color: alpha(#7fbbb3, 0.6) !important; }
+/* Sidebar hover gets a 15% transparent shade of your accent color */ .navigation-sidebar row:hover { background-color: alpha(#AB9467, 0.15); } /* Main panel items get full accent background and dark text on hover */ listview row:hover, gridview child:hover, listview row:hover label, gridview child:hover label { background-color: #AB9467; color: #251810; } /* Thicker 2px accent border for GTK4 popovers */ popover contents { border: 2px solid #AB9467; box-shadow: none; } /* Color context menu items on hover */ popover contents modelbutton:hover { background-color: #AB9467; color: #251810; } /* Libadwaita Tab Bar Overrides */ tabbar { background-color: #251810; } tabbar tab { padding: 4px 12px; color: alpha(#c8c5c3, 0.5); background-color: transparent; } tabbar tab:checked { color: #251810; background-color: #AB9467; } tabbar tab:hover:not(:checked) { background-color: alpha(#AB9467, 0.12); color: #c8c5c3; } /* Window Frame Accent Line */ window.main-window, window.dialog { border: 1.5px solid #AB9467; border-radius: 0px; } /* Clean Path-bar Breadcrumbs Buttons */ .path-bar button { background-color: alpha(#c8c5c3, 0.04); border-radius: 0px; margin: 0 2px; padding: 4px 8px; transition: all 0.15s ease; } .path-bar button:hover { background-color: #AB9467; color: #251810; } /* Input Fields & Focus Glows */ entry, textview text { border: 1px solid alpha(#c8c5c3, 0.1); border-radius: 0px; } entry:focus, textview text:focus { border-color: #AB9467; box-shadow: 0 0 0 2px alpha(#AB9467, 0.2); } /* Text Selection Highlights */ selection { background-color: #AB9467; color: #251810; } /* Notification Styling */ .background .app-notification, .app-notification, .osd .app-notification { background-color: #AB9467 !important; color: #251810 !important; } .background .app-notification button, .app-notification button, .osd .app-notification button { background-color: alpha(#251810, 0.2) !important; color: #251810 !important; border: none !important; } .background .app-notification button:hover, .app-notification button:hover, .osd .app-notification button:hover { background-color: alpha(#AB9467, 0.6) !important; }
 .navigation-sidebar {
-background-color: #272e33;
+background-color: #251810;
 }

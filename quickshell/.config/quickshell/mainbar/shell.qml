@@ -38,6 +38,7 @@ ShellRoot {
     property bool   archUpdatePopupOpen: false
     property bool   settingsPopupOpen: false
     property bool   quranPlayerPopupOpen: false
+    property bool   sideWidgetOpen: false
     property string clockTime:        Qt.formatDateTime(new Date(), "hh:mm:ss")
 
     // ── Theme ─────────────────────────────────────────────────────────────────
@@ -183,6 +184,12 @@ ShellRoot {
         function runCmd(cmd) { root.runCommand(cmd) }
     }
 
+    Item {
+        id: sideWidgetOpen
+        property bool isOpen: root.sideWidgetOpen
+        function close() { root.sideWidgetOpen = false }
+    }
+
     // ── UI Modules ────────────────────────────────────────────────────────────
     Bar                {}
     VolumePopup        {}
@@ -201,4 +208,5 @@ ShellRoot {
     BarSettingsPopup      {}
     VolumeOsd          {}
     PowerMenu          {}
+    SideWidget         {}
 }
