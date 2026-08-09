@@ -1337,6 +1337,73 @@ Variants {
                             onClicked: mouse => updateValue(mouse.x)
                         }
                     }
+
+                    // ── Workspace Style ──────────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: 8
+                        Layout.topMargin: 8
+
+                        Text {
+                            text:           "Workspace Indicator"
+                            font.pixelSize: 13
+                            color:          theme.foreground
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Repeater {
+                            model: [
+                                { label: "Numbers", value: "numbers", icon: "1" },
+                                { label: "Dots", value: "dots", icon: "●" }
+                            ]
+
+                            Rectangle {
+                                required property var modelData
+                                required property int index
+
+                                width: 80
+                                height: 28
+                                radius: 4
+                                color: barSettings.workspaceStyle === modelData.value
+                                    ? theme.color6
+                                    : wsStyleArea.containsMouse
+                                        ? Qt.darker(theme.muted, 1.3)
+                                        : Qt.darker(theme.muted, 1.2)
+                                border { width: 1; color: barSettings.workspaceStyle === modelData.value ? theme.color6 : theme.muted }
+
+                                Row {
+                                    anchors.centerIn: parent
+                                    spacing: 4
+
+                                    Text {
+                                        text:           modelData.icon
+                                        font.pixelSize: 11
+                                        color:          barSettings.workspaceStyle === modelData.value ? theme.background : theme.foreground
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text:           modelData.label
+                                        font.pixelSize: 11
+                                        font.bold:      true
+                                        color:          barSettings.workspaceStyle === modelData.value ? theme.background : theme.foreground
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: wsStyleArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape:  Qt.PointingHandCursor
+                                    onClicked:    barSettings.setWorkspaceStyle(modelData.value)
+                                }
+
+                                Behavior on color { ColorAnimation { duration: 100 } }
+                            }
+                        }
+                    }
                 }
 
                 // ════════════════════════════════════════════════════════

@@ -27,6 +27,7 @@ Item {
     property real translationFontSize: 11
     property bool arabicBold: false
     property bool nightlightEnabled: false
+    property string workspaceStyle: "numbers"
     property bool _loading: false
     property bool loaded: false
 
@@ -85,6 +86,9 @@ Item {
                 }
                 if (data && data.nightlightEnabled !== undefined) {
                     settingsRoot.nightlightEnabled = data.nightlightEnabled
+                }
+                if (data && data.workspaceStyle !== undefined) {
+                    settingsRoot.workspaceStyle = data.workspaceStyle
                 }
                 if (data && data.hyprlandGapIn !== undefined) {
                     settingsRoot.hyprlandGapIn = data.hyprlandGapIn
@@ -301,6 +305,10 @@ Item {
         }
     }
 
+    function setWorkspaceStyle(style) {
+        settingsRoot.workspaceStyle = style
+    }
+
     function applyHyprlandRadius(r) {
         hyprctlProc.command = ["hyprctl", "eval", "hl.config({ decoration = { rounding = " + r + " } })"]
         hyprctlProc.running = true
@@ -451,7 +459,8 @@ Item {
             arabicFontSize: settingsRoot.arabicFontSize,
             translationFontSize: settingsRoot.translationFontSize,
             arabicBold: settingsRoot.arabicBold,
-            nightlightEnabled: settingsRoot.nightlightEnabled
+            nightlightEnabled: settingsRoot.nightlightEnabled,
+            workspaceStyle: settingsRoot.workspaceStyle
         })
         settingsWriter.command = ["sh", "-c",
             "mkdir -p ~/.config/quickshell && cat > ~/.config/quickshell/bar-settings.json << 'ENDOFFILE'\n" + json + "\nENDOFFILE"]

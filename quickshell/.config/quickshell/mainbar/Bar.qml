@@ -145,9 +145,9 @@ Variants {
                             Rectangle {
                                 required property int index
                                 property int workspaceId: index + 1
-                                width:  25
-                                height: 25
-                                radius: barSettings.barRadius
+                                width:  barSettings.workspaceStyle === "dots" ? 25 : 25
+                                height: barSettings.workspaceStyle === "dots" ? 10 : 25
+                                radius: barSettings.workspaceStyle === "dots" ? 5 : barSettings.barRadius
 
                                 property bool isActive: Hyprland.focusedWorkspace
                                     && Hyprland.focusedWorkspace.id === workspaceId
@@ -161,10 +161,11 @@ Variants {
                                     return false
                                 }
 
-                                color:        isActive ? theme.color2 : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+                                color:        isActive ? theme.color2 : (barSettings.workspaceStyle === "dots" ? (hasWindows ? Qt.darker(theme.background, 1.25) : theme.muted) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent"))
 
                                 Text {
                                     anchors.centerIn: parent
+                                    visible:          barSettings.workspaceStyle !== "dots"
                                     text:             parent.workspaceId.toString()
                                     color:            parent.isActive ? theme.background : (parent.hasWindows ? theme.color4 : theme.muted)
                                     font.pixelSize:   14
