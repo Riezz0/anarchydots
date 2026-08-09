@@ -69,7 +69,7 @@ Variants {
                     topMargin:    10
                     bottomMargin: 10
                 }
-                spacing: 10
+                spacing: 5
 
                 // ── Arch Logo //
                 Rectangle {
@@ -557,14 +557,141 @@ Variants {
             }
         }
 
-        // ── User Avatar (centered) ────────────────────────────
-        UserAvatar {
-            id:     userBtn
+        // ── Active Window Title (centered) ────────────────────────────
+        Rectangle {
+            id:     activeWindowBtn
             z: 10
-            visible: true
+            visible: barSettings.loaded
+            radius: barSettings.barRadius
+            color:  theme.background
+            opacity: 0.85
+            border { width: barSettings.borderThickness; color: activeWindowBtn.hovered ? theme.muted : theme.color4 }
+
+            implicitWidth: 400
+            implicitHeight: 40
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter:   parent.verticalCenter
+
+            property bool hovered: false
+            property string windowTitle: "Desktop"
+            property string windowClass: ""
+
+            // Scrolling marquee for long titles
+            Process {
+                id: hyprctlProc
+                command: ["hyprctl", "activewindow", "-j"]
+                property string buffer: ""
+                stdout: SplitParser {
+                    onRead: data => {
+                        hyprctlProc.buffer += data
+                    }
+                }
+                onRunningChanged: {
+                    if (!running && hyprctlProc.buffer.length > 0) {
+                        try {
+                            const info = JSON.parse(hyprctlProc.buffer)
+                            if (info && info.title !== undefined) {
+                                activeWindowBtn.windowTitle = info.title || ""
+                                activeWindowBtn.windowClass = info.class || ""
+                            }
+                        } catch (e) {}
+                        hyprctlProc.buffer = ""
+                    }
+                }
+            }
+
+            Timer {
+                interval: 500
+                running: true
+                repeat: true
+                onTriggered: hyprctlProc.running = true
+            }
+
+            // Scrolling marquee for long titles
+            clip: true
+
+            Item {
+                id: marqueeContainer
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                clip: true
+
+                property real scrollOffset: 0
+                property bool needsScroll: false
+                property string displayText: activeWindowBtn.windowTitle || activeWindowBtn.windowClass || "Desktop"
+
+                Text {
+                    id: measureText
+                    visible: false
+                    text: marqueeContainer.displayText
+                    font.pixelSize: 13
+                    font.bold: true
+                    font.family: "JetBrains Mono Nerd Font Mono"
+                    onImplicitWidthChanged: marqueeContainer.checkScroll()
+                }
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: !marqueeContainer.needsScroll
+                    text: marqueeContainer.displayText
+                    color: activeWindowBtn.hovered ? theme.foreground : theme.muted
+                    font.pixelSize: 13
+                    font.bold: true
+                    font.family: "JetBrains Mono Nerd Font Mono"
+                }
+
+                Item {
+                    visible: marqueeContainer.needsScroll
+                    anchors.fill: parent
+
+                    Row {
+                        anchors.verticalCenter: parent.verticalCenter
+                        x: -marqueeContainer.scrollOffset
+
+                        Repeater {
+                            model: 2
+                            Text {
+                                text: marqueeContainer.displayText
+                                color: activeWindowBtn.hovered ? theme.foreground : theme.muted
+                                font.pixelSize: 13
+                                font.bold: true
+                                font.family: "JetBrains Mono Nerd Font Mono"
+                            }
+                        }
+                    }
+                }
+
+                onWidthChanged: checkScroll()
+                Component.onCompleted: checkScroll()
+
+                function checkScroll() {
+                    needsScroll = measureText.implicitWidth > width
+                    scrollOffset = 0
+                    if (!needsScroll) {
+                        scrollTimer.stop()
+                    } else {
+                        scrollTimer.start()
+                    }
+                }
+
+                Timer {
+                    id: scrollTimer
+                    interval: 30
+                    repeat: true
+                    running: false
+                    onTriggered: {
+                        if (marqueeContainer.needsScroll) {
+                            marqueeContainer.scrollOffset += 1
+                            if (marqueeContainer.scrollOffset >= measureText.implicitWidth) {
+                                marqueeContainer.scrollOffset = 0
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

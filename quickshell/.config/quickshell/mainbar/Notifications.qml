@@ -36,7 +36,7 @@ Item {
     property bool startupGrace: true
 
     readonly property string cacheDir:
-        StandardPaths.writableLocation(StandardPaths.CacheLocation).replace(/^file:\/\//, "")
+        StandardPaths.writableLocation(StandardPaths.CacheLocation).toString().replace(/^file:\/\//, "")
     readonly property string persistPath:
         cacheDir + "/notifications.json"
 
