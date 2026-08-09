@@ -42,7 +42,8 @@ Variants {
             Behavior on opacity { NumberAnimation { duration: 150 } }
         }
 
-            property bool appearanceExpanded: false
+            property bool barExpanded: false
+            property bool hyprlandExpanded: false
             property bool displayExpanded: false
             property bool placementExpanded: false
             property bool monitorMenuOpen: false
@@ -51,38 +52,24 @@ Variants {
             id: settingsPanel
             anchors.verticalCenter: parent.verticalCenter
             width:    380
-            height:   Math.min(settingsCol.implicitHeight + 32, parent.height - 20)
+            height:   Math.min(settingsOuter.implicitHeight + 32, parent.height - 20)
             radius:   barSettings.barRadius
             color:    theme.background
             opacity:  settingsPopup.isOpen ? 0.95 : 0
-            scale:    settingsPopup.isOpen ? 1.0 : 0.95
             x:        settingsPopup.isOpen ? 10 : -width - 10
             clip:     true
             border { width: barSettings.borderThickness; color: theme.color5 }
 
-            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-            Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-            Behavior on x       { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-
-            Flickable {
-                id: settingsFlick
-                anchors.fill: parent
-                anchors.margins: 16
-                contentHeight: settingsCol.implicitHeight
-                clip: true
-                flickableDirection: Flickable.VerticalFlick
-                boundsBehavior: Flickable.StopAtBounds
-                ScrollBar.vertical: ScrollBar {
-                    policy: settingsFlick.contentHeight > settingsFlick.height
-                            ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
-                }
+            Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
+            Behavior on x       { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
 
             ColumnLayout {
-                id:   settingsCol
-                width: parent.width
+                id: settingsOuter
+                anchors.fill: parent
+                anchors.margins: 16
                 spacing: 0
 
-                // ── Header ─────────────────────────────────────────────
+                // ── Header (fixed, not scrollable) ──────────────────
                 RowLayout {
                     Layout.fillWidth: true
 
@@ -127,14 +114,34 @@ Variants {
 
                 Rectangle { Layout.fillWidth: true; height: 1; color: theme.muted; opacity: 0.4; Layout.topMargin: 12; Layout.bottomMargin: 12 }
 
+                // ── Scrollable content ──────────────────────────────
+                Flickable {
+                    id: settingsFlick
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: Math.min(settingsCol.implicitHeight, settingsPanel.parent.height - 100)
+                    contentHeight: settingsCol.implicitHeight
+                    clip: true
+                    flickableDirection: Flickable.VerticalFlick
+                    boundsBehavior: Flickable.StopAtBounds
+                    ScrollBar.vertical: ScrollBar {
+                        policy: settingsFlick.contentHeight > settingsFlick.height
+                                ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+                        width: 6
+                    }
+
+                ColumnLayout {
+                    id:   settingsCol
+                    width: parent.width
+                    spacing: 0
+
                 // ════════════════════════════════════════════════════════
-                // Appearance Section (Collapsible)
+                // Bar Settings Section (Collapsible)
                 // ════════════════════════════════════════════════════════
                 Rectangle {
                     Layout.fillWidth: true
                     height: 32
                     radius: 4
-                    color: apprHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+                    color: barHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
 
                     Row {
                         anchors.left: parent.left
@@ -142,9 +149,9 @@ Variants {
                         spacing: 6
 
                         Text {
-                            text:           settingsWindow.appearanceExpanded ? "▼" : "▶"
+                            text:           settingsWindow.barExpanded ? "▼" : "▶"
                             font.pixelSize: 10
-                            color:          theme.color6
+                            color:          theme.color5
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
@@ -152,34 +159,34 @@ Variants {
                             text:           "󰏘"
                             font.pixelSize: 14
                             font.family:    "JetBrains Mono Nerd Font Mono"
-                            color:          theme.color6
+                            color:          theme.color5
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         Text {
-                            text:           "Appearance"
+                            text:           "Bar Settings"
                             font.pixelSize: 13
                             font.bold:      true
-                            color:          theme.color6
+                            color:          theme.color5
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
 
                     MouseArea {
-                        id: apprHover
+                        id: barHover
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape:  Qt.PointingHandCursor
-                        onClicked:    settingsWindow.appearanceExpanded = !settingsWindow.appearanceExpanded
+                        onClicked:    settingsWindow.barExpanded = !settingsWindow.barExpanded
                     }
                 }
 
-                Item { Layout.fillWidth: true; height: 8; visible: settingsWindow.appearanceExpanded }
+                Item { Layout.fillWidth: true; height: 8; visible: settingsWindow.barExpanded }
 
-                // ── Appearance Content ──────────────────────────────────
+                // ── Bar Settings Content ──────────────────────────────
                 ColumnLayout {
                     Layout.fillWidth: true
-                    visible: settingsWindow.appearanceExpanded
+                    visible: settingsWindow.barExpanded
                     spacing: 0
 
                     // ── Bar Radius ──────────────────────────────────────
@@ -283,108 +290,7 @@ Variants {
                         }
                     }
 
-                    // ── Window Radius ───────────────────────────────────
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.bottomMargin: 8
-
-                        Text {
-                            text:           "Hyprland Window Radius"
-                            font.pixelSize: 13
-                            color:          theme.foreground
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Rectangle {
-                            width: hyprRadiusLabel.implicitWidth + 12
-                            height: 22
-                            radius: 4
-                            color: Qt.darker(theme.muted, 1.2)
-
-                            Text {
-                                id: hyprRadiusLabel
-                                anchors.centerIn: parent
-                                text:           Math.round(barSettings.hyprlandRadius) + "px"
-                                font.pixelSize: 12
-                                font.bold:      true
-                                font.family:    "JetBrains Mono Nerd Font Mono"
-                                color:          theme.foreground
-                            }
-                        }
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 30
-
-                        Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            height: 6
-                            radius: 3
-                            color: Qt.darker(theme.muted, 1.2)
-
-                            Rectangle {
-                                width: hyprSliderMouse.sliderPos * parent.width
-                                height: parent.height
-                                radius: 3
-                                color: theme.color3
-                            }
-                        }
-
-                        Rectangle {
-                            x: hyprSliderMouse.sliderPos * (parent.width - width)
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 20
-                            height: 20
-                            radius: 10
-                            color: hyprSliderMouse.pressed ? Qt.lighter(theme.color3, 1.3) : (hyprSliderMouse.containsMouse ? Qt.lighter(theme.color3, 1.1) : theme.color3)
-                            border { width: 2; color: theme.foreground }
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                        }
-
-                        MouseArea {
-                            id: hyprSliderMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            property bool pressed: false
-                            property real sliderPos: barSettings.hyprlandRadius / 30
-
-                            function updateValue(mouseX) {
-                                var pos = Math.max(0, Math.min(1, mouseX / width))
-                                var val = Math.round(pos * 30)
-                                barSettings.setHyprlandRadius(val)
-                            }
-
-                            onPressed: mouse => { pressed = true; updateValue(mouse.x) }
-                            onReleased: pressed = false
-                            onPositionChanged: mouse => { if (pressed) updateValue(mouse.x) }
-                            onClicked: mouse => updateValue(mouse.x)
-                        }
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 16
-                        Layout.bottomMargin: 8
-
-                        Repeater {
-                            model: [0, 5, 10, 15, 20, 25, 30]
-
-                            Column {
-                                required property int modelData
-                                x: (modelData / 30) * (parent.width - 16) + 8
-                                spacing: 2
-
-                                Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
-                                Text { text: modelData; font.pixelSize: 9; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
-                            }
-                        }
-                    }
-
-                    // ── Border Thickness ──────────────────────────────────
+                    // ── Bar Border Thickness ──────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.bottomMargin: 8
@@ -457,107 +363,6 @@ Variants {
                                 var pos = Math.max(0, Math.min(1, mouseX / width))
                                 var val = Math.round(pos * 5)
                                 barSettings.setBorderThickness(val)
-                            }
-
-                            onPressed: mouse => { pressed = true; updateValue(mouse.x) }
-                            onReleased: pressed = false
-                            onPositionChanged: mouse => { if (pressed) updateValue(mouse.x) }
-                            onClicked: mouse => updateValue(mouse.x)
-                        }
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 16
-                        Layout.bottomMargin: 12
-
-                        Repeater {
-                            model: [0, 1, 2, 3, 4, 5]
-
-                            Column {
-                                required property int modelData
-                                x: (modelData / 5) * parent.width
-                                spacing: 2
-
-                                Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
-                                Text { text: modelData; font.pixelSize: 9; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
-                            }
-                        }
-                    }
-
-                    // ── Hyprland Window Border Thickness ────────────────────
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.bottomMargin: 8
-
-                        Text {
-                            text:           "Hyprland Window Border Thickness"
-                            font.pixelSize: 13
-                            color:          theme.foreground
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Rectangle {
-                            width: hyprBorderThicknessLabel.implicitWidth + 12
-                            height: 22
-                            radius: 4
-                            color: Qt.darker(theme.muted, 1.2)
-
-                            Text {
-                                id: hyprBorderThicknessLabel
-                                anchors.centerIn: parent
-                                text:           Math.round(barSettings.hyprlandBorderThickness) + "px"
-                                font.pixelSize: 12
-                                font.bold:      true
-                                font.family:    "JetBrains Mono Nerd Font Mono"
-                                color:          theme.foreground
-                            }
-                        }
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 30
-
-                        Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width
-                            height: 6
-                            radius: 3
-                            color: Qt.darker(theme.muted, 1.2)
-
-                            Rectangle {
-                                width: hyprBorderThicknessSliderMouse.sliderPos * parent.width
-                                height: parent.height
-                                radius: 3
-                                color: theme.color3
-                            }
-                        }
-
-                        Rectangle {
-                            x: hyprBorderThicknessSliderMouse.sliderPos * (parent.width - width)
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 20
-                            height: 20
-                            radius: 10
-                            color: hyprBorderThicknessSliderMouse.pressed ? Qt.lighter(theme.color3, 1.3) : (hyprBorderThicknessSliderMouse.containsMouse ? Qt.lighter(theme.color3, 1.1) : theme.color3)
-                            border { width: 2; color: theme.foreground }
-                            Behavior on color { ColorAnimation { duration: 100 } }
-                        }
-
-                        MouseArea {
-                            id: hyprBorderThicknessSliderMouse
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape:  Qt.PointingHandCursor
-                            property bool pressed: false
-                            property real sliderPos: barSettings.hyprlandBorderThickness / 5
-
-                            function updateValue(mouseX) {
-                                var pos = Math.max(0, Math.min(1, mouseX / width))
-                                var val = Math.round(pos * 5)
-                                barSettings.setHyprlandBorderThickness(val)
                             }
 
                             onPressed: mouse => { pressed = true; updateValue(mouse.x) }
@@ -686,6 +491,264 @@ Variants {
                             }
                         }
                     }
+                }
+
+                // ════════════════════════════════════════════════════════
+                // Hyprland Settings Section (Collapsible)
+                // ════════════════════════════════════════════════════════
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 32
+                    radius: 4
+                    color: hyprHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+
+                    Row {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 6
+
+                        Text {
+                            text:           settingsWindow.hyprlandExpanded ? "▼" : "▶"
+                            font.pixelSize: 10
+                            color:          theme.color6
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text:           "󰏘"
+                            font.pixelSize: 14
+                            font.family:    "JetBrains Mono Nerd Font Mono"
+                            color:          theme.color6
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text:           "Hyprland Settings"
+                            font.pixelSize: 13
+                            font.bold:      true
+                            color:          theme.color6
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    MouseArea {
+                        id: hyprHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape:  Qt.PointingHandCursor
+                        onClicked:    settingsWindow.hyprlandExpanded = !settingsWindow.hyprlandExpanded
+                    }
+                }
+
+                Item { Layout.fillWidth: true; height: 8; visible: settingsWindow.hyprlandExpanded }
+
+                // ── Hyprland Settings Content ──────────────────────────
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    visible: settingsWindow.hyprlandExpanded
+                    spacing: 0
+
+                    // ── Hyprland Window Radius ────────────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: 8
+
+                        Text {
+                            text:           "Hyprland Window Radius"
+                            font.pixelSize: 13
+                            color:          theme.foreground
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Rectangle {
+                            width: hyprRadiusLabel.implicitWidth + 12
+                            height: 22
+                            radius: 4
+                            color: Qt.darker(theme.muted, 1.2)
+
+                            Text {
+                                id: hyprRadiusLabel
+                                anchors.centerIn: parent
+                                text:           Math.round(barSettings.hyprlandRadius) + "px"
+                                font.pixelSize: 12
+                                font.bold:      true
+                                font.family:    "JetBrains Mono Nerd Font Mono"
+                                color:          theme.foreground
+                            }
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
+                            height: 6
+                            radius: 3
+                            color: Qt.darker(theme.muted, 1.2)
+
+                            Rectangle {
+                                width: hyprSliderMouse.sliderPos * parent.width
+                                height: parent.height
+                                radius: 3
+                                color: theme.color3
+                            }
+                        }
+
+                        Rectangle {
+                            x: hyprSliderMouse.sliderPos * (parent.width - width)
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 20
+                            height: 20
+                            radius: 10
+                            color: hyprSliderMouse.pressed ? Qt.lighter(theme.color3, 1.3) : (hyprSliderMouse.containsMouse ? Qt.lighter(theme.color3, 1.1) : theme.color3)
+                            border { width: 2; color: theme.foreground }
+                            Behavior on color { ColorAnimation { duration: 100 } }
+                        }
+
+                        MouseArea {
+                            id: hyprSliderMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  Qt.PointingHandCursor
+                            property bool pressed: false
+                            property real sliderPos: barSettings.hyprlandRadius / 30
+
+                            function updateValue(mouseX) {
+                                var pos = Math.max(0, Math.min(1, mouseX / width))
+                                var val = Math.round(pos * 30)
+                                barSettings.setHyprlandRadius(val)
+                            }
+
+                            onPressed: mouse => { pressed = true; updateValue(mouse.x) }
+                            onReleased: pressed = false
+                            onPositionChanged: mouse => { if (pressed) updateValue(mouse.x) }
+                            onClicked: mouse => updateValue(mouse.x)
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 16
+                        Layout.bottomMargin: 8
+
+                        Repeater {
+                            model: [0, 5, 10, 15, 20, 25, 30]
+
+                            Column {
+                                required property int modelData
+                                x: (modelData / 30) * (parent.width - 16) + 8
+                                spacing: 2
+
+                                Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
+                                Text { text: modelData; font.pixelSize: 9; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
+                            }
+                        }
+                    }
+
+                    // ── Hyprland Window Border Thickness ────────────────────
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: 8
+
+                        Text {
+                            text:           "Hyprland Window Border Thickness"
+                            font.pixelSize: 13
+                            color:          theme.foreground
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Rectangle {
+                            width: hyprBorderThicknessLabel.implicitWidth + 12
+                            height: 22
+                            radius: 4
+                            color: Qt.darker(theme.muted, 1.2)
+
+                            Text {
+                                id: hyprBorderThicknessLabel
+                                anchors.centerIn: parent
+                                text:           Math.round(barSettings.hyprlandBorderThickness) + "px"
+                                font.pixelSize: 12
+                                font.bold:      true
+                                font.family:    "JetBrains Mono Nerd Font Mono"
+                                color:          theme.foreground
+                            }
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width
+                            height: 6
+                            radius: 3
+                            color: Qt.darker(theme.muted, 1.2)
+
+                            Rectangle {
+                                width: hyprBorderThicknessSliderMouse.sliderPos * parent.width
+                                height: parent.height
+                                radius: 3
+                                color: theme.color3
+                            }
+                        }
+
+                        Rectangle {
+                            x: hyprBorderThicknessSliderMouse.sliderPos * (parent.width - width)
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 20
+                            height: 20
+                            radius: 10
+                            color: hyprBorderThicknessSliderMouse.pressed ? Qt.lighter(theme.color3, 1.3) : (hyprBorderThicknessSliderMouse.containsMouse ? Qt.lighter(theme.color3, 1.1) : theme.color3)
+                            border { width: 2; color: theme.foreground }
+                            Behavior on color { ColorAnimation { duration: 100 } }
+                        }
+
+                        MouseArea {
+                            id: hyprBorderThicknessSliderMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape:  Qt.PointingHandCursor
+                            property bool pressed: false
+                            property real sliderPos: barSettings.hyprlandBorderThickness / 5
+
+                            function updateValue(mouseX) {
+                                var pos = Math.max(0, Math.min(1, mouseX / width))
+                                var val = Math.round(pos * 5)
+                                barSettings.setHyprlandBorderThickness(val)
+                            }
+
+                            onPressed: mouse => { pressed = true; updateValue(mouse.x) }
+                            onReleased: pressed = false
+                            onPositionChanged: mouse => { if (pressed) updateValue(mouse.x) }
+                            onClicked: mouse => updateValue(mouse.x)
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 16
+                        Layout.bottomMargin: 12
+
+                        Repeater {
+                            model: [0, 1, 2, 3, 4, 5]
+
+                            Column {
+                                required property int modelData
+                                x: (modelData / 5) * parent.width
+                                spacing: 2
+
+                                Rectangle { width: 1; height: 4; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
+                                Text { text: modelData; font.pixelSize: 9; color: theme.muted; anchors.horizontalCenter: parent.horizontalCenter }
+                            }
+                        }
+                    }
 
                     // ── Hyprland Window Transparency ────────────────────
                     RowLayout {
@@ -788,7 +851,7 @@ Variants {
                         }
                     }
 
-                    // ── Gaps In ──────────────────────────────────────
+                    // ── Hyprland Gaps In ──────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.bottomMargin: 8
@@ -889,7 +952,7 @@ Variants {
                         }
                     }
 
-                    // ── Gaps Out ──────────────────────────────────────
+                    // ── Hyprland Gaps Out ──────────────────────────────
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.bottomMargin: 8
@@ -1626,6 +1689,7 @@ Variants {
                 }
             }
             } // Flickable
+            } // outer ColumnLayout
         }
     }
 }
