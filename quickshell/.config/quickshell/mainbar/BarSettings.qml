@@ -22,6 +22,7 @@ Item {
     property bool arabicBold: false
     property bool nightlightEnabled: false
     property bool _loading: false
+    property bool loaded: false
 
     readonly property string configPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/bar-settings.json"
@@ -83,6 +84,7 @@ Item {
                 applyHyprlandRadius(settingsRoot.hyprlandRadius)
                 applyHyprlandBorderThickness(settingsRoot.hyprlandBorderThickness)
                 applyHyprlandWindowOpacity(settingsRoot.hyprlandWindowOpacity)
+                settingsRoot.loaded = true
                 if (settingsRoot.nightlightEnabled) {
                     nightlightToggleProc.command = ["nohup", "setsid", "bash", "-c",
                         "hyprsunset -t 4000 </dev/null >/dev/null 2>&1"]
@@ -142,6 +144,18 @@ Item {
         stdout: SplitParser { onRead: line => {} }
     }
 
+    Process {
+        id: themePatchProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: themePatchProc2
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
     Component.onCompleted: {
         settingsFile.reload()
     }
@@ -197,12 +211,14 @@ Item {
         hyprctlProc.command = ["hyprctl", "eval", "hl.config({ decoration = { rounding = " + r + " } })"]
         hyprctlProc.running = true
         saveLuaConfig(r)
+        patchAllThemeHyprlook("rounding", r)
     }
 
     function applyHyprlandBorderThickness(t) {
         hyprctlBorderProc.command = ["hyprctl", "eval", "hl.config({ general = { border_size = " + t + " } })"]
         hyprctlBorderProc.running = true
         saveLuaBorderConfig(t)
+        patchAllThemeHyprlook("border_size", t)
     }
 
     function applyHyprlandWindowOpacity(o) {
@@ -238,6 +254,19 @@ Item {
                     "else echo '" + override + "' >> '" + luaPath + "'; fi"
         hyprctlProc.command = ["sh", "-c", cmd]
         hyprctlProc.running = true
+    }
+
+    function patchAllThemeHyprlook(key, value) {
+        var cmd = "for f in $HOME/.config/.hypr-themes/*/hyprlook; do " +
+                  "[ -f \"$f\" ] && sed -i 's/" + key + "\\s*=\\s*[0-9.]*\\+/" + key + " = " + value + "/g' \"$f\"; done"
+        themePatchProc.command = ["sh", "-c", cmd]
+        themePatchProc.running = true
+        if (key === "rounding") {
+            var cmd2 = "for f in $HOME/.config/.hypr-themes/*/hyprlook; do " +
+                       "[ -f \"$f\" ] && sed -i 's/rounding_power\\s*=\\s*[0-9.]*\\+/rounding_power = " + value + "/g' \"$f\"; done"
+            themePatchProc2.command = ["sh", "-c", cmd2]
+            themePatchProc2.running = true
+        }
     }
 
     function save() {

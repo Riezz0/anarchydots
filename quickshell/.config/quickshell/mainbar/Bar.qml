@@ -51,6 +51,7 @@ Variants {
             anchors.fill: parent
             color:        "transparent"
             radius: barSettings.barRadius
+            visible:      barSettings.loaded
 
             Rectangle {
                 anchors.fill: parent
@@ -774,6 +775,7 @@ Variants {
             border { width: barSettings.borderThickness; color: theme.color3 }
             clip:   true
             z: 10
+            visible: barSettings.loaded
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter:   parent.verticalCenter
