@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
 #========================#
 #       FANTASY 1        #
@@ -134,4 +134,3 @@ killall -q gnome-calendar 2>/dev/null || true
 killall -q evince 2>/dev/null || true
 killall -q eog 2>/dev/null || true
 killall -q file-roller 2>/dev/null || true
-
