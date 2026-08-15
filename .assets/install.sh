@@ -20,11 +20,11 @@ packages=(
     xdg-desktop-portal-wlr xdg-desktop-portal-xapp nodejs-nativefier 
     gum stow nemo nemo-fileroller firewalld freedownloadmanager qdirstat
     pyprland nautilus-open-any-terminal nautilus-admin arch-update 
-    inotify-tools
+    inotify-tools quickshell
 )
 
 #Stow Packages#
-stow_packs=(fastfetch gradience gtk3 gtk4 hypr-themes hyprland 
+stow_packs=(fastfetch gradience gtk3 gtk4 hypr-themes hyprland quickshell
   icons kitty kvantum neovim pywal qt5 qt6 rofi swaync themes
   vesktop wal waybar zsh)
 
@@ -229,4 +229,3 @@ echo -e "✔ Installation Finished!"
 
 #Reboot#
 bash "/home/$USER/mydots/.assets/reboot.sh"
-

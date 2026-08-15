@@ -20,8 +20,10 @@ Scope {
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/colors.json"
 
     function applyWalColors() {
-        if (!colorFile.loaded)
+        if (!colorFile.loaded) {
+            reloadTimer.restart()
             return
+        }
 
         try {
             const data = JSON.parse(colorFile.text())
@@ -35,7 +37,26 @@ Scope {
             color6 = data.colors.color6
             muted = data.colors.color8
         } catch (e) {
-            console.warn("powerbar: failed to parse pywal colors:", e)
+            // Pywal can briefly leave the file incomplete while rewriting it.
+            reloadTimer.restart()
+        }
+    }
+
+    Timer {
+        id: reloadTimer
+        interval: 150
+        repeat: false
+        onTriggered: colorFile.reload()
+    }
+
+    Timer {
+        // Also handles the first start when Pywal has not created the file yet.
+        interval: 1000
+        repeat: true
+        running: true
+        onTriggered: {
+            if (!colorFile.loaded)
+                colorFile.reload()
         }
     }
 
@@ -44,6 +65,6 @@ Scope {
         path: theme.walColorsPath
         watchChanges: true
         onLoaded: theme.applyWalColors()
-        onFileChanged: colorFile.reload()
+        onFileChanged: reloadTimer.restart()
     }
 }

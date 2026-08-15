@@ -484,7 +484,7 @@ Variants {
                     Text {
                         id:               clockLabel
                         anchors.centerIn: parent
-                        color:            theme.muted
+                        color:            clockBtn.hovered ? theme.color1 : theme.muted
                         font.pixelSize:   14
                         font.bold:        true
                         font.family:      "JetBrains Mono Nerd Font Mono"
@@ -497,11 +497,11 @@ Variants {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape:  Qt.PointingHandCursor
+                        onContainsMouseChanged: clockBtn.hovered = containsMouse
                         onClicked:    root.calendarPopupOpen = !root.calendarPopupOpen
-                        onContainsMouseChanged: {
-                            clockLabel.color = containsMouse ? theme.color1 : theme.muted
-                        }
                     }
+
+                    property bool hovered: false
                 }
 
                 // ── Widgets Toggle ─────────────────────────────────────────
