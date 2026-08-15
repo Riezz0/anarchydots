@@ -34,7 +34,7 @@ center = true, opacity = "1", animation = "slide top",
 border_color = theme.color2 .. " " .. theme.color15 })
 
 -- VSS Code
-hl.window_rule({ name = "vssrules", match = { class = "codium" },float = true, size = "1200 700", 
+hl.window_rule({ name = "vssrules", match = { class = "code-oss" },float = true, size = "1200 700", 
 center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
