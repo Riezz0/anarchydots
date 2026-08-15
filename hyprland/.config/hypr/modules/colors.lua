@@ -4,31 +4,35 @@ local function rgba(r, g, b, a)
     return string.format("0x%02x%02x%02x%02x", r, g, b, math.floor(a * 255))
 end
 
+
 -- Create and populate the table
 local M = {}
 
+
 -- Background and Foreground
-M.background = "0xff1a1b26"
-M.foreground = "0xffc0caf5"
-M.cursor     = "0xffc0caf5"
+M.background = "0xff251810"
+M.foreground = "0xffc8c5c3"
+M.cursor     = "0xffc8c5c3"
+
 
 -- Colors
-M.color0     = "0xff1a1b26"
-M.color1     = "0xfff7768e"
-M.color2     = "0xff9ece6a"
-M.color3     = "0xffe0af68"
-M.color4     = "0xff7aa2f7"
-M.color5     = "0xffbb9af7"
-M.color6     = "0xff7dcfff"
-M.color7     = "0xffa9b1d6"
-M.color8     = "0xff414868"
-M.color9     = "0xffff899d"
-M.color10    = "0xff9fe044"
-M.color11    = "0xfffaba4a"
-M.color12    = "0xff8db0ff"
-M.color13    = "0xffc7a9ff"
-M.color14    = "0xffa4daff"
-M.color15    = "0xffc0caf5"
+M.color0     = "0xff251810"
+M.color1     = "0xff9f4817"
+M.color2     = "0xff6c5636"
+M.color3     = "0xff5b6358"
+M.color4     = "0xff806f4d"
+M.color5     = "0xffa27645"
+M.color6     = "0xff8e8366"
+M.color7     = "0xff9c9692"
+M.color8     = "0xff74665f"
+M.color9     = "0xffD5611F"
+M.color10    = "0xff917349"
+M.color11    = "0xff7A8576"
+M.color12    = "0xffAB9467"
+M.color13    = "0xffD89E5C"
+M.color14    = "0xffBEAF89"
+M.color15    = "0xffc8c5c3"
+
 
 -- Return the table
 return M

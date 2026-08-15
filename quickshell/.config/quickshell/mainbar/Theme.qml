@@ -44,13 +44,6 @@ Scope {
         path: theme.walColorsPath
         watchChanges: true
         onLoaded: theme.applyWalColors()
-        onFileChanged: theme.applyWalColors()
-    }
-
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        onTriggered: colorFile.reload()
+        onFileChanged: colorFile.reload()
     }
 }
