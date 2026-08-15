@@ -55,7 +55,7 @@ cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/modules/colors.lua"
 cp -r "$THEME_DIR/hyprlook" "$USER_HOME/.config/hypr/modules/look.lua"
 bash ~/.config/.hypr-themes/patch-look.sh
 cp -r "$THEME_DIR/kitty" "$USER_HOME/.config/kitty/kitty.conf"
-# REMOVED: cp -r "$THEME_DIR/qcol" "$USER_HOME/.config/quickshell/mainbar/Theme.qml"
+cp -r "$THEME_DIR/qcol" "$USER_HOME/.config/quickshell/mainbar/Theme.qml"
 cp -r "$THEME_DIR/rofi" "$USER_HOME/.config/rofi/launcher/colors.rasi"
 cp -f "${HOME}"/.cache/wal/pywal.json "${HOME}"/.config/presets/user/pywal.json
 cp -r $HOME/.cache/wal/colors-discord.css $HOME/.config/vesktop/themes/pywal-vencord.theme.css
@@ -109,14 +109,13 @@ cp -r "$THEME_DIR/arch-everforest-dark.png" "/home/$USER/.config/quickshell/asse
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
-hyprctl reload
+# Quickshell applies the Pywal colors without reloading the compositor.
 kill -SIGUSR1 $(pidof kitty)
 pywalfox update & disown 
 #swaync-client -rs
 #bash /home/$USER/.config/scripts/waybar.sh
 # REMOVED: killall quickshell
 # REMOVED: bash /usr/local/bin/qbarmain.sh
-systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 wait 
 
 #------------------------#

@@ -54,11 +54,35 @@ Variants {
             visible:      barSettings.loaded
 
             Rectangle {
+                id:           barFill
                 anchors.fill: parent
                 color:        theme.background
                 opacity:      barSettings.barOpacity
-                radius: barSettings.barRadius
+                radius:       barSettings.barRadius
                 border { color: theme.color2; width: barSettings.borderThickness }
+            }
+
+            Connections {
+                target: theme
+                function onColorsChanged() { themeTransition.start() }
+            }
+
+            SequentialAnimation {
+                id: themeTransition
+                PropertyAnimation {
+                    target: barFill
+                    property: "opacity"
+                    to: barSettings.barOpacity * 0.6
+                    duration: 120
+                    easing.type: Easing.InQuad
+                }
+                PropertyAnimation {
+                    target: barFill
+                    property: "opacity"
+                    to: barSettings.barOpacity
+                    duration: 200
+                    easing.type: Easing.OutCubic
+                }
             }
 
             RowLayout {

@@ -49,7 +49,7 @@ cp "$THEME_DIR/hypr-colors" "$HOME/.config/hypr/modules/colors.lua"
 cp "$THEME_DIR/hyprlook" "$HOME/.config/hypr/modules/look.lua"
 bash ~/.config/.hypr-themes/patch-look.sh
 cp "$THEME_DIR/kitty" "$HOME/.config/kitty/kitty.conf"
-# REMOVED: cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
+cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
 cp "$THEME_DIR/rofi" "$HOME/.config/rofi/launcher/colors.rasi"
 cp -f "$HOME/.cache/wal/pywal.json" "$HOME/.config/presets/user/pywal.json"
 cp "$HOME/.cache/wal/colors-discord.css" "$HOME/.config/vesktop/themes/pywal-vencord.theme.css"
@@ -102,12 +102,11 @@ cp "$THEME_DIR/arch-catppuccin-mocha.png" "$HOME/.config/quickshell/assets/arch.
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
-hyprctl reload
+# Quickshell applies the Pywal colors without reloading the compositor.
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true
 pywalfox update & disown
 # REMOVED: killall quickshell
 # REMOVED: bash /usr/local/bin/qbarmain.sh
-systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal
 
 #------------------------#
 # COPY THEME

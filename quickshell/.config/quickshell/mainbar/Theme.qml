@@ -6,56 +6,38 @@ import Quickshell.Io
 Scope {
     id: theme
 
-    property color background: "#1a1b26"
-    property color foreground: "#c0caf5"
-    property color color1: "#f7768e"
-    property color color2: "#9ece6a"
-    property color color3: "#e0af68"
-    property color color4: "#7aa2f7"
-    property color color5: "#bb9af7"
-    property color color6: "#7dcfff"
-    property color muted: "#414868"
+    property color background: "#090b15"
+    property color foreground: "#c1c2c4"
+    property color color1: "#981C71"
+    property color color2: "#096B94"
+    property color color3: "#EA58B4"
+    property color color4: "#CA4AA7"
+    property color color5: "#614D93"
+    property color color6: "#29ACCC"
+    property color muted: "#585b6c"
 
     readonly property string walColorsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/wal/colors.json"
 
     function applyWalColors() {
-        if (!colorFile.loaded) {
-            reloadTimer.restart()
+        if (!colorFile.loaded)
             return
-        }
 
         try {
             const data = JSON.parse(colorFile.text())
             background = data.special.background
             foreground = data.special.foreground
-            color1 = data.colors.color1
-            color2 = data.colors.color2
-            color3 = data.colors.color3
-            color4 = data.colors.color4
-            color5 = data.colors.color5
-            color6 = data.colors.color6
+            accent = data.colors.color4
+            red = data.colors.color1
+            green = data.colors.color2
+            yellow = data.colors.color3
+            blue = data.colors.color4
+            magenta = data.colors.color5
+            cyan = data.colors.color6
             muted = data.colors.color8
         } catch (e) {
-            // Pywal can briefly leave the file incomplete while rewriting it.
-            reloadTimer.restart()
+            console.warn("powerbar: failed to parse pywal colors:", e)
         }
-    }
-
-    Timer {
-        id: reloadTimer
-        interval: 150
-        repeat: false
-        onTriggered: colorFile.reload()
-    }
-
-    Timer {
-        // Poll as well as watching: some VM/shared filesystems miss Pywal's
-        // atomic replacement of colors.json.
-        interval: 1000
-        repeat: true
-        running: true
-        onTriggered: colorFile.reload()
     }
 
     FileView {
@@ -63,6 +45,6 @@ Scope {
         path: theme.walColorsPath
         watchChanges: true
         onLoaded: theme.applyWalColors()
-        onFileChanged: reloadTimer.restart()
+        onFileChanged: theme.applyWalColors()
     }
 }
