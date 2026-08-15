@@ -50,14 +50,12 @@ Scope {
     }
 
     Timer {
-        // Also handles the first start when Pywal has not created the file yet.
+        // Poll as well as watching: some VM/shared filesystems miss Pywal's
+        // atomic replacement of colors.json.
         interval: 1000
         repeat: true
         running: true
-        onTriggered: {
-            if (!colorFile.loaded)
-                colorFile.reload()
-        }
+        onTriggered: colorFile.reload()
     }
 
     FileView {
