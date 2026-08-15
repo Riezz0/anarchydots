@@ -173,6 +173,7 @@ sleep 3
 #Load Theme#
 echo "Loading Theme"
 sleep 3
+sudo install -d -m 755 -o "$USER" -g "$USER" /var/local/sddm-wallpaper
 bash /home/$USER/mydots/.assets/tokyo-night.sh
 echo "Done"
 sleep 3
