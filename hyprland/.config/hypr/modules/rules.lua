@@ -83,3 +83,12 @@ hl.window_rule({ name = "bluemanrules", match = { class = "blueman-manager" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
+-- HyprMon
+hl.window_rule({ name = "hyprmonrules", match = { class = "HyprMon" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })
+
+-- Anarchy-Installer
+hl.window_rule({ name = "anarchyinstrules", match = { class = "Anarchy-Installer" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })
