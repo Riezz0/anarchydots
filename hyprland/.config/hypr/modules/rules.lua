@@ -92,3 +92,8 @@ border_color = theme.color2 .. " " .. theme.color15 })
 hl.window_rule({ name = "anarchyinstrules", match = { class = "Anarchy-Installer" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
+
+-- Anarchy-Welcome
+hl.window_rule({ name = "anarchywelrules", match = { class = "com.anarchy.welcome" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })

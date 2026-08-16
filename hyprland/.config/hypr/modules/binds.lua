@@ -52,11 +52,9 @@ hl.bind(mainMod .. " + SHIFT + 9", hl.dsp.window.move({ workspace = 9 }),       
 hl.bind(mainMod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = 10 }),                                                  { description = "Move to Workspace 10" })
 
 -- Volume Control
-hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("~/.config/scripts/volume.sh up"),                                                 { description = "Volume Up" })
-hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("~/.config/scripts/volume.sh down"),                                               { description = "Volume Down" })
-hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("~/.config/scripts/volume.sh mute"),                                           { description = "Volume Mute" })
+hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("/usr/local/bin/volume.sh up"),                                                 { description = "Volume Up" })
+hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("/usr/local/bin/volume.sh down"),                                               { description = "Volume Down" })
+hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("/usr/local/bin/volume.sh mute"),                                           { description = "Volume Mute" })
 
 -- Testing
 hl.bind("ALT + W", hl.dsp.exec_cmd("/usr/local/bin/waybar.sh"),                                                             { description = "Waybar Testing" })
-hl.bind("ALT + P", hl.dsp.exec_cmd("~/.config/scripts/swaync.sh"),                                                          { description = "SwayNC Testing" })
-hl.bind("ALT + O", hl.dsp.exec_cmd("~/git/oomox/gui.sh"),                                                                   { description = "Themix Testing" })

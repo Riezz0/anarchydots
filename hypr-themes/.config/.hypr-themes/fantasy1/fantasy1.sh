@@ -46,8 +46,7 @@ mkdir -p "$HOME/.config/vesktop/themes/"
 # COPY CONFIG FILES
 #------------------------#
 cp "$THEME_DIR/hypr-colors" "$HOME/.config/hypr/modules/colors.lua"
-cp "$THEME_DIR/hyprlook" "$HOME/.config/hypr/modules/look.lua"
-bash ~/.config/.hypr-themes/patch-look.sh
+bash ~/.config/.hypr-themes/patch-look.sh "$THEME_DIR/hyprlook"
 cp "$THEME_DIR/kitty" "$HOME/.config/kitty/kitty.conf"
 cp "$THEME_DIR/qcol" "$HOME/.config/quickshell/mainbar/Theme.qml"
 cp "$THEME_DIR/rofi" "$HOME/.config/rofi/launcher/colors.rasi"
@@ -97,6 +96,7 @@ cp "$THEME_DIR/fantasy1.png" "$HOME/.config/fastfetch/arch.png"
 #------------------------#
 # cp "$THEME_DIR/masjid.png" "$HOME/.config/waybar/icons/arch.png"
 cp "$THEME_DIR/fantasy1.png" "$HOME/.config/quickshell/assets/arch.png"
+cp "$THEME_DIR/fantasy1.png" "$HOME/.config/quickshell/Anarchy-Bar/Assets/arch.png"
 
 #------------------------#
 # REFRESH INTERFACES
