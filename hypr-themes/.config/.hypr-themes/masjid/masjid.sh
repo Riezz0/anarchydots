@@ -102,6 +102,7 @@ cp "$THEME_DIR/masjid.png" "$HOME/.config/quickshell/assets/arch.png"
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
+bash ~/.config/.hypr-themes/set-cursor-theme.sh "$CURSOR_THEME"
 # Quickshell applies the Pywal colors without reloading the compositor.
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true
 pywalfox update & disown

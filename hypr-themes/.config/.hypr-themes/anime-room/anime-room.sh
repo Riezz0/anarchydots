@@ -74,6 +74,7 @@ echo "$ICON_THEME" > "$HOME/.cache/current_icon_theme.txt"
 gradience-cli apply -p "$HOME/.config/presets/user/pywal.json" --gtk both
 gradience-cli flatpak-overrides -e both
 
+
 #------------------------#
 # SET KVANTUM THEME
 #------------------------#
@@ -103,6 +104,7 @@ cp "$THEME_DIR/arch-anime-room.png" "$HOME/.config/quickshell/assets/arch.png"
 # REFRESH INTERFACES
 #------------------------#
 hyprctl setcursor "$CURSOR_THEME" 30
+bash ~/.config/.hypr-themes/set-cursor-theme.sh "$CURSOR_THEME"
 # Quickshell applies the Pywal colors without reloading the compositor.
 kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null || true
 pywalfox update & disown
