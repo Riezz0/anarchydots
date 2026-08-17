@@ -2,121 +2,157 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
-Row {
-    id: workspaceRow
+Item {
+    id: workspaceContainer
 
-    spacing: 5
-    anchors.verticalCenter: parent.verticalCenter
+    property int _tick: 0
 
-    Repeater {
-        model: 5
-
-        Rectangle {
-            required property int index
-            property int workspaceId: index + 1
-            width: 28
-            height: 28
-            radius: 6
-
-            property bool isActive: Hyprland.focusedWorkspace
-                && Hyprland.focusedWorkspace.id === workspaceId
-
-            property bool hasWindows: {
-                for (let i = 0; i < Hyprland.workspaces.count; ++i) {
-                    const ws = Hyprland.workspaces.get(i)
-                    if (ws.id === workspaceId && ws.windowCount > 0)
-                        return true
-                }
-                return false
-            }
-
-            property bool hovered: false
-
-            color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
-
-            Text {
-                anchors.centerIn: parent
-                text: parent.workspaceId.toString()
-                color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
-                font.pixelSize: 12
-                font.weight: Font.DemiBold
-
-                Behavior on color { ColorAnimation { duration: 150 } }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                hoverEnabled: true
-                onEntered: parent.hovered = true
-                onExited: parent.hovered = false
-                onClicked: {
-                    if (Hyprland.usingLua) {
-                        Hyprland.dispatch("hl.dsp.focus({ workspace = " + parent.workspaceId + " })")
-                    } else {
-                        Hyprland.dispatch("workspace " + parent.workspaceId)
-                    }
-                }
-            }
-
-            Behavior on color { ColorAnimation { duration: 150 } }
-        }
+    Timer {
+        interval: 500
+        running: true
+        repeat: true
+        onTriggered: workspaceContainer._tick++
     }
 
-    Repeater {
-        model: 5
+    width: workspaceRow.width + 12
+    height: 34
+    anchors.verticalCenter: parent.verticalCenter
 
-        Rectangle {
-            required property int index
-            property int workspaceId: index + 6
-            visible: hasWindows || isActive
-            width: visible ? 28 : 0
-            height: 28
-            radius: 6
+    Rectangle {
+        id: workspaceBg
+        anchors.fill: parent
+        radius: root.barRadius
+        border.color: theme.muted
+        border.width: root.moduleBorderThickness
+        color: "transparent"
+    }
 
-            property bool isActive: Hyprland.focusedWorkspace
-                && Hyprland.focusedWorkspace.id === workspaceId
+    Row {
+        id: workspaceRow
+        anchors.centerIn: parent
+        anchors.margins: 8
+        spacing: 5
 
-            property bool hasWindows: {
-                for (let i = 0; i < Hyprland.workspaces.count; ++i) {
-                    const ws = Hyprland.workspaces.get(i)
-                    if (ws.id === workspaceId && ws.windowCount > 0)
-                        return true
+        Repeater {
+            model: 5
+
+            Rectangle {
+                required property int index
+                property int workspaceId: index + 1
+                width: 24
+                height: 24
+                radius: root.barRadius
+
+                property bool isActive: {
+                    workspaceContainer._tick
+                    if (typeof Hyprland === "undefined" || !Hyprland.focusedWorkspace) return false
+                    return Hyprland.focusedWorkspace.id === workspaceId
                 }
-                return false
-            }
 
-            property bool hovered: false
+                property bool hasWindows: {
+                    workspaceContainer._tick
+                    if (typeof Hyprland === "undefined" || !Hyprland.workspaces) return false
+                    for (let i = 0; i < Hyprland.workspaces.count; ++i) {
+                        const ws = Hyprland.workspaces.get(i)
+                        if (ws.id === workspaceId && ws.windowCount > 0)
+                            return true
+                    }
+                    return false
+                }
 
-            color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+                property bool hovered: false
 
-            Text {
-                anchors.centerIn: parent
-                text: parent.workspaceId.toString()
-                color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
-                font.pixelSize: 12
-                font.weight: Font.DemiBold
+                color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                Text {
+                    anchors.centerIn: parent
+                    text: parent.workspaceId.toString()
+                    color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
+                    font.pixelSize: 12
+                    font.weight: Font.DemiBold
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onEntered: parent.hovered = true
+                    onExited: parent.hovered = false
+                    onClicked: {
+                        if (Hyprland.usingLua) {
+                            Hyprland.dispatch("hl.dsp.focus({ workspace = " + parent.workspaceId + " })")
+                        } else {
+                            Hyprland.dispatch("workspace " + parent.workspaceId)
+                        }
+                    }
+                }
 
                 Behavior on color { ColorAnimation { duration: 150 } }
             }
+        }
 
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                hoverEnabled: true
-                onEntered: parent.hovered = true
-                onExited: parent.hovered = false
-                onClicked: {
-                    if (Hyprland.usingLua) {
-                        Hyprland.dispatch("hl.dsp.focus({ workspace = " + parent.workspaceId + " })")
-                    } else {
-                        Hyprland.dispatch("workspace " + parent.workspaceId)
+        Repeater {
+            model: 5
+
+            Rectangle {
+                required property int index
+                property int workspaceId: index + 6
+                visible: hasWindows || isActive
+                width: visible ? 24 : 0
+                height: 24
+                radius: 4
+
+                property bool isActive: {
+                    workspaceContainer._tick
+                    if (typeof Hyprland === "undefined" || !Hyprland.focusedWorkspace) return false
+                    return Hyprland.focusedWorkspace.id === workspaceId
+                }
+
+                property bool hasWindows: {
+                    workspaceContainer._tick
+                    if (typeof Hyprland === "undefined" || !Hyprland.workspaces) return false
+                    for (let i = 0; i < Hyprland.workspaces.count; ++i) {
+                        const ws = Hyprland.workspaces.get(i)
+                        if (ws.id === workspaceId && ws.windowCount > 0)
+                            return true
+                    }
+                    return false
+                }
+
+                property bool hovered: false
+
+                color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                Text {
+                    anchors.centerIn: parent
+                    text: parent.workspaceId.toString()
+                    color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
+                    font.pixelSize: 12
+                    font.weight: Font.DemiBold
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onEntered: parent.hovered = true
+                    onExited: parent.hovered = false
+                    onClicked: {
+                        if (Hyprland.usingLua) {
+                            Hyprland.dispatch("hl.dsp.focus({ workspace = " + parent.workspaceId + " })")
+                        } else {
+                            Hyprland.dispatch("workspace " + parent.workspaceId)
+                        }
                     }
                 }
-            }
 
-            Behavior on color { ColorAnimation { duration: 150 } }
-            Behavior on width { NumberAnimation { duration: 200 } }
+                Behavior on color { ColorAnimation { duration: 150 } }
+                Behavior on width { NumberAnimation { duration: 200 } }
+            }
         }
     }
 }

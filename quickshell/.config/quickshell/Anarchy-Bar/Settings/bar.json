@@ -1,0 +1,10 @@
+{
+  "barRadius": 10,
+  "barOpacity": 0.85,
+  "barBorderThickness": 0,
+  "moduleBorderThickness": 0,
+  "barMonitors": [
+    "DP-2",
+    "DP-1"
+  ]
+}

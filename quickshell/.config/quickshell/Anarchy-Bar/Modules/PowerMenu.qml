@@ -67,10 +67,12 @@ Variants {
                 anchors.centerIn: parent
                 width: Math.min(420, parent.width - 48)
                 height: powerColumn.implicitHeight + 40
-                radius: 12
+                radius: root.barRadius
                 color: theme.background
                 opacity: powerMenu.isOpen ? 1.0 : 0
                 scale: powerMenu.isOpen ? 1.0 : 0.95
+                border.color: theme.muted
+                border.width: root.moduleBorderThickness
 
                 Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
                 Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
@@ -104,10 +106,12 @@ Variants {
                             Rectangle {
                                 width: 58
                                 height: 58
-                                radius: 12
+                                radius: root.barRadius
                                 color: theme.color1
                                 opacity: shutdownMouse.containsMouse ? 0.6 : 1.0
                                 Layout.alignment: Qt.AlignHCenter
+                                border.color: theme.muted
+                                border.width: root.moduleBorderThickness
 
                                 Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -143,10 +147,12 @@ Variants {
                             Rectangle {
                                 width: 58
                                 height: 58
-                                radius: 12
+                                radius: root.barRadius
                                 color: theme.color2
                                 opacity: rebootMouse.containsMouse ? 0.6 : 1.0
                                 Layout.alignment: Qt.AlignHCenter
+                                border.color: theme.muted
+                                border.width: root.moduleBorderThickness
 
                                 Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -182,10 +188,12 @@ Variants {
                             Rectangle {
                                 width: 58
                                 height: 58
-                                radius: 12
+                                radius: root.barRadius
                                 color: theme.color4
                                 opacity: lockMouse.containsMouse ? 0.6 : 1.0
                                 Layout.alignment: Qt.AlignHCenter
+                                border.color: theme.muted
+                                border.width: root.moduleBorderThickness
 
                                 Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -219,10 +227,12 @@ Variants {
                     Rectangle {
                         width: 90
                         height: 32
-                        radius: 8
+                        radius: root.barRadius
                         color: theme.muted
                         opacity: cancelMouse.containsMouse ? 0.6 : 1.0
                         Layout.alignment: Qt.AlignHCenter
+                        border.color: theme.foreground
+                        border.width: root.moduleBorderThickness
 
                         Behavior on opacity { NumberAnimation { duration: 150 } }
 

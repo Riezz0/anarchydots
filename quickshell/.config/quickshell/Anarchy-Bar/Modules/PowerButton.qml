@@ -6,9 +6,9 @@ Rectangle {
     property bool isOpen: false
     property var screen: null
 
-    width: 28
-    height: 28
-    radius: 6
+    width: 34
+    height: 34
+    radius: root.barRadius
     color: isOpen ? theme.color1 : "transparent"
 
     Text {
@@ -17,7 +17,6 @@ Rectangle {
         color: powerBtn.isOpen ? theme.background : theme.color1
         font.pixelSize: 25
         font.family: "JetBrainsMono Nerd Font"
-        verticalAlignment: Text.AlignVCenter
     }
 
     MouseArea {

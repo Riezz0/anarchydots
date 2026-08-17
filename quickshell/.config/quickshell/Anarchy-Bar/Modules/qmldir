@@ -1,6 +1,9 @@
 Theme 1.0 Theme.qml
 ArchLogo 1.0 ArchLogo.qml
 Workspaces 1.0 Workspaces.qml
+Clock 1.0 Clock.qml
+CalendarPopup 1.0 CalendarPopup.qml
+SettingsPopup 1.0 SettingsPopup.qml
 PowerButton 1.0 PowerButton.qml
 PowerMenu 1.0 PowerMenu.qml
 Bar 1.0 Bar.qml

@@ -9,6 +9,7 @@ Variants {
         id: bar
         screen: modelData
         required property var modelData
+        visible: !powerMenu.isOpen && root.isMonitorEnabled(modelData)
 
         anchors {
             top: true
@@ -20,28 +21,36 @@ Variants {
         exclusiveZone: 60
         exclusionMode: ExclusionMode.Normal
         color: "transparent"
-        visible: !powerMenu.isOpen
 
         WlrLayershell.layer: WlrLayer.Top
 
-        margins { left: 10; right: 10; top: 10; bottom: 10 }
+        margins { left: 10; right: 10; top: 5; bottom: 0 }
 
+        // Background with opacity
         Rectangle {
             anchors.fill: parent
             color: theme.background
+            radius: root.barRadius
+            opacity: root.barOpacity
+            border.color: theme.muted
+            border.width: root.barBorderThickness
+        }
+
+        // Modules (no opacity)
+        Item {
+            anchors.fill: parent
 
             // Left modules
             Row {
                 id: leftModules
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                height: parent.height
                 padding: 10
-                spacing: 15
+                spacing: 10
 
                 ArchLogo {
-                    height: parent.height - 20
-                    width: height
+                    height: 34
+                    width: 34
                 }
 
                 Workspaces {}
@@ -60,23 +69,14 @@ Variants {
                 id: rightModules
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: parent.height
                 padding: 10
                 spacing: 10
 
+                Clock {}
+
                 PowerButton {
                     screen: bar.screen
-                    anchors.verticalCenter: parent.verticalCenter
                 }
-            }
-
-            // Bottom separator line
-            Rectangle {
-                anchors.bottom: parent.bottom
-                width: parent.width
-                height: 1
-                color: theme.muted
-                opacity: 0.4
             }
         }
     }
