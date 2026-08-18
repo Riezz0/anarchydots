@@ -1,48 +1,111 @@
 #!/bin/bash
-# Patch look.lua with saved bar settings (atomic: avoids flash on theme switch)
+# Keep Anarchy-Bar's Hyprland settings in sync across themes.
 #
 # Usage:
-#   patch-look.sh                  — patch existing look.lua in-place (legacy)
-#   patch-look.sh <source_hyprlook> — copy source, patch, then mv to look.lua (atomic)
+#   patch-look.sh <source_hyprlook>  Patch a theme into the active look.lua
+#   patch-look.sh --sync-all [value] Update every theme and the active config
 
-BAR_JSON="$HOME/.config/quickshell/bar-settings.json"
+ANARCHY_BAR_JSON="$HOME/.config/quickshell/Anarchy-Bar/Settings/bar.json"
 LOOK_LUA="$HOME/.config/hypr/modules/look.lua"
-[ -f "$BAR_JSON" ] || exit 0
+
+read_border_value() {
+    sed -nE 's/.*"hyprlandBorderThickness"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON"
+}
+
+patch_file() {
+    local file="$1"
+    local value="$2"
+    local active="$3"
+    local inactive="$4"
+    local rounding="$5"
+    local power="$6"
+    local blur_enabled="$7"
+    local blur_passes="$8"
+    local blur_size="$9"
+    local blur_vibrancy="${10}"
+    local gap_in="${11}"
+    local gap_out="${12}"
+    sed -i -E "s/border_size[[:space:]]*=[[:space:]]*[0-9]+/border_size = $value/g" "$file"
+    sed -i -E "s/gaps_in[[:space:]]*=[[:space:]]*[0-9]+/gaps_in = $gap_in/g; s/gaps_out[[:space:]]*=[[:space:]]*[0-9]+/gaps_out = $gap_out/g" "$file"
+    sed -i -E "s/active_opacity[[:space:]]*=[[:space:]]*[0-9.]+/active_opacity = $active/g; s/inactive_opacity[[:space:]]*=[[:space:]]*[0-9.]+/inactive_opacity = $inactive/g" "$file"
+    sed -i -E "s/rounding[[:space:]]*=[[:space:]]*[0-9]+/rounding = $rounding/g; s/rounding_power[[:space:]]*=[[:space:]]*[0-9]+/rounding_power = $power/g" "$file"
+    sed -i -E "/blur[[:space:]]*=/,/},},/ { s/enabled[[:space:]]*=[[:space:]]*(true|false)/enabled = $blur_enabled/g; s/passes[[:space:]]*=[[:space:]]*[0-9]+/passes = $blur_passes/g; s/size[[:space:]]*=[[:space:]]*[0-9]+/size = $blur_size/g; s/vibrancy[[:space:]]*=[[:space:]]*[0-9.]+/vibrancy = $blur_vibrancy/g; }" "$file"
+    sed -i -E 's/gaps_in[[:space:]]*=/gaps_in =/g; s/gaps_out[[:space:]]*=/gaps_out =/g' "$file"
+}
+
+if [ "$1" = "--sync-all" ]; then
+    VALUE="${2:-$(read_border_value)}"
+    ACTIVE="${3:-$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    INACTIVE="${4:-$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    ROUNDING="${5:-$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    POWER="${6:-$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    BLUR_ENABLED="${7:-$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    BLUR_PASSES="${8:-$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    BLUR_SIZE="${9:-$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    BLUR_VIBRANCY="${10:-$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    GAP_IN="${11:-$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    GAP_OUT="${12:-$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    case "$VALUE" in
+        ''|*[!0-9]*) exit 2 ;;
+    esac
+    case "$ACTIVE" in
+        ''|*[!0-9.]*) exit 2 ;;
+    esac
+    case "$INACTIVE" in
+        ''|*[!0-9.]*) exit 2 ;;
+    esac
+    case "$ROUNDING:$POWER" in
+        ''|*[!0-9:]*) exit 2 ;;
+    esac
+    case "$BLUR_ENABLED" in true|false) ;; *) exit 2 ;; esac
+    case "$BLUR_PASSES:$BLUR_SIZE:$BLUR_VIBRANCY" in
+        ''|*[!0-9.:]*) exit 2 ;;
+    esac
+    case "$GAP_IN:$GAP_OUT" in
+        ''|*[!0-9:]*) exit 2 ;;
+    esac
+
+    for SOURCE in "$HOME"/.config/.hypr-themes/*/hyprlook; do
+        [ -f "$SOURCE" ] || continue
+        patch_file "$SOURCE" "$VALUE" "$ACTIVE" "$INACTIVE" "$ROUNDING" "$POWER" "$BLUR_ENABLED" "$BLUR_PASSES" "$BLUR_SIZE" "$BLUR_VIBRANCY" "$GAP_IN" "$GAP_OUT"
+    done
+
+    if [ -f "$LOOK_LUA" ]; then
+        patch_file "$LOOK_LUA" "$VALUE" "$ACTIVE" "$INACTIVE" "$ROUNDING" "$POWER" "$BLUR_ENABLED" "$BLUR_PASSES" "$BLUR_SIZE" "$BLUR_VIBRANCY" "$GAP_IN" "$GAP_OUT"
+        hyprctl reload 2>/dev/null || true
+    fi
+    exit 0
+fi
+
+VALUE=$(read_border_value)
+ACTIVE=$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
+INACTIVE=$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
+ROUNDING=$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+POWER=$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+BLUR_ENABLED=$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")
+BLUR_PASSES=$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+BLUR_SIZE=$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+BLUR_VIBRANCY=$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
+GAP_IN=$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+GAP_OUT=$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+[ -n "$VALUE" ] || exit 0
+[ -n "$ACTIVE" ] || exit 0
+[ -n "$INACTIVE" ] || exit 0
+[ -n "$ROUNDING" ] || exit 0
+[ -n "$POWER" ] || exit 0
+[ -n "$BLUR_ENABLED" ] || exit 0
+[ -n "$BLUR_PASSES" ] || exit 0
+[ -n "$BLUR_SIZE" ] || exit 0
+[ -n "$BLUR_VIBRANCY" ] || exit 0
+[ -n "$GAP_IN" ] || exit 0
+[ -n "$GAP_OUT" ] || exit 0
 [ -f "$LOOK_LUA" ] || exit 0
 
-RADIUS=$(grep -o '"hyprlandRadius":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-BORDER=$(grep -o '"hyprlandBorderThickness":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-GAPIN=$(grep -o '"hyprlandGapIn":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-GAPOUT=$(grep -o '"hyprlandGapOut":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-OPACITY=$(grep -o '"hyprlandWindowOpacity":[[:space:]]*[0-9.]*' "$BAR_JSON" | grep -o '[0-9.]*$')
-BLUREN=$(grep -o '"hyprlandBlurEnabled":[[:space:]]*\(true\|false\)' "$BAR_JSON" | grep -o 'true\|false')
-BLURSIZE=$(grep -o '"hyprlandBlurSize":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-BLURPASSES=$(grep -o '"hyprlandBlurPasses":[[:space:]]*[0-9]*' "$BAR_JSON" | grep -o '[0-9]*$')
-BLURVIB=$(grep -o '"hyprlandBlurVibrancy":[[:space:]]*[0-9.]*' "$BAR_JSON" | grep -o '[0-9.]*$')
-
-# If a source hyprlook was provided, copy it to a temp file so we can
-# patch there and then mv atomically — Hyprland never sees the unpatched version.
 if [ -n "$1" ] && [ -f "$1" ]; then
     TMPFILE=$(mktemp "${LOOK_LUA}.XXXXXX")
     cp "$1" "$TMPFILE"
-    TARGET="$TMPFILE"
+    patch_file "$TMPFILE" "$VALUE" "$ACTIVE" "$INACTIVE" "$ROUNDING" "$POWER" "$BLUR_ENABLED" "$BLUR_PASSES" "$BLUR_SIZE" "$BLUR_VIBRANCY" "$GAP_IN" "$GAP_OUT"
+    mv "$TMPFILE" "$LOOK_LUA"
 else
-    TARGET="$LOOK_LUA"
-fi
-
-[ -n "$RADIUS" ]   && sed -i "s/rounding\s*=\s*[0-9]\+/rounding = $RADIUS/g" "$TARGET"
-[ -n "$RADIUS" ]   && sed -i "s/rounding_power\s*=\s*[0-9]\+/rounding_power = $RADIUS/g" "$TARGET"
-[ -n "$BORDER" ]   && sed -i "s/border_size\s*=\s*[0-9]\+/border_size = $BORDER/g" "$TARGET"
-[ -n "$GAPIN" ]    && sed -i "s/gaps_in\s*=\s*[0-9]\+/gaps_in  = $GAPIN/g" "$TARGET"
-[ -n "$GAPOUT" ]   && sed -i "s/gaps_out\s*=\s*[0-9]\+/gaps_out = $GAPOUT/g" "$TARGET"
-[ -n "$OPACITY" ]  && sed -i "s/active_opacity\s*=\s*[0-9.]\+/active_opacity    = $OPACITY/g" "$TARGET"
-[ -n "$OPACITY" ]  && sed -i "s/inactive_opacity\s*=\s*[0-9.]\+/inactive_opacity  = $OPACITY/g" "$TARGET"
-[ -n "$BLUREN" ]   && sed -i "s/\\benabled\\s*=\\s*true\\|\\benabled\\s*=\\s*false/enabled   = $BLUREN/g" "$TARGET"
-[ -n "$BLURSIZE" ] && sed -i "s/\\bsize\\s*=\\s*[0-9]\\+/size      = $BLURSIZE/g" "$TARGET"
-[ -n "$BLURPASSES" ] && sed -i "s/\\bpasses\\s*=\\s*[0-9]\\+/passes    = $BLURPASSES/g" "$TARGET"
-[ -n "$BLURVIB" ]  && sed -i "s/\\bvibrancy\\s*=\\s*[0-9.]\\+/vibrancy  = $BLURVIB/g" "$TARGET"
-
-# Atomic swap — Hyprland only sees the fully-patched file
-if [ "$TARGET" != "$LOOK_LUA" ]; then
-    mv "$TARGET" "$LOOK_LUA"
+    patch_file "$LOOK_LUA" "$VALUE" "$ACTIVE" "$INACTIVE" "$ROUNDING" "$POWER" "$BLUR_ENABLED" "$BLUR_PASSES" "$BLUR_SIZE" "$BLUR_VIBRANCY" "$GAP_IN" "$GAP_OUT"
 fi

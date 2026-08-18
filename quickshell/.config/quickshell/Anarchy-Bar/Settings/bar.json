@@ -5,7 +5,18 @@
   "moduleBorderThickness": 0,
   "popupOpacity": 1,
   "popupBorderThickness": 0,
-  "workspaceIndicatorStyle": "squares",
+  "workspaceIndicatorStyle": "dots",
+  "hyprlandBorderThickness": 0,
+  "hyprlandActiveOpacity": 0.85,
+  "hyprlandInactiveOpacity": 0.85,
+  "hyprlandRounding": 10,
+  "hyprlandRoundingPower": 12,
+  "hyprlandBlurEnabled": true,
+  "hyprlandBlurPasses": 3,
+  "hyprlandBlurSize": 10,
+  "hyprlandBlurVibrancy": 0.4,
+  "hyprlandGapIn": 10,
+  "hyprlandGapOut": 10,
   "barMonitors": [
     "DP-2"
   ]

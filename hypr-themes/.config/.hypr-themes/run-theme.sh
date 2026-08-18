@@ -13,4 +13,8 @@ fi
 # Run theme script — it handles hyprlook copy, patching, killall, and restart
 bash "$THEME_SCRIPT" >> "$LOG" 2>&1
 
+# Reapply user-managed Hyprland values after any theme script copy, including
+# future theme scripts that still copy hyprlook directly.
+bash "$(dirname "$0")/patch-look.sh" --sync-all >> "$LOG" 2>&1
+
 echo "[$(date)] Script finished" >> "$LOG"

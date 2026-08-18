@@ -247,6 +247,7 @@ PanelWindow {
                                 onClicked: settingsPopup.close()
                             }
                         }
+
                     }
 
                     Rectangle {
@@ -260,11 +261,12 @@ PanelWindow {
 
                     Flickable {
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
                         clip: true
                         contentWidth: width
                         contentHeight: settingsContent.implicitHeight
                         visible: settingsWindow.currentTab === 0
+                        Layout.fillHeight: settingsWindow.currentTab === 0
+                        Layout.preferredHeight: settingsWindow.currentTab === 0 ? -1 : 0
 
                         ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
@@ -416,20 +418,43 @@ PanelWindow {
                         }
                     }
 
-                    ColumnLayout {
+                    Flickable {
+                        id: hyprlandSettingsScroll
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
+                        Layout.fillHeight: settingsWindow.currentTab === 1
+                        Layout.preferredHeight: settingsWindow.currentTab === 1 ? -1 : 0
                         visible: settingsWindow.currentTab === 1
-                        spacing: 10
+                        clip: true
+                        contentWidth: width
+                        contentHeight: hyprlandSettingsContent.implicitHeight
+
+                        ColumnLayout {
+                            id: hyprlandSettingsContent
+                            width: hyprlandSettingsScroll.width
+                            spacing: 10
 
                         Text {
-                            text: "Workspace Indicators"
+                            text: "Hyprland Window Appearance"
                             font.pixelSize: 14
                             font.bold: true
                             color: theme.foreground
                         }
                         Text {
-                            text: "Choose how workspaces are displayed in the bar."
+                            text: "Configure borders, opacity, corners, and workspace indicators."
+                            font.pixelSize: 12
+                            color: theme.muted
+                        }
+
+                        Text {
+                            Layout.topMargin: 12
+                            text: "Workspace Indicator Style"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: theme.foreground
+                        }
+
+                        Text {
+                            text: "Choose how workspaces appear in the bar."
                             font.pixelSize: 12
                             color: theme.muted
                         }
@@ -467,6 +492,164 @@ PanelWindow {
                                 }
                             }
                         }
+
+                        SettingSlider {
+                            label: "Hyprland Border"
+                            valueText: root.hyprlandBorderThickness + "px"
+                            minimumText: "0px"
+                            maximumText: "7px"
+                            from: 0
+                            to: 7
+                            value: root.hyprlandBorderThickness
+                            onMoved: root.hyprlandBorderThickness = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Gaps In"
+                            valueText: root.hyprlandGapIn + "px"
+                            minimumText: "0px"
+                            maximumText: "20px"
+                            from: 0
+                            to: 20
+                            value: root.hyprlandGapIn
+                            onMoved: root.hyprlandGapIn = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Gaps Out"
+                            valueText: root.hyprlandGapOut + "px"
+                            minimumText: "0px"
+                            maximumText: "20px"
+                            from: 0
+                            to: 20
+                            value: root.hyprlandGapOut
+                            onMoved: root.hyprlandGapOut = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Active Opacity"
+                            valueText: Math.round(root.hyprlandActiveOpacity * 100) + "%"
+                            minimumText: "0%"
+                            maximumText: "100%"
+                            from: 0
+                            to: 1
+                            stepSize: 0.05
+                            value: root.hyprlandActiveOpacity
+                            onMoved: root.hyprlandActiveOpacity = Math.round(value * 100) / 100
+                        }
+
+                        SettingSlider {
+                            label: "Inactive Opacity"
+                            valueText: Math.round(root.hyprlandInactiveOpacity * 100) + "%"
+                            minimumText: "0%"
+                            maximumText: "100%"
+                            from: 0
+                            to: 1
+                            stepSize: 0.05
+                            value: root.hyprlandInactiveOpacity
+                            onMoved: root.hyprlandInactiveOpacity = Math.round(value * 100) / 100
+                        }
+
+                        SettingSlider {
+                            label: "Window Rounding"
+                            valueText: root.hyprlandRounding + "px"
+                            minimumText: "0px"
+                            from: 0
+                            maximumText: "50px"
+                            to: 50
+                            value: root.hyprlandRounding
+                            onMoved: root.hyprlandRounding = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Rounding Power"
+                            valueText: root.hyprlandRoundingPower.toString()
+                            minimumText: "0"
+                            maximumText: "50"
+                            from: 0
+                            to: 50
+                            value: root.hyprlandRoundingPower
+                            onMoved: root.hyprlandRoundingPower = Math.round(value)
+                        }
+
+                        Text {
+                            Layout.topMargin: 8
+                            text: "Blur"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: theme.foreground
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 10
+
+                            Repeater {
+                                model: ["Enabled", "Disabled"]
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 38
+                                    radius: root.barRadius
+                                    property bool selected: root.hyprlandBlurEnabled === (modelData === "Enabled")
+                                    color: selected ? theme.color5 : (blurChoiceHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                    border.color: selected ? theme.color5 : theme.muted
+                                    border.width: root.moduleBorderThickness
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: modelData
+                                        font.pixelSize: 13
+                                        color: parent.selected ? theme.background : theme.foreground
+                                    }
+
+                                    MouseArea {
+                                        id: blurChoiceHover
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.hyprlandBlurEnabled = modelData === "Enabled"
+                                    }
+                                }
+                            }
+                        }
+
+                        SettingSlider {
+                            label: "Blur Passes"
+                            valueText: root.hyprlandBlurPasses.toString()
+                            minimumText: "0"
+                            maximumText: "10"
+                            from: 0
+                            to: 10
+                            value: root.hyprlandBlurPasses
+                            onMoved: root.hyprlandBlurPasses = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Blur Size"
+                            valueText: root.hyprlandBlurSize.toString()
+                            minimumText: "0"
+                            maximumText: "50"
+                            from: 0
+                            to: 50
+                            value: root.hyprlandBlurSize
+                            onMoved: root.hyprlandBlurSize = Math.round(value)
+                        }
+
+                        SettingSlider {
+                            label: "Blur Vibrancy"
+                            valueText: Math.round(root.hyprlandBlurVibrancy * 100) + "%"
+                            minimumText: "0%"
+                            maximumText: "100%"
+                            from: 0
+                            to: 1
+                            stepSize: 0.05
+                            value: root.hyprlandBlurVibrancy
+                            onMoved: root.hyprlandBlurVibrancy = Math.round(value * 100) / 100
+                        }
+
+                    }
+
                     }
                 }
             }

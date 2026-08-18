@@ -6,8 +6,8 @@ Rectangle {
     property bool isOpen: false
     property var screen: null
 
-    width: 34
-    height: 34
+    width: 42
+    height: 42
     radius: root.barRadius
     color: isOpen ? theme.color1 : "transparent"
 
