@@ -15,7 +15,8 @@ Item {
     }
 
     width: workspaceRow.width + 12
-    height: 34
+    // Give the indicators more breathing room inside their bordered module.
+    height: 42
     anchors.verticalCenter: parent.verticalCenter
 
     Rectangle {
@@ -33,13 +34,19 @@ Item {
         anchors.margins: 8
         spacing: 5
 
+        // Extra breathing room for the first and last visible indicators.
+        Item {
+            width: 6
+            height: 1
+        }
+
         Repeater {
             model: 5
 
             Rectangle {
                 required property int index
                 property int workspaceId: index + 1
-                width: 24
+                width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (isActive ? 28 : 23) : 24
                 height: 24
                 radius: root.barRadius
 
@@ -62,11 +69,21 @@ Item {
 
                 property bool hovered: false
 
-                color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+                color: root.workspaceIndicatorStyle === "numbers" ? (isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")) : "transparent"
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    visible: root.workspaceIndicatorStyle !== "numbers"
+                    width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (parent.isActive ? parent.width : 16) : 16
+                    height: 16
+                    radius: root.workspaceIndicatorStyle === "squares" ? 2 : height / 2
+                    color: parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted
+                }
 
                 Text {
                     anchors.centerIn: parent
                     text: parent.workspaceId.toString()
+                    visible: root.workspaceIndicatorStyle === "numbers"
                     color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
                     font.pixelSize: 12
                     font.weight: Font.DemiBold
@@ -100,9 +117,9 @@ Item {
                 required property int index
                 property int workspaceId: index + 6
                 visible: hasWindows || isActive
-                width: visible ? 24 : 0
+                width: visible ? (root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (isActive ? 28 : 23) : 24) : 0
                 height: 24
-                radius: 4
+                radius: root.barRadius
 
                 property bool isActive: {
                     workspaceContainer._tick
@@ -123,11 +140,21 @@ Item {
 
                 property bool hovered: false
 
-                color: isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")
+                color: root.workspaceIndicatorStyle === "numbers" ? (isActive ? (hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : (hasWindows ? Qt.darker(theme.background, 1.25) : "transparent")) : "transparent"
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    visible: root.workspaceIndicatorStyle !== "numbers"
+                    width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (parent.isActive ? parent.width : 16) : 16
+                    height: 16
+                    radius: root.workspaceIndicatorStyle === "squares" ? 2 : height / 2
+                    color: parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted
+                }
 
                 Text {
                     anchors.centerIn: parent
                     text: parent.workspaceId.toString()
+                    visible: root.workspaceIndicatorStyle === "numbers"
                     color: parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted))
                     font.pixelSize: 12
                     font.weight: Font.DemiBold
@@ -153,6 +180,11 @@ Item {
                 Behavior on color { ColorAnimation { duration: 150 } }
                 Behavior on width { NumberAnimation { duration: 200 } }
             }
+        }
+
+        Item {
+            width: 6
+            height: 1
         }
     }
 }

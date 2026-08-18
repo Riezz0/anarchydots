@@ -13,6 +13,9 @@ ShellRoot {
     property real barOpacity: 1.0
     property int barBorderThickness: 0
     property int moduleBorderThickness: 0
+    property real popupOpacity: 0.95
+    property int popupBorderThickness: 0
+    property string workspaceIndicatorStyle: "numbers"
     property var barMonitors: []
 
     readonly property string settingsPath:
@@ -30,6 +33,9 @@ ShellRoot {
             "barOpacity": barOpacity,
             "barBorderThickness": barBorderThickness,
             "moduleBorderThickness": moduleBorderThickness,
+            "popupOpacity": popupOpacity,
+            "popupBorderThickness": popupBorderThickness,
+            "workspaceIndicatorStyle": workspaceIndicatorStyle,
             "barMonitors": barMonitors
         }
         settingsFile.setText(JSON.stringify(data, null, 2))
@@ -47,6 +53,9 @@ ShellRoot {
                     if (data.barOpacity !== undefined) root.barOpacity = data.barOpacity
                     if (data.barBorderThickness !== undefined) root.barBorderThickness = data.barBorderThickness
                     if (data.moduleBorderThickness !== undefined) root.moduleBorderThickness = data.moduleBorderThickness
+                    if (data.popupOpacity !== undefined) root.popupOpacity = data.popupOpacity
+                    if (data.popupBorderThickness !== undefined) root.popupBorderThickness = data.popupBorderThickness
+                    if (data.workspaceIndicatorStyle !== undefined) root.workspaceIndicatorStyle = data.workspaceIndicatorStyle
                     if (data.barMonitors !== undefined) root.barMonitors = data.barMonitors
                 } catch (e) {
                     console.warn("Anarchy-Bar: failed to parse settings:", e)
@@ -59,6 +68,9 @@ ShellRoot {
     onBarOpacityChanged: saveSettings()
     onBarBorderThicknessChanged: saveSettings()
     onModuleBorderThicknessChanged: saveSettings()
+    onPopupOpacityChanged: saveSettings()
+    onPopupBorderThicknessChanged: saveSettings()
+    onWorkspaceIndicatorStyleChanged: saveSettings()
     onBarMonitorsChanged: saveSettings()
 
     function getMonitorName(monitor) {

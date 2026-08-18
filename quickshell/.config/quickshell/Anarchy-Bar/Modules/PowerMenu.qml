@@ -69,10 +69,10 @@ Variants {
                 height: powerColumn.implicitHeight + 40
                 radius: root.barRadius
                 color: theme.background
-                opacity: powerMenu.isOpen ? 1.0 : 0
+                opacity: powerMenu.isOpen ? root.popupOpacity : 0
                 scale: powerMenu.isOpen ? 1.0 : 0.95
                 border.color: theme.muted
-                border.width: root.moduleBorderThickness
+                border.width: root.popupBorderThickness
 
                 Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
                 Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
@@ -252,6 +252,15 @@ Variants {
                             onClicked: powerMenu.close()
                         }
                     }
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: root.barRadius
+                    color: "transparent"
+                    border.color: theme.muted
+                    border.width: root.popupBorderThickness
+                    z: 10
                 }
             }
         }

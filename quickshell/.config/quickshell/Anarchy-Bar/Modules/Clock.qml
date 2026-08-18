@@ -5,7 +5,8 @@ Rectangle {
     id: clockContainer
 
     width: 50
-    height: 34
+    // Match the workspace module's vertical breathing room.
+    height: 42
     radius: root.barRadius
     border.color: theme.muted
     border.width: root.moduleBorderThickness

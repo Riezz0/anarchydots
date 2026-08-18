@@ -1,14 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 
 PanelWindow {
     id: settingsWindow
 
     visible: settingsPopup.isOpen
+    screen: settingsPopup.targetScreen
 
     anchors {
         top: true
@@ -25,7 +26,7 @@ PanelWindow {
         ? WlrKeyboardFocus.OnDemand
         : WlrKeyboardFocus.None
 
-    property bool barExpanded: false
+    property int currentTab: 0
 
     MouseArea {
         anchors.fill: parent
@@ -34,532 +35,519 @@ PanelWindow {
 
     Rectangle {
         id: settingsPanel
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 10
-        width: 380
-        height: Math.min(settingsOuter.implicitHeight + 32, parent.height - 20)
-                radius: root.barRadius
-                color: theme.background
-                opacity: settingsPopup.isOpen ? 0.95 : 0
-                clip: true
+        anchors.centerIn: parent
+        width: Math.min(760, parent.width - 40)
+        height: Math.min(620, parent.height - 40)
+        radius: root.barRadius
+        color: theme.background
+        opacity: settingsPopup.isOpen ? root.popupOpacity : 0
+        clip: true
         border.color: theme.muted
-        border.width: root.moduleBorderThickness
+        border.width: root.popupBorderThickness
+        layer.enabled: true
+        layer.effect: OpacityMask {
+            maskSource: Rectangle {
+                width: settingsPanel.width
+                height: settingsPanel.height
+                radius: root.barRadius
+                color: "white"
+            }
+        }
 
-        Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
+        Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
 
         MouseArea {
             anchors.fill: parent
             onClicked: mouse => mouse.accepted = true
         }
 
-        ColumnLayout {
-            id: settingsOuter
+        RowLayout {
             anchors.fill: parent
-            anchors.margins: 16
             spacing: 0
 
-            // Header
-            RowLayout {
-                Layout.fillWidth: true
-
-                Text {
-                    text: "󰒓"
-                    font.pixelSize: 20
-                    font.family: "JetBrainsMono Nerd Font"
-                    color: theme.color5
-                }
-
-                Text {
-                    text: "Settings"
-                    font.pixelSize: 16
-                    font.bold: true
-                    color: theme.foreground
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Rectangle {
-                    width: 24
-                    height: 24
-                    radius: root.barRadius
-                    color: closeArea.containsMouse ? Qt.darker(theme.muted, 1.3) : theme.muted
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "✕"
-                        font.pixelSize: 12
-                        color: theme.foreground
-                    }
-
-                    MouseArea {
-                        id: closeArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: settingsPopup.close()
-                    }
-                }
-            }
-
-            // Separator
+            // App-like navigation rail.
             Rectangle {
-                Layout.fillWidth: true
-                height: 1
-                color: theme.muted
-                opacity: 0.4
-                Layout.topMargin: 12
-                Layout.bottomMargin: 12
-            }
+                Layout.fillHeight: true
+                Layout.preferredWidth: 190
+                color: Qt.darker(theme.background, 1.12)
 
-            // Bar Settings Category
-            Rectangle {
-                Layout.fillWidth: true
-                height: 32
-                radius: 4
-                color: barHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
-
-                Row {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 6
-
-                    Text {
-                        text: settingsWindow.barExpanded ? "▼" : "▶"
-                        font.pixelSize: 10
-                        color: theme.color5
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: "󰏘"
-                        font.pixelSize: 14
-                        font.family: "JetBrainsMono Nerd Font"
-                        color: theme.color5
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: "Bar Settings"
-                        font.pixelSize: 13
-                        font.bold: true
-                        color: theme.color5
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                MouseArea {
-                    id: barHover
+                ColumnLayout {
                     anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: settingsWindow.barExpanded = !settingsWindow.barExpanded
+                    anchors.margins: 18
+                    spacing: 0
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 10
+
+                        Text {
+                            text: "󰒓"
+                            font.pixelSize: 23
+                            font.family: "JetBrainsMono Nerd Font"
+                            color: theme.color5
+                        }
+
+                        Text {
+                            text: "Settings"
+                            font.pixelSize: 17
+                            font.bold: true
+                            color: theme.foreground
+                        }
+                    }
+
+                    Text {
+                        Layout.topMargin: 30
+                        text: "CONFIGURATION"
+                        font.pixelSize: 10
+                        font.bold: true
+                        color: theme.muted
+                    }
+
+                    Rectangle {
+                        id: barTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.preferredWidth: hyprlandTabContent.implicitWidth + 24
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 0 ? theme.color5 : (barTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                        RowLayout {
+                            id: barTabContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            spacing: 10
+
+                            Text {
+                                text: "󰏘"
+                                font.pixelSize: 17
+                                font.family: "JetBrainsMono Nerd Font"
+                                color: settingsWindow.currentTab === 0 ? theme.background : theme.color5
+                            }
+
+                            Text {
+                                text: "Bar Settings"
+                                font.pixelSize: 13
+                                font.bold: settingsWindow.currentTab === 0
+                                color: settingsWindow.currentTab === 0 ? theme.background : theme.foreground
+                            }
+                        }
+
+                        MouseArea {
+                            id: barTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 0
+                        }
+                    }
+
+                    Rectangle {
+                        id: hyprlandTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.preferredWidth: hyprlandTabContent.implicitWidth + 24
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 1 ? theme.color5 : (appearanceTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                        RowLayout {
+                            id: hyprlandTabContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            spacing: 10
+
+                            Text {
+                                text: "󰉼"
+                                font.pixelSize: 17
+                                font.family: "JetBrainsMono Nerd Font"
+                                color: settingsWindow.currentTab === 1 ? theme.background : theme.color5
+                            }
+
+                            Text {
+                                text: "Hyprland Settings"
+                                font.pixelSize: 13
+                                color: settingsWindow.currentTab === 1 ? theme.background : theme.foreground
+                            }
+                        }
+
+                        MouseArea {
+                            id: appearanceTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 1
+                        }
+                    }
+
+                    Item { Layout.fillHeight: true }
+
+                    Text {
+                        text: "Anarchy-Bar"
+                        font.pixelSize: 11
+                        color: theme.muted
+                    }
                 }
             }
 
-            // Bar Settings Content
-            ColumnLayout {
+            Rectangle {
+                Layout.fillHeight: true
                 Layout.fillWidth: true
-                visible: settingsWindow.barExpanded
-                spacing: 16
-                Layout.topMargin: 8
+                color: theme.background
 
-                // Bar Radius
                 ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 6
+                    anchors.fill: parent
+                    anchors.margins: 26
+                    spacing: 0
 
                     RowLayout {
                         Layout.fillWidth: true
 
-                        Text {
-                            text: "Bar Radius"
-                            font.pixelSize: 13
-                            color: theme.foreground
+                        ColumnLayout {
+                            spacing: 3
+
+                            Text {
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : "Hyprland Settings"
+                                font.pixelSize: 22
+                                font.bold: true
+                                color: theme.foreground
+                            }
+
+                            Text {
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : "More customization options are coming soon."
+                                font.pixelSize: 12
+                                color: theme.muted
+                            }
                         }
 
                         Item { Layout.fillWidth: true }
-
-                        Text {
-                            text: root.barRadius.toString()
-                            font.pixelSize: 12
-                            color: theme.muted
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-
-                        Text {
-                            text: "0"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-
-                                        Slider {
-                                            id: radiusSlider
-                                            Layout.fillWidth: true
-                                            from: 0
-                                            to: 50
-                                            stepSize: 1
-                            value: root.barRadius
-                            onMoved: root.barRadius = Math.round(value)
-
-                            background: Rectangle {
-                                x: radiusSlider.leftPadding
-                                y: radiusSlider.topPadding + radiusSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 200
-                                implicitHeight: 4
-                                width: radiusSlider.availableWidth
-                                height: implicitHeight
-                                radius: 2
-                                color: Qt.darker(theme.muted, 1.2)
-
-                                Rectangle {
-                                    width: radiusSlider.visualPosition * parent.width
-                                    height: parent.height
-                                    color: theme.color5
-                                    radius: 2
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: radiusSlider.leftPadding + radiusSlider.visualPosition * (radiusSlider.availableWidth - width)
-                                y: radiusSlider.topPadding + radiusSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 16
-                                implicitHeight: 16
-                                radius: 8
-                                color: radiusSlider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
-                                border.color: theme.background
-                                border.width: 2
-                            }
-                        }
-
-                                        Text {
-                                            text: "50"
-                                            font.pixelSize: 10
-                                            color: theme.muted
-                                        }
-                    }
-                }
-
-                // Bar Opacity
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 6
-
-                    RowLayout {
-                        Layout.fillWidth: true
-
-                        Text {
-                            text: "Bar Opacity"
-                            font.pixelSize: 13
-                            color: theme.foreground
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Text {
-                            text: Math.round(root.barOpacity * 100) + "%"
-                            font.pixelSize: 12
-                            color: theme.muted
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-
-                        Text {
-                            text: "0"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-
-                                        Slider {
-                                            id: opacitySlider
-                                            Layout.fillWidth: true
-                                            from: 0.0
-                                            to: 1.0
-                                            stepSize: 0.05
-                            value: root.barOpacity
-                            onMoved: root.barOpacity = Math.round(value * 100) / 100
-
-                            background: Rectangle {
-                                x: opacitySlider.leftPadding
-                                y: opacitySlider.topPadding + opacitySlider.availableHeight / 2 - height / 2
-                                implicitWidth: 200
-                                implicitHeight: 4
-                                width: opacitySlider.availableWidth
-                                height: implicitHeight
-                                radius: 2
-                                color: Qt.darker(theme.muted, 1.2)
-
-                                Rectangle {
-                                    width: opacitySlider.visualPosition * parent.width
-                                    height: parent.height
-                                    color: theme.color5
-                                    radius: 2
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: opacitySlider.leftPadding + opacitySlider.visualPosition * (opacitySlider.availableWidth - width)
-                                y: opacitySlider.topPadding + opacitySlider.availableHeight / 2 - height / 2
-                                implicitWidth: 16
-                                implicitHeight: 16
-                                radius: 8
-                                color: opacitySlider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
-                                border.color: theme.background
-                                border.width: 2
-                            }
-                        }
-
-                        Text {
-                            text: "100"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-                    }
-                }
-
-                // Bar Border Thickness
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 6
-
-                    RowLayout {
-                        Layout.fillWidth: true
-
-                        Text {
-                            text: "Bar Border"
-                            font.pixelSize: 13
-                            color: theme.foreground
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Text {
-                            text: root.barBorderThickness + "px"
-                            font.pixelSize: 12
-                            color: theme.muted
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-
-                        Text {
-                            text: "0"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-
-                        Slider {
-                            id: barBorderSlider
-                            Layout.fillWidth: true
-                            from: 0
-                            to: 4
-                            stepSize: 1
-                            value: root.barBorderThickness
-                            onMoved: root.barBorderThickness = Math.round(value)
-
-                            background: Rectangle {
-                                x: barBorderSlider.leftPadding
-                                y: barBorderSlider.topPadding + barBorderSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 200
-                                implicitHeight: 4
-                                width: barBorderSlider.availableWidth
-                                height: implicitHeight
-                                radius: 2
-                                color: Qt.darker(theme.muted, 1.2)
-
-                                Rectangle {
-                                    width: barBorderSlider.visualPosition * parent.width
-                                    height: parent.height
-                                    color: theme.color5
-                                    radius: 2
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: barBorderSlider.leftPadding + barBorderSlider.visualPosition * (barBorderSlider.availableWidth - width)
-                                y: barBorderSlider.topPadding + barBorderSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 16
-                                implicitHeight: 16
-                                radius: 8
-                                color: barBorderSlider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
-                                border.color: theme.background
-                                border.width: 2
-                            }
-                        }
-
-                        Text {
-                            text: "4"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-                    }
-                }
-
-                // Module Border Thickness
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 6
-
-                    RowLayout {
-                        Layout.fillWidth: true
-
-                        Text {
-                            text: "Module Border"
-                            font.pixelSize: 13
-                            color: theme.foreground
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Text {
-                            text: root.moduleBorderThickness + "px"
-                            font.pixelSize: 12
-                            color: theme.muted
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
-
-                        Text {
-                            text: "0"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-
-                        Slider {
-                            id: moduleBorderSlider
-                            Layout.fillWidth: true
-                            from: 0
-                            to: 4
-                            stepSize: 1
-                            value: root.moduleBorderThickness
-                            onMoved: root.moduleBorderThickness = Math.round(value)
-
-                            background: Rectangle {
-                                x: moduleBorderSlider.leftPadding
-                                y: moduleBorderSlider.topPadding + moduleBorderSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 200
-                                implicitHeight: 4
-                                width: moduleBorderSlider.availableWidth
-                                height: implicitHeight
-                                radius: 2
-                                color: Qt.darker(theme.muted, 1.2)
-
-                                Rectangle {
-                                    width: moduleBorderSlider.visualPosition * parent.width
-                                    height: parent.height
-                                    color: theme.color5
-                                    radius: 2
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: moduleBorderSlider.leftPadding + moduleBorderSlider.visualPosition * (moduleBorderSlider.availableWidth - width)
-                                y: moduleBorderSlider.topPadding + moduleBorderSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 16
-                                implicitHeight: 16
-                                radius: 8
-                                color: moduleBorderSlider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
-                                border.color: theme.background
-                                border.width: 2
-                            }
-                        }
-
-                        Text {
-                            text: "4"
-                            font.pixelSize: 10
-                            color: theme.muted
-                        }
-                    }
-                }
-
-                // Monitor Selection
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 8
-
-                    Text {
-                        text: "Monitors"
-                        font.pixelSize: 13
-                        font.bold: true
-                        color: theme.color5
-                    }
-
-                    Repeater {
-                        model: Quickshell.screens
 
                         Rectangle {
-                            Layout.fillWidth: true
-                            height: 32
-                            radius: 4
-                            color: monitorHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+                            Layout.preferredWidth: 30
+                            Layout.preferredHeight: 30
+                            radius: root.barRadius
+                            color: closeArea.containsMouse ? theme.color1 : Qt.darker(theme.background, 1.2)
 
-                            property var monitor: modelData
-                            property bool isEnabled: root.barMonitors.length === 0 || root.barMonitors.indexOf(monitor.name) !== -1
+                            Text {
+                                anchors.centerIn: parent
+                                text: "✕"
+                                font.pixelSize: 13
+                                color: closeArea.containsMouse ? theme.background : theme.foreground
+                            }
 
-                            Row {
-                                anchors.left: parent.left
-                                anchors.verticalCenter: parent.verticalCenter
+                            MouseArea {
+                                id: closeArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: settingsPopup.close()
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 1
+                        Layout.topMargin: 20
+                        Layout.bottomMargin: 18
+                        color: theme.muted
+                        opacity: 0.45
+                    }
+
+                    Flickable {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        clip: true
+                        contentWidth: width
+                        contentHeight: settingsContent.implicitHeight
+                        visible: settingsWindow.currentTab === 0
+
+                        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                        ColumnLayout {
+                            id: settingsContent
+                            width: parent.width
+                            spacing: 20
+
+                            SettingSlider {
+                                label: "Bar Radius"
+                                valueText: root.barRadius.toString()
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.barRadius
+                                onMoved: root.barRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Bar Opacity"
+                                valueText: Math.round(root.barOpacity * 100) + "%"
+                                minimumText: "0%"
+                                maximumText: "100%"
+                                from: 0
+                                to: 1
+                                stepSize: 0.05
+                                value: root.barOpacity
+                                onMoved: root.barOpacity = Math.round(value * 100) / 100
+                            }
+
+                            SettingSlider {
+                                label: "Popup Opacity"
+                                valueText: Math.round(root.popupOpacity * 100) + "%"
+                                minimumText: "0%"
+                                maximumText: "100%"
+                                from: 0
+                                to: 1
+                                stepSize: 0.05
+                                value: root.popupOpacity
+                                onMoved: root.popupOpacity = Math.round(value * 100) / 100
+                            }
+
+                            SettingSlider {
+                                label: "Bar Border"
+                                valueText: root.barBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "4"
+                                from: 0
+                                to: 4
+                                value: root.barBorderThickness
+                                onMoved: root.barBorderThickness = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Module Border"
+                                valueText: root.moduleBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "4"
+                                from: 0
+                                to: 4
+                                value: root.moduleBorderThickness
+                                onMoved: root.moduleBorderThickness = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Popup Border"
+                                valueText: root.popupBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "4"
+                                from: 0
+                                to: 4
+                                value: root.popupBorderThickness
+                                onMoved: root.popupBorderThickness = Math.round(value)
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
                                 spacing: 8
 
-                                Rectangle {
-                                    width: 18
-                                    height: 18
-                                    radius: 4
-                                    border.color: theme.muted
-                                    border.width: 1
-                                    color: parent.parent.isEnabled ? theme.color5 : "transparent"
-                                    anchors.verticalCenter: parent.verticalCenter
+                                Text {
+                                    text: "Monitors"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: theme.color5
+                                }
 
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: "✓"
-                                        color: theme.background
-                                        font.pixelSize: 12
-                                        font.bold: true
-                                        visible: parent.parent.parent.isEnabled
+                                Repeater {
+                                    model: Quickshell.screens
+
+                                    Rectangle {
+                                        id: monitorRow
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 34
+                                        radius: root.barRadius
+                                        color: monitorHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+
+                                        property var monitor: modelData
+                                        property bool isEnabled: root.barMonitors.length === 0 || root.barMonitors.indexOf(monitor.name) !== -1
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            spacing: 10
+
+                                            Rectangle {
+                                                Layout.alignment: Qt.AlignVCenter
+                                                Layout.preferredWidth: 18
+                                                Layout.preferredHeight: 18
+                                                radius: 4
+                                                border.color: theme.muted
+                                                border.width: 1
+                                                color: monitorRow.isEnabled ? theme.color5 : "transparent"
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "✓"
+                                                    color: theme.background
+                                                    font.pixelSize: 12
+                                                    font.bold: true
+                                                    visible: monitorRow.isEnabled
+                                                }
+                                            }
+
+                                            Text {
+                                                text: monitorRow.monitor.name
+                                                font.pixelSize: 12
+                                                color: theme.foreground
+                                            }
+
+                                            Item { Layout.fillWidth: true }
+                                        }
+
+                                        MouseArea {
+                                            id: monitorHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: root.toggleMonitor(monitorRow.monitor)
+                                        }
                                     }
                                 }
 
                                 Text {
-                                    text: monitor.name
-                                    font.pixelSize: 12
-                                    color: theme.foreground
-                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: root.barMonitors.length === 0 ? "All monitors" : root.barMonitors.length + " monitor(s) selected"
+                                    font.pixelSize: 11
+                                    color: theme.muted
                                 }
-                            }
-
-                            MouseArea {
-                                id: monitorHover
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.toggleMonitor(monitor)
                             }
                         }
                     }
 
-                    Text {
-                        text: root.barMonitors.length === 0 ? "All monitors" : root.barMonitors.length + " monitor(s) selected"
-                        font.pixelSize: 11
-                        color: theme.muted
-                        Layout.topMargin: 4
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        visible: settingsWindow.currentTab === 1
+                        spacing: 10
+
+                        Text {
+                            text: "Workspace Indicators"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: theme.foreground
+                        }
+                        Text {
+                            text: "Choose how workspaces are displayed in the bar."
+                            font.pixelSize: 12
+                            color: theme.muted
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Layout.topMargin: 10
+                            spacing: 10
+
+                            Repeater {
+                                model: ["numbers", "dots", "squares"]
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 42
+                                    radius: root.barRadius
+                                    color: root.workspaceIndicatorStyle === modelData ? theme.color5 : (indicatorHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                    border.color: root.workspaceIndicatorStyle === modelData ? theme.color5 : theme.muted
+                                    border.width: root.moduleBorderThickness
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: modelData === "numbers" ? "Numbers" : (modelData === "dots" ? "Dots" : "Squares")
+                                        font.pixelSize: 13
+                                        color: root.workspaceIndicatorStyle === modelData ? theme.background : theme.foreground
+                                    }
+
+                                    MouseArea {
+                                        id: indicatorHover
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.workspaceIndicatorStyle = modelData
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+
+        Rectangle {
+            anchors.fill: parent
+            radius: root.barRadius
+            color: "transparent"
+            border.color: theme.muted
+            border.width: root.popupBorderThickness
+            z: 10
+        }
     }
 
     Keys.onEscapePressed: settingsPopup.close()
+
+    component SettingSlider: ColumnLayout {
+        id: sliderRoot
+        property string label
+        property string valueText
+        property string minimumText
+        property string maximumText
+        property real from: 0
+        property real to: 1
+        property real stepSize: 1
+        property real value: 0
+        signal moved(real value)
+
+        Layout.fillWidth: true
+        spacing: 7
+
+        RowLayout {
+            Layout.fillWidth: true
+            Text { text: sliderRoot.label; font.pixelSize: 13; color: theme.foreground }
+            Item { Layout.fillWidth: true }
+            Text { text: sliderRoot.valueText; font.pixelSize: 12; color: theme.muted }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 9
+            Text { text: sliderRoot.minimumText; font.pixelSize: 10; color: theme.muted }
+
+            Slider {
+                id: slider
+                Layout.fillWidth: true
+                from: sliderRoot.from
+                to: sliderRoot.to
+                stepSize: sliderRoot.stepSize
+                value: sliderRoot.value
+                onMoved: sliderRoot.moved(value)
+
+                background: Rectangle {
+                    x: slider.leftPadding
+                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                    width: slider.availableWidth
+                    height: 4
+                    radius: 2
+                    color: Qt.darker(theme.muted, 1.2)
+                    Rectangle {
+                        width: slider.visualPosition * parent.width
+                        height: parent.height
+                        radius: 2
+                        color: theme.color5
+                    }
+                }
+
+                handle: Rectangle {
+                    x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
+                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                    implicitWidth: 16
+                    implicitHeight: 16
+                    radius: 8
+                    color: slider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
+                    border.color: theme.background
+                    border.width: 2
+                }
+            }
+
+            Text { text: sliderRoot.maximumText; font.pixelSize: 10; color: theme.muted }
+        }
+    }
 }

@@ -52,7 +52,8 @@ mkdir -p /home/$USER/.config/vesktop/themes/
 # COPY CONFIG FILES
 #------------------------#
 cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/modules/colors.lua"
-bash ~/.config/.hypr-themes/patch-look.sh "$THEME_DIR/hyprlook"
+# bash ~/.config/.hypr-themes/patch-look.sh "$THEME_DIR/hyprlook"
+cp "$THEME_DIR/hyprlook" "$HOME/.config/hypr/modules/look.lua"
 cp -r "$THEME_DIR/kitty" "$USER_HOME/.config/kitty/kitty.conf"
 cp -r "$THEME_DIR/qcol" "$USER_HOME/.config/quickshell/mainbar/Theme.qml"
 cp -r "$THEME_DIR/rofi" "$USER_HOME/.config/rofi/launcher/colors.rasi"

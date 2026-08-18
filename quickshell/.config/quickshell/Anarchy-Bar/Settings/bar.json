@@ -3,8 +3,10 @@
   "barOpacity": 0.85,
   "barBorderThickness": 0,
   "moduleBorderThickness": 0,
+  "popupOpacity": 1,
+  "popupBorderThickness": 0,
+  "workspaceIndicatorStyle": "squares",
   "barMonitors": [
-    "DP-2",
-    "DP-1"
+    "DP-2"
   ]
 }

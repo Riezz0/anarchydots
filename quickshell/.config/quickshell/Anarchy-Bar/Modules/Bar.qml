@@ -49,8 +49,8 @@ Variants {
                 spacing: 10
 
                 ArchLogo {
-                    height: 34
-                    width: 34
+                    height: 42
+                    width: 42
                 }
 
                 Workspaces {}

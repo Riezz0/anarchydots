@@ -40,9 +40,9 @@ PanelWindow {
         height: 340
         radius: root.barRadius
         color: theme.background
-        opacity: calendarPopup.isOpen ? 0.95 : 0
+        opacity: calendarPopup.isOpen ? root.popupOpacity : 0
         border.color: theme.muted
-        border.width: root.moduleBorderThickness
+        border.width: root.popupBorderThickness
         clip: true
 
         Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
@@ -196,6 +196,15 @@ PanelWindow {
                     }
                 }
             }
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            radius: root.barRadius
+            color: "transparent"
+            border.color: theme.muted
+            border.width: root.popupBorderThickness
+            z: 10
         }
     }
 
