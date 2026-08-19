@@ -269,7 +269,7 @@ ShellRoot {
                 "s/rounding[[:space:]]*=[[:space:]]*[0-9]+/rounding = " + root.hyprlandRounding + "/g' $HOME/.config/hypr/modules/look.lua; " +
                 "sed -i -E '/blur[[:space:]]*=/,/},},/ { s/enabled[[:space:]]*=[[:space:]]*(true|false)/enabled = " + root.hyprlandBlurEnabled + "/g; s/passes[[:space:]]*=[[:space:]]*[0-9]+/passes = " + root.hyprlandBlurPasses + "/g; s/size[[:space:]]*=[[:space:]]*[0-9]+/size = " + root.hyprlandBlurSize + "/g; s/vibrancy[[:space:]]*=[[:space:]]*[0-9.]+/vibrancy = " + root.hyprlandBlurVibrancy + "/g; }' $HOME/.config/hypr/modules/look.lua; " +
                 "bash " + root.hyprlandPatchPath + " --sync-all " + value + " " + root.hyprlandActiveOpacity + " " + root.hyprlandInactiveOpacity + " " + root.hyprlandRounding + " " + root.hyprlandRoundingPower + " " + root.hyprlandBlurEnabled + " " + root.hyprlandBlurPasses + " " + root.hyprlandBlurSize + " " + root.hyprlandBlurVibrancy + " " + root.hyprlandGapIn + " " + root.hyprlandGapOut + "; hyprctl reload"
-            borderFilesProc.command = ["bash", root.hyprlandPatchPath, "--sync-all"]
+            borderFilesProc.command = ["bash", "-c", syncCommand]
             borderFilesProc.running = true
         }
     }

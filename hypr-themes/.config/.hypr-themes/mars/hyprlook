@@ -2,11 +2,11 @@
 local theme = require("modules.colors")
 
 hl.config({
-    general = {gaps_in = 10,gaps_out = 10,border_size = 0,
+    general = {gaps_in = 13,gaps_out = 13,border_size = 5,
         col = { active_border = { colors = { theme.color7, theme.color7 }, angle = 45 }, inactive_border = theme.color15 },
     resize_on_border = true, allow_tearing = false, },
     decoration = {rounding = 10,
-rounding_power = 12,
+rounding_power = 10,
 active_opacity = 0.85,
 inactive_opacity = 0.85,
     shadow = {enabled = false, range = 0, render_power = 0, color = 0xee1a1a1a },
@@ -14,7 +14,7 @@ inactive_opacity = 0.85,
     blur = {enabled = true,
              size = 10,
 passes = 3,
-vibrancy = 0.4, },},
+vibrancy = 0.75, },},
 
     animations = {
 enabled   = true, },})
