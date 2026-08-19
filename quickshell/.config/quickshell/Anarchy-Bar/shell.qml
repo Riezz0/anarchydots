@@ -41,6 +41,7 @@ ShellRoot {
     }
 
     function saveSettings() {
+        if (!settingsFile.path) return
         var data = {
             "barRadius": barRadius,
             "barOpacity": barOpacity,

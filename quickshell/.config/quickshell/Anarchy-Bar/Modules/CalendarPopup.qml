@@ -208,5 +208,9 @@ PanelWindow {
         }
     }
 
-    Keys.onEscapePressed: calendarPopup.close()
+    Item {
+        anchors.fill: parent
+        focus: true
+        Keys.onEscapePressed: calendarPopup.close()
+    }
 }

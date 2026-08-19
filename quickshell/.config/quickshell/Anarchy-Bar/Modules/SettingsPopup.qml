@@ -665,7 +665,11 @@ PanelWindow {
         }
     }
 
-    Keys.onEscapePressed: settingsPopup.close()
+    Item {
+        anchors.fill: parent
+        focus: true
+        Keys.onEscapePressed: settingsPopup.close()
+    }
 
     component SettingSlider: ColumnLayout {
         id: sliderRoot
