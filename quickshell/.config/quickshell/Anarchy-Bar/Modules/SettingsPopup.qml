@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 PanelWindow {
@@ -27,6 +28,41 @@ PanelWindow {
         : WlrKeyboardFocus.None
 
     property int currentTab: 0
+    property var themes: []
+    property string activeTheme: ""
+
+    Process {
+        id: themeScanProc
+        running: false
+        stdout: StdioCollector {
+            id: themeScanOutput
+            onStreamFinished: {
+                var output = themeScanOutput.text
+                if (!output) return
+                var lines = output.trim().split("\n")
+                var result = []
+                for (var i = 0; i < lines.length; i++) {
+                    try {
+                        var obj = JSON.parse(lines[i])
+                        result.push(obj)
+                    } catch (e) {}
+                }
+                settingsWindow.themes = result
+            }
+        }
+    }
+
+    Process {
+        id: themeApplyProc
+        running: false
+    }
+
+    function loadThemes() {
+        themeScanProc.command = ["sh", "-c", "bash ~/.config/.hypr-themes/scan-themes.sh"]
+        themeScanProc.running = true
+    }
+
+    Component.onCompleted: loadThemes()
 
     MouseArea {
         anchors.fill: parent
@@ -107,25 +143,15 @@ PanelWindow {
                         id: barTab
                         Layout.preferredHeight: 42
                         Layout.topMargin: 10
-                        Layout.preferredWidth: hyprlandTabContent.implicitWidth + 24
+                        Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 0 ? theme.color5 : (barTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 0 ? theme.color4 : (barTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
 
                         RowLayout {
                             id: barTabContent
                             anchors.left: parent.left
-                            anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.leftMargin: 12
-                            anchors.rightMargin: 12
-                            spacing: 10
-
-                            Text {
-                                text: "󰏘"
-                                font.pixelSize: 17
-                                font.family: "JetBrainsMono Nerd Font"
-                                color: settingsWindow.currentTab === 0 ? theme.background : theme.color5
-                            }
 
                             Text {
                                 text: "Bar Settings"
@@ -148,25 +174,15 @@ PanelWindow {
                         id: hyprlandTab
                         Layout.preferredHeight: 42
                         Layout.topMargin: 10
-                        Layout.preferredWidth: hyprlandTabContent.implicitWidth + 24
+                        Layout.fillWidth: true
                         radius: root.barRadius
                         color: settingsWindow.currentTab === 1 ? theme.color5 : (appearanceTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
 
                         RowLayout {
                             id: hyprlandTabContent
                             anchors.left: parent.left
-                            anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.leftMargin: 12
-                            anchors.rightMargin: 12
-                            spacing: 10
-
-                            Text {
-                                text: "󰉼"
-                                font.pixelSize: 17
-                                font.family: "JetBrainsMono Nerd Font"
-                                color: settingsWindow.currentTab === 1 ? theme.background : theme.color5
-                            }
 
                             Text {
                                 text: "Hyprland Settings"
@@ -181,6 +197,36 @@ PanelWindow {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: settingsWindow.currentTab = 1
+                        }
+                    }
+
+                    Rectangle {
+                        id: themesTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 2 ? theme.color2 : (themesTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                        RowLayout {
+                            id: themesTabContent
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+
+                            Text {
+                                text: "Themes"
+                                font.pixelSize: 13
+                                color: settingsWindow.currentTab === 2 ? theme.background : theme.foreground
+                            }
+                        }
+
+                        MouseArea {
+                            id: themesTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 2
                         }
                     }
 
@@ -211,14 +257,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : "Hyprland Settings"
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : "Themes")
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : "More customization options are coming soon."
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : "Browse and apply themes.")
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -284,6 +330,53 @@ PanelWindow {
                                 to: 50
                                 value: root.barRadius
                                 onMoved: root.barRadius = Math.round(value)
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+
+                                Text {
+                                    text: "Bar Position"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: theme.color5
+                                }
+
+                                Grid {
+                                    Layout.fillWidth: true
+                                    columns: 2
+                                    spacing: 8
+
+                                    Repeater {
+                                        model: ["top", "bottom"]
+
+                                        Rectangle {
+                                            width: (parent.width - 8) / 2
+                                            height: 36
+                                            radius: root.barRadius
+                                            property bool selected: root.barPosition === modelData
+                                            color: selected ? theme.color4 : (posHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                            border.color: selected ? theme.color4 : theme.muted
+                                            border.width: root.moduleBorderThickness
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
+                                                font.pixelSize: 13
+                                                color: parent.selected ? theme.background : theme.foreground
+                                            }
+
+                                            MouseArea {
+                                                id: posHover
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: root.barPosition = modelData
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             SettingSlider {
@@ -465,7 +558,7 @@ PanelWindow {
                             spacing: 10
 
                             Repeater {
-                                model: ["numbers", "dots", "squares"]
+                                model: ["numbers", "dots"]
 
                                 Rectangle {
                                     Layout.fillWidth: true
@@ -650,6 +743,117 @@ PanelWindow {
 
                     }
 
+                    }
+
+                    Flickable {
+                        id: themesScroll
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 2
+                        Layout.preferredHeight: settingsWindow.currentTab === 2 ? -1 : 0
+                        visible: settingsWindow.currentTab === 2
+                        clip: true
+                        contentWidth: width
+                        contentHeight: themesContent.implicitHeight
+
+                        ColumnLayout {
+                            id: themesContent
+                            width: themesScroll.width
+                            spacing: 16
+
+                            Text {
+                                text: "Available Themes"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: theme.foreground
+                            }
+
+                            Text {
+                                text: "Click a theme to apply it."
+                                font.pixelSize: 12
+                                color: theme.muted
+                            }
+
+                            Flow {
+                                Layout.fillWidth: true
+                                Layout.topMargin: 8
+                                spacing: 12
+
+                                Repeater {
+                                    model: settingsWindow.themes
+
+                                    Rectangle {
+                                        width: 155
+                                        height: 130
+                                        radius: Math.min(root.barRadius, 10)
+                                        color: themeCardHover.containsMouse ? Qt.darker(theme.background, 1.25) : Qt.darker(theme.background, 1.08)
+                                        border.color: themeCardHover.containsMouse ? theme.color5 : theme.muted
+                                        border.width: themeCardHover.containsMouse ? 2 : 1
+
+                                        property var themeData: modelData
+
+                                        ColumnLayout {
+                                            anchors.fill: parent
+                                            anchors.margins: 8
+                                            spacing: 6
+
+                                            Rectangle {
+                                                Layout.fillWidth: true
+                                                Layout.fillHeight: true
+                                                radius: Math.min(root.barRadius, 8)
+                                                clip: true
+                                                color: Qt.darker(theme.background, 1.15)
+
+                                                Image {
+                                                    id: themeImg
+                                                    anchors.fill: parent
+                                                    source: "file://" + modelData.thumbnail
+                                                    fillMode: Image.PreserveAspectCrop
+                                                    visible: status === Image.Ready
+                                                    asynchronous: true
+                                                }
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "󰏘"
+                                                    font.pixelSize: 24
+                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    color: theme.muted
+                                                    visible: themeImg.status !== Image.Ready
+                                                }
+                                            }
+
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: modelData.name
+                                                font.pixelSize: 12
+                                                font.bold: true
+                                                color: theme.foreground
+                                                horizontalAlignment: Text.AlignHCenter
+                                                elide: Text.ElideRight
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: themeCardHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                themeApplyProc.command = ["sh", "-c", "bash ~/.config/.hypr-themes/run-theme.sh \"" + modelData.script + "\""]
+                                                themeApplyProc.running = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Text {
+                                Layout.topMargin: 8
+                                text: settingsWindow.themes.length + " theme(s) found"
+                                font.pixelSize: 11
+                                color: theme.muted
+                            }
+                        }
                     }
                 }
             }

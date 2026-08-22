@@ -12,6 +12,7 @@ ShellRoot {
     property int barRadius: 6
     property real barOpacity: 1.0
     property int barBorderThickness: 0
+    property string barPosition: "top"
     property int moduleBorderThickness: 0
     property real popupOpacity: 0.95
     property int popupBorderThickness: 0
@@ -28,6 +29,7 @@ ShellRoot {
     property int hyprlandGapIn: 10
     property int hyprlandGapOut: 10
     property var barMonitors: []
+    property bool isLoadingSettings: true
 
     readonly property string settingsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/Anarchy-Bar/Settings/bar.json"
@@ -41,11 +43,12 @@ ShellRoot {
     }
 
     function saveSettings() {
-        if (!settingsFile.path) return
+        if (isLoadingSettings) return
         var data = {
             "barRadius": barRadius,
             "barOpacity": barOpacity,
             "barBorderThickness": barBorderThickness,
+            "barPosition": barPosition,
             "moduleBorderThickness": moduleBorderThickness,
             "popupOpacity": popupOpacity,
             "popupBorderThickness": popupBorderThickness,
@@ -70,7 +73,9 @@ ShellRoot {
         id: settingsFile
         path: root.settingsPath
         watchChanges: true
-        onFileChanged: hyprlandPatchTimer.restart()
+        onFileChanged: {
+            if (!isLoadingSettings) hyprlandPatchTimer.restart()
+        }
         onLoaded: {
             if (settingsFile.text().length > 0) {
                 try {
@@ -78,6 +83,7 @@ ShellRoot {
                     if (data.barRadius !== undefined) root.barRadius = data.barRadius
                     if (data.barOpacity !== undefined) root.barOpacity = data.barOpacity
                     if (data.barBorderThickness !== undefined) root.barBorderThickness = data.barBorderThickness
+                    if (data.barPosition !== undefined) root.barPosition = data.barPosition
                     if (data.moduleBorderThickness !== undefined) root.moduleBorderThickness = data.moduleBorderThickness
                     if (data.popupOpacity !== undefined) root.popupOpacity = data.popupOpacity
                     if (data.popupBorderThickness !== undefined) root.popupBorderThickness = data.popupBorderThickness
@@ -99,12 +105,14 @@ ShellRoot {
                 }
             }
             hyprlandPatchTimer.restart()
+            isLoadingSettings = false
         }
     }
 
     onBarRadiusChanged: saveSettings()
     onBarOpacityChanged: saveSettings()
     onBarBorderThicknessChanged: saveSettings()
+    onBarPositionChanged: saveSettings()
     onModuleBorderThicknessChanged: saveSettings()
     onPopupOpacityChanged: saveSettings()
     onPopupBorderThicknessChanged: saveSettings()
@@ -217,6 +225,34 @@ ShellRoot {
         function close() { isOpen = false }
     }
 
+    Item {
+        id: updatesPopup
+        property bool isOpen: false
+        function open() { isOpen = true }
+        function close() { isOpen = false }
+    }
+
+    Item {
+        id: infoPopup
+        property bool isOpen: false
+        function open() { isOpen = true }
+        function close() { isOpen = false }
+    }
+
+    Item {
+        id: salaatPopup
+        property bool isOpen: false
+        function open() { isOpen = true }
+        function close() { isOpen = false }
+    }
+
+    Item {
+        id: notificationsPopup
+        property bool isOpen: false
+        function open() { isOpen = true }
+        function close() { isOpen = false }
+    }
+
     Process {
         id: cmdProc
         running: false
@@ -276,7 +312,16 @@ ShellRoot {
     }
 
     Bar {}
+    Updates { id: updates }
+    InfoWidget { id: infoWidget }
+    Salaat { id: salaat }
+    Notifications { id: notifs }
     PowerMenu {}
     SettingsPopup {}
     CalendarPopup {}
+    UpdatesPopup {}
+    InfoWidgetPopup {}
+    SalaatPopup {}
+    NotificationsPopup {}
+    ToastPopup {}
 }

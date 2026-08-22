@@ -1,9 +1,10 @@
 {
-  "barRadius": 6,
+  "barRadius": 10,
   "barOpacity": 1,
   "barBorderThickness": 0,
+  "barPosition": "top",
   "moduleBorderThickness": 0,
-  "popupOpacity": 0.95,
+  "popupOpacity": 1,
   "popupBorderThickness": 0,
   "workspaceIndicatorStyle": "numbers",
   "hyprlandBorderThickness": 0,
@@ -13,9 +14,11 @@
   "hyprlandRoundingPower": 10,
   "hyprlandBlurEnabled": true,
   "hyprlandBlurPasses": 3,
-  "hyprlandBlurSize": 10,
+  "hyprlandBlurSize": 20,
   "hyprlandBlurVibrancy": 0.6,
   "hyprlandGapIn": 10,
   "hyprlandGapOut": 10,
-  "barMonitors": []
+  "barMonitors": [
+    "DP-2"
+  ]
 }

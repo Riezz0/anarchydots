@@ -15,12 +15,10 @@ Item {
     }
 
     width: workspaceRow.width + 12
-    // Give the indicators more breathing room inside their bordered module.
     height: 42
     anchors.verticalCenter: parent.verticalCenter
 
     Rectangle {
-        id: workspaceBg
         anchors.fill: parent
         radius: root.barRadius
         border.color: theme.muted
@@ -34,11 +32,7 @@ Item {
         anchors.margins: 8
         spacing: 5
 
-        // Extra breathing room for the first and last visible indicators.
-        Item {
-            width: 6
-            height: 1
-        }
+        Item { width: 6; height: 1 }
 
         Repeater {
             model: 5
@@ -46,7 +40,7 @@ Item {
             Rectangle {
                 required property int index
                 property int workspaceId: index + 1
-                width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (isActive ? 28 : 23) : 24
+                width: root.workspaceIndicatorStyle === "dots" ? (isActive ? 28 : 23) : 24
                 height: 24
                 radius: root.barRadius
 
@@ -74,9 +68,9 @@ Item {
                 Rectangle {
                     anchors.centerIn: parent
                     visible: root.workspaceIndicatorStyle !== "numbers"
-                    width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (parent.isActive ? parent.width : 16) : 16
+                    width: root.workspaceIndicatorStyle === "dots" ? (parent.isActive ? parent.width : 16) : 16
                     height: 16
-                    radius: root.workspaceIndicatorStyle === "squares" ? 2 : height / 2
+                    radius: height / 2
                     color: parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted
                 }
 
@@ -117,7 +111,7 @@ Item {
                 required property int index
                 property int workspaceId: index + 6
                 visible: hasWindows || isActive
-                width: visible ? (root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (isActive ? 28 : 23) : 24) : 0
+                width: visible ? (root.workspaceIndicatorStyle === "dots" ? (isActive ? 28 : 23) : 24) : 0
                 height: 24
                 radius: root.barRadius
 
@@ -145,9 +139,9 @@ Item {
                 Rectangle {
                     anchors.centerIn: parent
                     visible: root.workspaceIndicatorStyle !== "numbers"
-                    width: root.workspaceIndicatorStyle === "dots" || root.workspaceIndicatorStyle === "squares" ? (parent.isActive ? parent.width : 16) : 16
+                    width: root.workspaceIndicatorStyle === "dots" ? (parent.isActive ? parent.width : 16) : 16
                     height: 16
-                    radius: root.workspaceIndicatorStyle === "squares" ? 2 : height / 2
+                    radius: height / 2
                     color: parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted
                 }
 
@@ -182,9 +176,6 @@ Item {
             }
         }
 
-        Item {
-            width: 6
-            height: 1
-        }
+        Item { width: 6; height: 1 }
     }
 }
