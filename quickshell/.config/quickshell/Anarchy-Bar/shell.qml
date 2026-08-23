@@ -323,5 +323,6 @@ ShellRoot {
     InfoWidgetPopup {}
     SalaatPopup {}
     NotificationsPopup {}
+    VolumeOSD { id: volumeOSD }
     ToastPopup {}
 }

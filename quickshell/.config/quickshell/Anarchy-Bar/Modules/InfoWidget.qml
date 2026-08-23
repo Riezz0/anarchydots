@@ -33,26 +33,38 @@ Item {
     property real gpuUsage: 0
     property string gpuName: "N/A"
     property bool hasGpu: false
-    property var disks: []
+    property string localIp: ""
+
+    // Network
+    property real downloadSpeed: 0
+    property real uploadSpeed: 0
+    property string downloadTotal: "0"
+    property string uploadTotal: "0"
+    property string netInterface: ""
+    property string gateway: ""
+    property string dns: ""
+    property var netInterfaces: []
+    property real prevRxBytes: 0
+    property real prevTxBytes: 0
 
     width: 42
     height: 42
-    anchors.verticalCenter: parent.verticalCenter
 
     Rectangle {
         anchors.fill: parent
         radius: root.barRadius
         border.color: theme.muted
         border.width: root.moduleBorderThickness
-        color: infoHover.containsMouse ? theme.color4 : "transparent"
+        color: (infoPopup.isOpen || infoHover.containsMouse) ? theme.color4 : "transparent"
     }
 
     Text {
         anchors.centerIn: parent
-        text: "\u{F17A}"
+        text: infoPopup.isOpen ? "\u{F1355}" : "\u{F072C}"
         font.pixelSize: 20
         font.family: "JetBrainsMono Nerd Font"
-        color: infoHover.containsMouse ? theme.background : theme.muted
+        color: (infoPopup.isOpen || infoHover.containsMouse) ? theme.background : theme.muted
+        Behavior on color { ColorAnimation { duration: 150 } }
     }
 
     MouseArea {
@@ -276,7 +288,6 @@ Item {
             }
         }
         readCpuUsage()
-        readDisks()
     }
 
     function readCpuUsage() {
@@ -304,47 +315,132 @@ Item {
         }
     }
 
-    function readDisks() {
-        diskProc.running = true
-    }
-
-    Process {
-        id: diskProc
-        running: false
-        command: ["sh", "-c", "lsblk -d -J -o NAME,SIZE,MOUNTPOINT,FSTYPE 2>/dev/null"]
-        stdout: StdioCollector {
-            id: diskStdio
-            onStreamFinished: { infoRoot.parseDisks(diskStdio.text) }
-        }
-    }
-
-    function parseDisks(jsonStr) {
-        var result = []
-        try {
-            var data = JSON.parse(jsonStr)
-            for (var i = 0; i < data.blockdevices.length; i++) {
-                var d = data.blockdevices[i]
-                var mounted = d.mountpoint && d.mountpoint.length > 0
-                result.push({
-                    name: d.name,
-                    size: d.size || "?",
-                    mount: mounted ? d.mountpoint : "Unmounted",
-                    fstype: d.fstype || "",
-                    mounted: mounted
-                })
-            }
-        } catch (e) {}
-        disks = result
-    }
 
     Timer {
-        interval: 3000
+        interval: 5000
         running: true
         repeat: true
         onTriggered: {
             if (!cpuTempProc.running) cpuTempProc.running = true
             if (!gpuTempProc.running) gpuTempProc.running = true
             if (!usageProc.running) usageProc.running = true
+            readNetSpeed()
+        }
+    }
+
+    Timer {
+        interval: 10000
+        running: true
+        repeat: true
+        onTriggered: {
+            gwProc.running = true
+            dnsProc.running = true
+            ifaceStatusProc.running = true
+        }
+    }
+
+    // Network speed reading
+    Process {
+        id: netProc
+        running: false
+        command: ["sh", "-c", "awk 'NR>2{split($0, a, \":\"); gsub(/[ \\t]/, \"\", a[1]); if(a[1]!=\"lo\" && a[1]!=\"virbr0\" && a[1]!=\"\" && a[1]!=\"face\") print a[1], $2, $10}' /proc/net/dev | head -1"]
+        stdout: StdioCollector {
+            id: netStdio
+            onStreamFinished: {
+                var text = netStdio.text.trim()
+                if (text.length > 0) {
+                    var parts = text.split(/\s+/)
+                    if (parts.length >= 3) {
+                        infoRoot.netInterface = parts[0]
+                        var rx = parseInt(parts[1])
+                        var tx = parseInt(parts[2])
+                        if (infoRoot.prevRxBytes > 0) {
+                            infoRoot.downloadSpeed = Math.max(0, rx - infoRoot.prevRxBytes)
+                            infoRoot.uploadSpeed = Math.max(0, tx - infoRoot.prevTxBytes)
+                        }
+                        infoRoot.prevRxBytes = rx
+                        infoRoot.prevTxBytes = tx
+                        infoRoot.downloadTotal = formatBytes(rx)
+                        infoRoot.uploadTotal = formatBytes(tx)
+                    }
+                }
+            }
+        }
+    }
+
+    function readNetSpeed() {
+        if (!netProc.running) netProc.running = true
+    }
+
+    function formatBytes(bytes) {
+        if (bytes >= 1099511627776) return (bytes / 1099511627776).toFixed(1) + "T"
+        if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + "G"
+        if (bytes >= 1048576) return (bytes / 1048576).toFixed(0) + "M"
+        if (bytes >= 1024) return (bytes / 1024).toFixed(0) + "K"
+        return bytes + "B"
+    }
+
+    function formatSpeed(bytes) {
+        if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + " GB/s"
+        if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + " MB/s"
+        if (bytes >= 1024) return (bytes / 1024).toFixed(1) + " KB/s"
+        return bytes + " B/s"
+    }
+
+    Process {
+        id: ipProc
+        running: false
+        command: ["sh", "-c", "ip route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<=NF;i++) if($i==\"src\") print $(i+1)}' | head -1"]
+        stdout: SplitParser {
+            onRead: line => {
+                var ip = line.trim()
+                if (ip.length > 0 && ip.indexOf(".") > 0) infoRoot.localIp = ip
+            }
+        }
+    }
+
+    Process {
+        id: gwProc
+        running: false
+        command: ["sh", "-c", "ip route show default 2>/dev/null | awk '{print $3}' | head -1"]
+        stdout: SplitParser {
+            onRead: line => {
+                var gw = line.trim()
+                if (gw.length > 0) infoRoot.gateway = gw
+            }
+        }
+    }
+
+    Process {
+        id: dnsProc
+        running: false
+        command: ["sh", "-c", "awk '/^nameserver/{print $2; exit}' /etc/resolv.conf 2>/dev/null"]
+        stdout: SplitParser {
+            onRead: line => {
+                var d = line.trim()
+                if (d.length > 0) infoRoot.dns = d
+            }
+        }
+    }
+
+    Process {
+        id: ifaceStatusProc
+        running: false
+        command: ["sh", "-c", "for iface in $(ls /sys/class/net 2>/dev/null | grep -v lo); do state=$(cat /sys/class/net/$iface/operstate 2>/dev/null || echo unknown); echo $iface $state; done"]
+        stdout: StdioCollector {
+            id: ifaceStatusStdio
+            onStreamFinished: {
+                var text = ifaceStatusStdio.text.trim()
+                var lines = text.split("\n")
+                var result = []
+                for (var i = 0; i < lines.length; i++) {
+                    var parts = lines[i].trim().split(/\s+/)
+                    if (parts.length >= 2) {
+                        result.push({ name: parts[0], state: parts[1] })
+                    }
+                }
+                infoRoot.netInterfaces = result
+            }
         }
     }
 
@@ -352,5 +448,10 @@ Item {
         cpuTempProc.running = true
         gpuTempProc.running = true
         usageProc.running = true
+        readNetSpeed()
+        ipProc.running = true
+        gwProc.running = true
+        dnsProc.running = true
+        ifaceStatusProc.running = true
     }
 }

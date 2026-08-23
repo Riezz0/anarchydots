@@ -14,7 +14,7 @@ Item {
     property string terminal: "kitty"
 
     function updateIcon() {
-        return "\u{F03D6}"
+        return updatesAvailable ? "\u{F1259}" : "\u{F003C}"
     }
 
     function updateColor() {

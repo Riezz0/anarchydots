@@ -37,7 +37,7 @@ Variants {
             color: theme.background
             radius: root.barRadius
             opacity: root.barOpacity
-            border.color: theme.muted
+            border.color: theme.color2
             border.width: root.barBorderThickness
         }
 
@@ -56,6 +56,8 @@ Variants {
                 }
 
                 Workspaces {}
+
+                Volume {}
             }
 
             // Center: Salaat marquee
@@ -151,8 +153,6 @@ Variants {
                 Rectangle {
                     implicitWidth: 42; implicitHeight: 42
                     radius: root.barRadius
-                    border.color: theme.muted
-                    border.width: root.moduleBorderThickness
                     color: "transparent"
 
                     Row {

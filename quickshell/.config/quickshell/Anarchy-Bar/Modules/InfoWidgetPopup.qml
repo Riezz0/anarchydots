@@ -113,33 +113,129 @@ PanelWindow {
                     }
                 }
 
-                // Weather details
-                Row {
-                    Layout.fillWidth: true; Layout.bottomMargin: 16
-                    layoutDirection: Qt.LeftToRight
+                // Network
+                ColumnLayout {
+                    Layout.fillWidth: true; Layout.topMargin: 12; spacing: 12
 
-                    Column {
-                        width: parent.width / 3
-                        spacing: 2
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: "\u{F0539}"; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: infoWidget.loaded ? infoWidget.tempC + "\u00B0C" : "--"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Feels"; font.pixelSize: 10; color: theme.muted }
+                    // Ethernet info card
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: ethContent.implicitHeight + 20
+                        radius: root.barRadius
+                        color: Qt.darker(theme.background, 1.08)
+                        border.color: theme.muted; border.width: root.popupBorderThickness
+
+                        ColumnLayout {
+                            id: ethContent
+                            anchors.fill: parent; anchors.margins: 12; spacing: 6
+
+                            RowLayout { spacing: 8
+                                Text { text: "\u{F0AC}"; font.pixelSize: 16; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
+                                Text { text: "Ethernet"; font.pixelSize: 14; font.bold: true; color: theme.foreground }
+                            }
+
+                            Text { text: infoWidget.netInterface || "--"; font.pixelSize: 11; color: theme.muted }
+
+                            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: theme.muted; opacity: 0.3; Layout.topMargin: 4; Layout.bottomMargin: 4 }
+
+                            RowLayout { Layout.fillWidth: true
+                                Text { text: "IP"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.muted; Layout.preferredWidth: 50 }
+                                Text { text: infoWidget.localIp || "--"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
+                            }
+
+                            RowLayout { Layout.fillWidth: true
+                                Text { text: "GW"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.muted; Layout.preferredWidth: 50 }
+                                Text { text: infoWidget.gateway || "--"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
+                            }
+
+                            RowLayout { Layout.fillWidth: true
+                                Text { text: "DNS"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.muted; Layout.preferredWidth: 50 }
+                                Text { text: infoWidget.dns || "--"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
+                            }
+                        }
                     }
 
-                    Column {
-                        width: parent.width / 3
-                        spacing: 2
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: "\u{F05AE}"; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: infoWidget.loaded ? infoWidget.windSpeed + " km/h" : "--"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: infoWidget.windDir; font.pixelSize: 10; color: theme.muted }
+                    // Traffic card
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: trafficContent.implicitHeight + 20
+                        radius: root.barRadius
+                        color: Qt.darker(theme.background, 1.08)
+                        border.color: theme.muted; border.width: root.popupBorderThickness
+
+                        ColumnLayout {
+                            id: trafficContent
+                            anchors.fill: parent; anchors.margins: 12; spacing: 6
+
+                            Text { text: "Traffic"; font.pixelSize: 13; font.bold: true; color: theme.foreground; Layout.bottomMargin: 2 }
+
+                            RowLayout { Layout.fillWidth: true
+                                RowLayout { spacing: 6
+                                    Text { text: "\u{F019}"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; color: theme.color2 }
+                                    Text { text: "Download"; font.pixelSize: 12; color: theme.foreground }
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text { text: infoWidget.downloadSpeed > 0 ? infoWidget.formatSpeed(infoWidget.downloadSpeed) : "0 B/s"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
+                            }
+
+                            RowLayout { Layout.fillWidth: true
+                                RowLayout { spacing: 6
+                                    Text { text: "\u{F093}"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
+                                    Text { text: "Upload"; font.pixelSize: 12; color: theme.foreground }
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text { text: infoWidget.uploadSpeed > 0 ? infoWidget.formatSpeed(infoWidget.uploadSpeed) : "0 B/s"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
+                            }
+
+                            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: theme.muted; opacity: 0.3; Layout.topMargin: 4; Layout.bottomMargin: 4 }
+
+                            RowLayout { Layout.fillWidth: true
+                                Text { text: "Total RX / TX"; font.pixelSize: 11; color: theme.muted }
+                                Item { Layout.fillWidth: true }
+                                Text { text: infoWidget.downloadTotal + " / " + infoWidget.uploadTotal; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
+                            }
+                        }
                     }
 
-                    Column {
-                        width: parent.width / 3
-                        spacing: 2
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: "\u{F058E}"; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: infoWidget.humidity + "%"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Humidity"; font.pixelSize: 10; color: theme.muted }
+                    // Interfaces card
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: ifacesContent.implicitHeight + 20
+                        radius: root.barRadius
+                        color: Qt.darker(theme.background, 1.08)
+                        border.color: theme.muted; border.width: root.popupBorderThickness
+
+                        ColumnLayout {
+                            id: ifacesContent
+                            anchors.fill: parent; anchors.margins: 12; spacing: 6
+
+                            Text { text: "Interfaces"; font.pixelSize: 13; font.bold: true; color: theme.foreground; Layout.bottomMargin: 2 }
+
+                            Repeater {
+                                model: infoWidget.netInterfaces
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 28
+                                    radius: 4
+                                    color: modelData.name === infoWidget.netInterface ? Qt.darker(theme.color4, 1.3) : "transparent"
+
+                                    RowLayout {
+                                        anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                        Text { text: "\u{F0C9}"; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.muted }
+                                        Text { text: modelData.name; font.pixelSize: 12; color: theme.foreground }
+                                        Item { Layout.fillWidth: true }
+                                        Text {
+                                            text: modelData.state === "up" ? "connected" : "disconnected"
+                                            font.pixelSize: 11
+                                            color: modelData.state === "up" ? theme.color2 : theme.muted
+                                        }
+                                    }
+                                }
+                            }
+
+                            Text { visible: infoWidget.netInterfaces.length === 0; text: "No interfaces found"; font.pixelSize: 12; color: theme.muted }
+                        }
                     }
                 }
 
@@ -153,7 +249,7 @@ PanelWindow {
                 RowLayout {
                     Layout.fillWidth: true; Layout.bottomMargin: 16; spacing: 8
                     Repeater {
-                        model: ["CPU", "RAM", "GPU", "Disk"]
+                        model: ["CPU", "RAM", "GPU"]
                         Rectangle {
                             Layout.fillWidth: true; Layout.preferredHeight: 32; radius: root.barRadius
                             color: hwTab === index ? theme.color4 : "transparent"
@@ -302,48 +398,6 @@ PanelWindow {
                         Text { anchors.horizontalCenter: parent.horizontalCenter; text: infoWidget.ramUsage + "%"; font.pixelSize: 28; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
                         Text { anchors.horizontalCenter: parent.horizontalCenter; text: Math.round(infoWidget.ramUsed) + "G / " + Math.round(infoWidget.ramTotal) + "G"; font.pixelSize: 12; color: theme.muted }
                     }
-                }
-
-                // Disk view
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    visible: hwTab === 3
-                    spacing: 6
-
-                    Repeater {
-                        model: infoWidget.disks
-
-                        Rectangle {
-                            Layout.fillWidth: true; Layout.preferredHeight: 44; radius: root.barRadius
-                            color: Qt.darker(theme.background, 1.08)
-                                    border.color: modelData.mounted ? theme.muted : Qt.darker(theme.muted, 1.3); border.width: root.popupBorderThickness
-
-                            RowLayout {
-                                anchors.fill: parent; anchors.leftMargin: 12; anchors.rightMargin: 12; spacing: 8
-
-                                Text { text: "\u{F0A0A}"; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; color: modelData.mounted ? theme.color4 : theme.muted }
-
-                                ColumnLayout { spacing: 1
-                                    Text { text: "/dev/" + modelData.name; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
-                                    Text { text: modelData.mount + (modelData.fstype.length > 0 ? " (" + modelData.fstype + ")" : ""); font.pixelSize: 10; color: modelData.mounted ? theme.muted : theme.color1 }
-                                }
-
-                                Item { Layout.fillWidth: true }
-
-                                Text { text: modelData.size; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font"; color: theme.muted }
-                            }
-                        }
-                    }
-
-                    Text { visible: infoWidget.disks.length === 0; text: "No disks found"; font.pixelSize: 12; color: theme.muted; Layout.alignment: Qt.AlignHCenter; Layout.topMargin: 20 }
-                }
-
-                // Refresh
-                Rectangle {
-                    Layout.fillWidth: true; Layout.preferredHeight: 36; Layout.topMargin: 16; radius: root.barRadius
-                    color: refreshHover.containsMouse ? Qt.darker(theme.color4, 1.3) : theme.color4
-                    Text { anchors.centerIn: parent; text: "Refresh"; font.pixelSize: 12; font.bold: true; color: theme.background }
-                    MouseArea { id: refreshHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: infoWidget.refreshWeather() }
                 }
             }
         }

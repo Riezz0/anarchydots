@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
+import QtCore
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -30,6 +31,303 @@ PanelWindow {
     property int currentTab: 0
     property var themes: []
     property string activeTheme: ""
+    property bool nightlightEnabled: false
+    property string nightlightConfigPath: StandardPaths.writableLocation(StandardPaths.ConfigLocation).toString().replace(/^file:\/\//, "") + "/Anarchy-Bar/nightlight.json"
+
+    // Brightness
+    property int brightness: 100
+    property string brightnessTarget: "all"
+    property var ddcutilMonitors: []
+    property var selectedMonitors: []
+    property bool ddcutilAvailable: false
+
+    // Bluetooth
+    property bool btEnabled: false
+    property bool btScanning: false
+    property var btPairedDevices: []
+    property var btDiscoveredDevices: []
+    property string btConfigPath: StandardPaths.writableLocation(StandardPaths.ConfigLocation).toString().replace(/^file:\/\//, "") + "/Anarchy-Bar/bluetooth.json"
+
+    onBtEnabledChanged: {
+        var json = JSON.stringify({ enabled: btEnabled })
+        btSaveProc.command = ["sh", "-c", "mkdir -p '" + StandardPaths.writableLocation(StandardPaths.ConfigLocation).toString().replace(/^file:\/\//, "") + "/Anarchy-Bar' && printf '%s' '" + json + "' > '" + btConfigPath + "'"]
+        btSaveProc.running = true
+    }
+
+    onNightlightEnabledChanged: {
+        var json = JSON.stringify({ enabled: nightlightEnabled })
+        nightlightSaveProc.command = ["sh", "-c", "mkdir -p '" + StandardPaths.writableLocation(StandardPaths.ConfigLocation).toString().replace(/^file:\/\//, "") + "/Anarchy-Bar' && printf '%s' '" + json + "' > '" + nightlightConfigPath + "'"]
+        nightlightSaveProc.running = true
+        if (nightlightEnabled) {
+            nightlightToggleProc.command = ["nohup", "setsid", "bash", "-c", "hyprsunset -t 4000 </dev/null >/dev/null 2>&1"]
+            nightlightToggleProc.running = true
+        } else {
+            nightlightStopProc.command = ["pkill", "hyprsunset"]
+            nightlightStopProc.running = true
+        }
+    }
+
+    Process {
+        id: nightlightSaveProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: nightlightToggleProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: nightlightStopProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btSaveProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    FileView {
+        id: btConfigView
+        path: settingsWindow.btConfigPath
+        watchChanges: false
+        onLoaded: {
+            try {
+                var data = JSON.parse(btConfigView.text())
+                if (data && data.enabled !== undefined) {
+                    settingsWindow.btEnabled = data.enabled
+                }
+            } catch (e) {}
+        }
+    }
+
+    // Bluetooth processes
+    Process {
+        id: btPowerProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btScanProc
+        running: false
+        stdout: SplitParser {
+            onRead: line => {
+                var lineStr = line.trim()
+                if (lineStr.indexOf("NEW") === 0) {
+                    var parts = lineStr.split(" ")
+                    if (parts.length >= 2) {
+                        var mac = parts[1]
+                        var name = parts.slice(2).join(" ")
+                        var exists = false
+                        for (var i = 0; i < settingsWindow.btDiscoveredDevices.length; i++) {
+                            if (settingsWindow.btDiscoveredDevices[i].mac === mac) { exists = true; break }
+                        }
+                        if (!exists && name.length > 0) {
+                            var arr = settingsWindow.btDiscoveredDevices.slice()
+                            arr.push({ name: name, mac: mac })
+                            settingsWindow.btDiscoveredDevices = arr
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Process {
+        id: btPairProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btConnectProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btDisconnectProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btRemoveAllProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
+
+    Process {
+        id: btInfoProc
+        running: false
+        command: ["sh", "-c", "bluetoothctl devices 2>/dev/null"]
+        stdout: StdioCollector {
+            id: btInfoStdio
+            onStreamFinished: {
+                var lines = btInfoStdio.text.trim().split("\n")
+                var result = []
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim()
+                    if (line.indexOf("Device") === 0) {
+                        var parts = line.split(" ")
+                        if (parts.length >= 3) {
+                            var mac = parts[1]
+                            var name = parts.slice(2).join(" ")
+                            result.push({ name: name, mac: mac, connected: false })
+                        }
+                    }
+                }
+                settingsWindow.btPairedDevices = result
+                settingsWindow.checkConnected()
+            }
+        }
+    }
+
+    Process {
+        id: btConnectedProc
+        running: false
+        command: ["sh", "-c", "bluetoothctl info 2>/dev/null | grep 'Connected: yes' | awk '{print $2}'"]
+        stdout: StdioCollector {
+            id: btConnectedStdio
+            onStreamFinished: {
+                var lines = btConnectedStdio.text.trim().split("\n")
+                var connected = []
+                for (var i = 0; i < lines.length; i++) {
+                    var mac = lines[i].trim()
+                    if (mac.length > 0) connected.push(mac)
+                }
+                var devices = settingsWindow.btPairedDevices.slice()
+                for (var j = 0; j < devices.length; j++) {
+                    devices[j].connected = connected.indexOf(devices[j].mac) !== -1
+                }
+                settingsWindow.btPairedDevices = devices
+            }
+        }
+    }
+
+    function toggleBluetooth() {
+        if (btEnabled) {
+            btPowerProc.command = ["bluetoothctl", "power", "off"]
+            btPowerProc.running = true
+            btEnabled = false
+        } else {
+            btPowerProc.command = ["bluetoothctl", "power", "on"]
+            btPowerProc.running = true
+            btEnabled = true
+            refreshTimer.restart()
+        }
+    }
+
+    function scanBluetooth() {
+        btScanning = true
+        btDiscoveredDevices = []
+        btScanProc.command = ["bluetoothctl", "scan", "on"]
+        btScanProc.running = true
+        scanStopTimer.restart()
+    }
+
+    function pairDevice(mac) {
+        btPairProc.command = ["bluetoothctl", "pair", mac]
+        btPairProc.running = true
+        refreshTimer.restart()
+    }
+
+    function connectDevice(mac) {
+        btConnectProc.command = ["bluetoothctl", "connect", mac]
+        btConnectProc.running = true
+        refreshTimer.restart()
+    }
+
+    function disconnectDevice(mac) {
+        btDisconnectProc.command = ["bluetoothctl", "disconnect", mac]
+        btDisconnectProc.running = true
+        refreshTimer.restart()
+    }
+
+    function removeAllPaired() {
+        for (var i = 0; i < btPairedDevices.length; i++) {
+            btRemoveAllProc.command = ["bluetoothctl", "remove", btPairedDevices[i].mac]
+            btRemoveAllProc.running = true
+        }
+        refreshTimer.restart()
+    }
+
+    function checkConnected() {
+        btConnectedProc.running = true
+    }
+
+    function refreshBluetooth() {
+        btInfoProc.running = true
+    }
+
+    Timer {
+        id: refreshTimer
+        interval: 2000
+        onTriggered: refreshBluetooth()
+    }
+
+    Timer {
+        id: scanStopTimer
+        interval: 10000
+        onTriggered: {
+            btScanProc.command = ["bluetoothctl", "scan", "off"]
+            btScanProc.running = true
+            btScanning = false
+        }
+    }
+
+    Component.onCompleted: {
+        loadThemes()
+        nightlightFileView.reload()
+        btConfigView.reload()
+        refreshBluetooth()
+        detectDdcutil()
+    }
+
+    Process {
+        id: ddcutilDetectProc
+        running: false
+        command: ["sh", "-c", "ddcutil detect 2>/dev/null | awk '/^Display/{print $2}'"]
+        stdout: StdioCollector {
+            id: ddcutilDetectStdio
+            onStreamFinished: {
+                var lines = ddcutilDetectStdio.text.trim().split("\n")
+                var result = []
+                for (var i = 0; i < lines.length; i++) {
+                    var d = lines[i].trim()
+                    if (d.length > 0) result.push(d)
+                }
+                settingsWindow.ddcutilMonitors = result
+                settingsWindow.ddcutilAvailable = result.length > 0
+            }
+        }
+    }
+
+    Process {
+        id: ddcutilBrightnessProc
+        running: false
+        stdout: StdioCollector {
+            id: ddcutilBrightnessStdio
+            onStreamFinished: {
+                var text = ddcutilBrightnessStdio.text.trim()
+                var match = text.match(/当前值\s*=\s*(\d+)/)
+                if (!match) match = text.match(/current value\s*=\s*(\d+)/i)
+                if (!match) match = text.match(/(\d+)\s*\(/)
+                if (match) settingsWindow.brightness = parseInt(match[1])
+            }
+        }
+    }
+
+    Process {
+        id: ddcutilSetProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
 
     Process {
         id: themeScanProc
@@ -62,7 +360,42 @@ PanelWindow {
         themeScanProc.running = true
     }
 
-    Component.onCompleted: loadThemes()
+    function detectDdcutil() {
+        ddcutilDetectProc.running = true
+    }
+
+    function getBrightness(monitor) {
+        ddcutilBrightnessProc.command = ["ddcutil", "getvcp", "10", "-d", monitor]
+        ddcutilBrightnessProc.running = true
+    }
+
+    function setBrightness(value) {
+        settingsWindow.brightness = value
+        var monitors = []
+        if (settingsWindow.brightnessTarget === "all") {
+            monitors = settingsWindow.ddcutilMonitors
+        } else if (settingsWindow.brightnessTarget === "specific") {
+            monitors = settingsWindow.selectedMonitors
+        }
+        for (var i = 0; i < monitors.length; i++) {
+            ddcutilSetProc.command = ["ddcutil", "setvcp", "10", value.toString(), "-d", monitors[i]]
+            ddcutilSetProc.running = true
+        }
+    }
+
+    FileView {
+        id: nightlightFileView
+        path: settingsWindow.nightlightConfigPath
+        watchChanges: false
+        onLoaded: {
+            try {
+                var data = JSON.parse(nightlightFileView.text())
+                if (data && data.enabled !== undefined) {
+                    settingsWindow.nightlightEnabled = data.enabled
+                }
+            } catch (e) {}
+        }
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -230,6 +563,65 @@ PanelWindow {
                         }
                     }
 
+                    Rectangle {
+                        id: screenTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 3 ? theme.color1 : (screenTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                        RowLayout {
+                            id: screenTabContent
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+
+                            Text {
+                                text: "Screen Settings"
+                                font.pixelSize: 13
+                                color: settingsWindow.currentTab === 3 ? theme.background : theme.foreground
+                            }
+                        }
+
+                        MouseArea {
+                            id: screenTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 3
+                        }
+                    }
+
+                    Rectangle {
+                        id: bluetoothTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 4 ? theme.color6 : (bluetoothTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+
+                        RowLayout {
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 12
+
+                            Text {
+                                text: "Bluetooth Settings"
+                                font.pixelSize: 13
+                                color: settingsWindow.currentTab === 4 ? theme.background : theme.foreground
+                            }
+                        }
+
+                        MouseArea {
+                            id: bluetoothTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 4
+                        }
+                    }
+
                     Item { Layout.fillHeight: true }
 
                     Text {
@@ -257,14 +649,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : "Themes")
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Themes" : "Screen Settings"))
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : "Browse and apply themes.")
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Browse and apply themes." : "Night light and display options."))
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -558,7 +950,7 @@ PanelWindow {
                             spacing: 10
 
                             Repeater {
-                                model: ["numbers", "dots"]
+                                model: ["numbers", "arabic", "dots", "pacman"]
 
                                 Rectangle {
                                     Layout.fillWidth: true
@@ -570,7 +962,7 @@ PanelWindow {
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: modelData === "numbers" ? "Numbers" : (modelData === "dots" ? "Dots" : "Squares")
+                                        text: modelData === "numbers" ? "Numbers" : (modelData === "arabic" ? "Arabic" : (modelData === "dots" ? "Dots" : "Pacman"))
                                         font.pixelSize: 13
                                         color: root.workspaceIndicatorStyle === modelData ? theme.background : theme.foreground
                                     }
@@ -855,19 +1247,556 @@ PanelWindow {
                             }
                         }
                     }
+
+                    Flickable {
+                        id: screenSettingsScroll
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 3
+                        Layout.preferredHeight: settingsWindow.currentTab === 3 ? -1 : 0
+                        visible: settingsWindow.currentTab === 3
+                        clip: true
+                        contentWidth: width
+                        contentHeight: screenSettingsContent.implicitHeight
+
+                        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                        ColumnLayout {
+                            id: screenSettingsContent
+                            width: screenSettingsScroll.width
+                            spacing: 20
+
+                            Text {
+                                text: "Display"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: theme.foreground
+                            }
+
+                            Text {
+                                text: "Configure night light and screen color temperature."
+                                font.pixelSize: 12
+                                color: theme.muted
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.topMargin: 12
+
+                                Column {
+                                    Layout.fillWidth: true
+                                    spacing: 2
+
+                                    Text {
+                                        text: "Night Light"
+                                        font.pixelSize: 13
+                                        color: theme.foreground
+                                    }
+
+                                    Text {
+                                        text: "Reduce blue light for better sleep"
+                                        font.pixelSize: 10
+                                        color: theme.muted
+                                    }
+                                }
+
+                                Item { Layout.fillWidth: true }
+
+                                Rectangle {
+                                    width: 44
+                                    height: 24
+                                    radius: 12
+                                    color: settingsWindow.nightlightEnabled ? theme.color2 : Qt.darker(theme.muted, 1.2)
+                                    border { width: 1; color: settingsWindow.nightlightEnabled ? theme.color2 : theme.muted }
+
+                                    Rectangle {
+                                        x: settingsWindow.nightlightEnabled ? parent.width - width - 2 : 2
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 20
+                                        height: 20
+                                        radius: 10
+                                        color: theme.foreground
+                                        Behavior on x { NumberAnimation { duration: 120 } }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: settingsWindow.nightlightEnabled = !settingsWindow.nightlightEnabled
+                                    }
+                                }
+                            }
+
+                            // Brightness
+                            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: theme.muted; opacity: 0.3; Layout.topMargin: 12; Layout.bottomMargin: 8 }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true; spacing: 6
+                                visible: settingsWindow.ddcutilAvailable
+
+                                Text { text: "Brightness"; font.pixelSize: 14; font.bold: true; color: theme.foreground }
+                                Text { text: "Control monitor brightness via DDC/CI"; font.pixelSize: 12; color: theme.muted }
+
+                                SettingSlider {
+                                    Layout.fillWidth: true
+                                    label: ""
+                                    valueText: settingsWindow.brightness + "%"
+                                    minimumText: "0%"
+                                    maximumText: "100%"
+                                    from: 0; to: 100; stepSize: 1
+                                    value: settingsWindow.brightness
+                                    onMoved: settingsWindow.setBrightness(Math.round(value))
+                                }
+                            }
+
+                            Text {
+                                visible: !settingsWindow.ddcutilAvailable
+                                text: "ddcutil not detected. Install ddcutil for brightness control."
+                                font.pixelSize: 12; color: theme.muted
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true; spacing: 8
+                                visible: settingsWindow.ddcutilAvailable
+
+                                Text { text: "Apply to"; font.pixelSize: 13; font.bold: true; color: theme.foreground }
+
+                                RowLayout {
+                                    Layout.fillWidth: true; spacing: 8
+
+                                    Repeater {
+                                        model: ["all", "specific"]
+
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 36
+                                            radius: root.barRadius
+                                            property bool selected: settingsWindow.brightnessTarget === modelData
+                                            color: selected ? theme.color4 : (tgtHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                            border.color: selected ? theme.color4 : theme.muted
+                                            border.width: root.moduleBorderThickness
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: modelData === "all" ? "All Monitors" : "Specific Monitors"
+                                                font.pixelSize: 13
+                                                color: parent.selected ? theme.background : theme.foreground
+                                            }
+
+                                            MouseArea {
+                                                id: tgtHover
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: settingsWindow.brightnessTarget = modelData
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true; spacing: 6
+                                visible: settingsWindow.ddcutilAvailable && settingsWindow.brightnessTarget === "specific"
+
+                                Text { text: "Monitors"; font.pixelSize: 13; font.bold: true; color: theme.foreground }
+
+                                Repeater {
+                                    model: settingsWindow.ddcutilMonitors
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 34
+                                        radius: root.barRadius
+                                        property bool isSelected: settingsWindow.selectedMonitors.indexOf(modelData) !== -1
+                                        color: monHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+
+                                        RowLayout {
+                                            anchors.fill: parent; anchors.leftMargin: 12; anchors.rightMargin: 12
+
+                                            Rectangle {
+                                                Layout.preferredWidth: 18; Layout.preferredHeight: 18; radius: 4
+                                                border.color: theme.muted; border.width: 1
+                                                color: isSelected ? theme.color5 : "transparent"
+                                                Text {
+                                                    anchors.centerIn: parent; text: "✓"; color: theme.background; font.pixelSize: 12; font.bold: true; visible: isSelected
+                                                }
+                                            }
+
+                                            Text { text: "Display " + modelData; font.pixelSize: 12; color: theme.foreground }
+                                        }
+
+                                        MouseArea {
+                                            id: monHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                var arr = settingsWindow.selectedMonitors.slice()
+                                                var idx = arr.indexOf(modelData)
+                                                if (idx !== -1) arr.splice(idx, 1)
+                                                else arr.push(modelData)
+                                                settingsWindow.selectedMonitors = arr
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Bluetooth Settings
+                    Flickable {
+                        id: bluetoothSettingsScroll
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 4
+                        Layout.preferredHeight: settingsWindow.currentTab === 4 ? -1 : 0
+                        visible: settingsWindow.currentTab === 4
+                        clip: true
+                        contentWidth: width
+                        contentHeight: bluetoothSettingsContent.implicitHeight
+
+                        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                        ColumnLayout {
+                            id: bluetoothSettingsContent
+                            width: bluetoothSettingsScroll.width
+                            spacing: 16
+
+                            Text {
+                                text: "Bluetooth"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: theme.foreground
+                            }
+
+                            Text {
+                                text: "Manage Bluetooth devices and connections."
+                                font.pixelSize: 12
+                                color: theme.muted
+                            }
+
+                            // Bluetooth Power Toggle
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.topMargin: 12
+
+                                Column {
+                                    Layout.fillWidth: true
+                                    spacing: 2
+
+                                    Text {
+                                        text: "Bluetooth"
+                                        font.pixelSize: 13
+                                        color: theme.foreground
+                                    }
+
+                                    Text {
+                                        text: settingsWindow.btEnabled ? "Enabled" : "Disabled"
+                                        font.pixelSize: 10
+                                        color: theme.muted
+                                    }
+                                }
+
+                                Item { Layout.fillWidth: true }
+
+                                Rectangle {
+                                    width: 44
+                                    height: 24
+                                    radius: 12
+                                    color: settingsWindow.btEnabled ? theme.color6 : Qt.darker(theme.muted, 1.2)
+                                    border { width: 1; color: settingsWindow.btEnabled ? theme.color6 : theme.muted }
+
+                                    Rectangle {
+                                        x: settingsWindow.btEnabled ? parent.width - width - 2 : 2
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 20
+                                        height: 20
+                                        radius: 10
+                                        color: theme.foreground
+                                        Behavior on x { NumberAnimation { duration: 120 } }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: settingsWindow.toggleBluetooth()
+                                    }
+                                }
+                            }
+
+                            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: theme.muted; opacity: 0.3; Layout.topMargin: 12; Layout.bottomMargin: 8 }
+
+                            // Scan button
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                radius: root.barRadius
+                                color: btScanHover.containsMouse ? Qt.darker(theme.color6, 1.3) : theme.color6
+                                visible: settingsWindow.btEnabled
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: settingsWindow.btScanning ? "Scanning..." : "Scan for Devices"
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: theme.background
+                                }
+
+                                MouseArea {
+                                    id: btScanHover
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: settingsWindow.scanBluetooth()
+                                }
+                            }
+
+                            // Paired Devices
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+                                visible: settingsWindow.btEnabled
+
+                                Text {
+                                    text: "Paired Devices"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: theme.foreground
+                                }
+
+                                Repeater {
+                                    model: settingsWindow.btPairedDevices
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 50
+                                        radius: root.barRadius
+                                        color: btDeviceHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+                                        border.color: theme.muted; border.width: root.moduleBorderThickness
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 12
+                                            anchors.rightMargin: 12
+                                            spacing: 10
+
+                                            Rectangle {
+                                                width: 32; height: 32; radius: 16
+                                                color: Qt.darker(theme.background, 1.5)
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "\u{F0379}"
+                                                    font.pixelSize: 16
+                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    color: theme.color6
+                                                }
+                                            }
+
+                                            ColumnLayout {
+                                                Layout.fillWidth: true
+                                                spacing: 1
+
+                                                Text {
+                                                    text: modelData.name
+                                                    font.pixelSize: 12
+                                                    font.bold: true
+                                                    color: theme.foreground
+                                                    elide: Text.ElideRight
+                                                }
+
+                                                Text {
+                                                    text: modelData.connected ? "Connected" : "Paired"
+                                                    font.pixelSize: 10
+                                                    color: modelData.connected ? theme.color2 : theme.muted
+                                                }
+                                            }
+
+                                            Rectangle {
+                                                Layout.preferredWidth: 70
+                                                Layout.preferredHeight: 28
+                                                radius: root.barRadius
+                                                color: btDisconnectHover.containsMouse ? Qt.darker(theme.color1, 1.3) : "transparent"
+                                                border.color: theme.color1
+                                                border.width: root.moduleBorderThickness
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: modelData.connected ? "Disconnect" : "Connect"
+                                                    font.pixelSize: 10
+                                                    font.bold: true
+                                                    color: theme.color1
+                                                }
+
+                                                MouseArea {
+                                                    id: btDisconnectHover
+                                                    anchors.fill: parent
+                                                    hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: {
+                                                        if (modelData.connected)
+                                                            settingsWindow.disconnectDevice(modelData.mac)
+                                                        else
+                                                            settingsWindow.connectDevice(modelData.mac)
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: btDeviceHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (modelData.connected)
+                                                    settingsWindow.disconnectDevice(modelData.mac)
+                                                else
+                                                    settingsWindow.connectDevice(modelData.mac)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Text {
+                                    visible: settingsWindow.btPairedDevices.length === 0
+                                    text: "No paired devices"
+                                    font.pixelSize: 12
+                                    color: theme.muted
+                                }
+                            }
+
+                            // Discovered Devices
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+                                visible: settingsWindow.btEnabled && settingsWindow.btDiscoveredDevices.length > 0
+
+                                Text {
+                                    text: "Available Devices"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: theme.foreground
+                                }
+
+                                Repeater {
+                                    model: settingsWindow.btDiscoveredDevices
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 50
+                                        radius: root.barRadius
+                                        color: btDiscoverHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"
+                                        border.color: theme.muted; border.width: root.moduleBorderThickness
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 12
+                                            anchors.rightMargin: 12
+                                            spacing: 10
+
+                                            Rectangle {
+                                                width: 32; height: 32; radius: 16
+                                                color: Qt.darker(theme.background, 1.5)
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "\u{F1286}"
+                                                    font.pixelSize: 16
+                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    color: theme.color6
+                                                }
+                                            }
+
+                                            ColumnLayout {
+                                                Layout.fillWidth: true
+                                                spacing: 1
+
+                                                Text {
+                                                    text: modelData.name
+                                                    font.pixelSize: 12
+                                                    font.bold: true
+                                                    color: theme.foreground
+                                                    elide: Text.ElideRight
+                                                }
+
+                                                Text {
+                                                    text: modelData.mac
+                                                    font.pixelSize: 10
+                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    color: theme.muted
+                                                }
+                                            }
+
+                                            Rectangle {
+                                                Layout.preferredWidth: 70
+                                                Layout.preferredHeight: 28
+                                                radius: root.barRadius
+                                                color: btPairHover.containsMouse ? Qt.darker(theme.color6, 1.3) : "transparent"
+                                                border.color: theme.color6
+                                                border.width: root.moduleBorderThickness
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "Pair"
+                                                    font.pixelSize: 10
+                                                    font.bold: true
+                                                    color: theme.color6
+                                                }
+
+                                                MouseArea {
+                                                    id: btPairHover
+                                                    anchors.fill: parent
+                                                    hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: settingsWindow.pairDevice(modelData.mac)
+                                                }
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: btDiscoverHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: settingsWindow.pairDevice(modelData.mac)
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Remove paired button
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                radius: root.barRadius
+                                color: btRemoveHover.containsMouse ? Qt.darker(theme.color1, 1.3) : "transparent"
+                                border.color: theme.color1
+                                border.width: root.moduleBorderThickness
+                                visible: settingsWindow.btEnabled && settingsWindow.btPairedDevices.length > 0
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "Remove All Paired Devices"
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: theme.color1
+                                }
+
+                                MouseArea {
+                                    id: btRemoveHover
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: settingsWindow.removeAllPaired()
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
-
-        Rectangle {
-            anchors.fill: parent
-            radius: root.barRadius
-            color: "transparent"
-            border.color: theme.muted
-            border.width: root.popupBorderThickness
-            z: 10
-        }
-    }
 
     Item {
         anchors.fill: parent
@@ -886,6 +1815,17 @@ PanelWindow {
         property real stepSize: 1
         property real value: 0
         signal moved(real value)
+
+        readonly property color accentColor: {
+            switch (settingsWindow.currentTab) {
+                case 0: return theme.color4
+                case 1: return theme.color5
+                case 2: return theme.color2
+                case 3: return theme.color1
+                case 4: return theme.color6
+                default: return theme.color4
+            }
+        }
 
         Layout.fillWidth: true
         spacing: 7
@@ -922,7 +1862,7 @@ PanelWindow {
                         width: slider.visualPosition * parent.width
                         height: parent.height
                         radius: 2
-                        color: theme.color5
+                        color: sliderRoot.accentColor
                     }
                 }
 
@@ -932,7 +1872,7 @@ PanelWindow {
                     implicitWidth: 16
                     implicitHeight: 16
                     radius: 8
-                    color: slider.pressed ? Qt.lighter(theme.color5, 1.2) : theme.color5
+                    color: slider.pressed ? Qt.lighter(sliderRoot.accentColor, 1.2) : sliderRoot.accentColor
                     border.color: theme.background
                     border.width: 2
                 }
@@ -941,4 +1881,5 @@ PanelWindow {
             Text { text: sliderRoot.maximumText; font.pixelSize: 10; color: theme.muted }
         }
     }
+}
 }

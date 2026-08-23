@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 PanelWindow {
@@ -11,6 +12,12 @@ PanelWindow {
     screen: powerMenu.targetScreen
 
     anchors { top: true; bottom: true; left: true; right: true }
+
+    Process {
+        id: cmdProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+    }
 
     color: "transparent"
     focusable: salaatPopup.isOpen
@@ -55,7 +62,7 @@ PanelWindow {
             RowLayout {
                 Layout.fillWidth: true; spacing: 10; Layout.bottomMargin: 4
 
-                Text { text: "\u{F057D}"; font.pixelSize: 22; font.family: "JetBrainsMono Nerd Font"; color: theme.color3 }
+                Text { text: "\u{EEDA}"; font.pixelSize: 22; font.family: "JetBrainsMono Nerd Font"; color: theme.color3 }
 
                 Text { text: "Prayer Times"; font.pixelSize: 16; font.bold: true; color: theme.foreground; Layout.fillWidth: true }
             }
@@ -102,7 +109,7 @@ PanelWindow {
 
                     MouseArea {
                         id: quranBtnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                        onClicked: { salaatPopup.close(); cmdProc.command = ["sh", "-c", "xdg-open https://www.quranwbw.com"]; cmdProc.running = true }
+                        onClicked: { salaatPopup.close(); cmdProc.command = ["chromium", "--app=https://www.quranwbw.com", "--class=quran"]; cmdProc.running = true }
                     }
                 }
 
@@ -115,7 +122,7 @@ PanelWindow {
 
                     MouseArea {
                         id: sunnahBtnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                        onClicked: { salaatPopup.close(); cmdProc.command = ["sh", "-c", "xdg-open https://www.sunnah.com"]; cmdProc.running = true }
+                        onClicked: { salaatPopup.close(); cmdProc.command = ["chromium", "--app=https://www.sunnah.com", "--class=sunnah"]; cmdProc.running = true }
                     }
                 }
             }

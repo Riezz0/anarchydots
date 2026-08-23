@@ -1,6 +1,8 @@
 Theme 1.0 Theme.qml
 ArchLogo 1.0 ArchLogo.qml
 Workspaces 1.0 Workspaces.qml
+Volume 1.0 Volume.qml
+VolumeOSD 1.0 VolumeOSD.qml
 Clock 1.0 Clock.qml
 CalendarPopup 1.0 CalendarPopup.qml
 SettingsPopup 1.0 SettingsPopup.qml

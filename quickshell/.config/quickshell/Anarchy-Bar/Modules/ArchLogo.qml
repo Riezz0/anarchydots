@@ -1,48 +1,28 @@
 import QtQuick
-import QtCore
 import Quickshell
-import Quickshell.Io
 
 Rectangle {
     id: logoContainer
 
-    readonly property string logoPath:
-        StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/Anarchy-Bar/Assets/arch.png"
-
-    readonly property string logoUrl:
-        logoPath.startsWith("file://") ? logoPath : "file://" + logoPath
-
-    property int _reloadKey: 0
-
     width: 40
     height: 40
     radius: root.barRadius
-    color: "transparent"
+    color: logoHover.containsMouse ? theme.color2 : "transparent"
 
-    Image {
+    Text {
         anchors.centerIn: parent
-        source: logoContainer.logoUrl + "?v=" + logoContainer._reloadKey
-        cache: false
-        fillMode: Image.PreserveAspectFit
-        smooth: true
-        mipmap: true
-        width: 30
-        height: 30
+        text: "\u{F08C7}"
+        font.pixelSize: 30
+        font.family: "JetBrainsMono Nerd Font"
+        color: logoHover.containsMouse ? theme.background : theme.color2
+        Behavior on color { ColorAnimation { duration: 150 } }
     }
 
     MouseArea {
+        id: logoHover
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: settingsPopup.isOpen ? settingsPopup.close() : settingsPopup.open()
-    }
-
-    function reload() {
-        _reloadKey++
-    }
-
-    FileView {
-        path: logoContainer.logoPath
-        watchChanges: true
-        onFileChanged: logoContainer.reload()
     }
 }

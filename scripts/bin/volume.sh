@@ -32,18 +32,6 @@ get_icon() {
   fi
 }
 
-notify() {
-  local vol=$(get_volume)
-  local icon=$(get_icon "$vol")
-
-  notify-send \
-    -h string:x-canonical-private-synchronous:volume \
-    -h int:value:"$vol" \
-    -i "$icon" \
-    "Volume" \
-    "$vol%"
-}
-
 case "$1" in
   up)
     wpctl set-volume "$SINK" "${STEP}%+"

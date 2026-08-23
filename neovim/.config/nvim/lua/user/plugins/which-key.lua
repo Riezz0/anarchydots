@@ -25,6 +25,10 @@ return {
       { "<leader>f", group = "Find" },
       { "<leader>n", group = "No" },
       { "<leader>c", group = "Color" },
+      { "<leader>m", group = "Markdown" },
+      { "<leader>mp", "<cmd>MarkdownPreview<cr>", desc = "Preview" },
+      { "<leader>ms", "<cmd>MarkdownPreviewStop<cr>", desc = "Stop Preview" },
+      { "<leader>mt", "<cmd>MarkdownPreviewToggle<cr>", desc = "Toggle Preview" },
     })
   end,
 }

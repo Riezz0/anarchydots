@@ -1,0 +1,11 @@
+Your API Key
+
+Store this safely. It cannot be recovered.
+API Key
+umh_11659067db985b9d39d4ad88da306f8eb6e12909
+How to use:
+As a query param: ?apikey=YOUR_KEY
+Or as a header: X-API-Key: YOUR_KEY
+
+Example:
+GET /api/prayer-times?lat=40&lng=-74&apikey=YOUR_KEY 
