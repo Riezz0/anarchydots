@@ -3,7 +3,7 @@ local theme = require("modules.colors")
 
 hl.config({
     general = {gaps_in = 10,gaps_out = 10,border_size = 0,
-        col = { active_border = { colors = { theme.color7, theme.color7 }, angle = 45 }, inactive_border = theme.color15 },
+        col = { active_border = { colors = { theme.color2, theme.color2 }, angle = 45 }, inactive_border = theme.color15 },
     resize_on_border = true, allow_tearing = false, },
     decoration = {rounding = 10,
 rounding_power = 10,

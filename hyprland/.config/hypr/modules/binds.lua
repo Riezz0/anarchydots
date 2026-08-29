@@ -17,6 +17,7 @@ hl.bind("SUPER + G", hl.dsp.exec_cmd("flatpak run org.libretro.RetroArch"),     
 hl.bind("SUPER + B", hl.dsp.exec_cmd("firefox"),                                                                            { description = "Firefox" })
 hl.bind("SUPER + H", hl.dsp.exec_cmd("hyprpicker -a"),                                                                      { description = "Color Picker" })
 hl.bind("SUPER + P", hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | swappy -f -"),                                               { description = "Screenshot" })
+hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("/usr/local/bin/yt-dlp-gui.py"),                                               { description = "YTDL" })
 
 -- Window Management
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),                                                                          { description = "Move Window" })
@@ -52,9 +53,9 @@ hl.bind(mainMod .. " + SHIFT + 9", hl.dsp.window.move({ workspace = 9 }),       
 hl.bind(mainMod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = 10 }),                                                  { description = "Move to Workspace 10" })
 
 -- Volume Control
-hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("/usr/local/bin/volume.sh up"),                                                 { description = "Volume Up" })
-hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("/usr/local/bin/volume.sh down"),                                               { description = "Volume Down" })
-hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("/usr/local/bin/volume.sh mute"),                                           { description = "Volume Mute" })
+hl.bind("SUPER + EQUAL", hl.dsp.exec_cmd("/usr/local/bin/volume.sh up"),                                                    { description = "Volume Up" })
+hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("/usr/local/bin/volume.sh down"),                                                  { description = "Volume Down" })
+hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("/usr/local/bin/volume.sh mute"),                                              { description = "Volume Mute" })
 
 -- Testing
 hl.bind("ALT + W", hl.dsp.exec_cmd("/usr/local/bin/waybar.sh"),                                                             { description = "Waybar Testing" })

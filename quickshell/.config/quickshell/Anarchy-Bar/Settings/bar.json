@@ -6,7 +6,7 @@
   "moduleBorderThickness": 0,
   "popupOpacity": 1,
   "popupBorderThickness": 0,
-  "workspaceIndicatorStyle": "pacman",
+  "workspaceIndicatorStyle": "dots",
   "hyprlandBorderThickness": 0,
   "hyprlandActiveOpacity": 0.85,
   "hyprlandInactiveOpacity": 0.85,
@@ -20,5 +20,7 @@
   "hyprlandGapOut": 10,
   "barMonitors": [
     "DP-2"
-  ]
+  ],
+  "rofiBorderRadius": 10,
+  "rofiBorderThickness": 0
 }

@@ -29,6 +29,8 @@ ShellRoot {
     property int hyprlandGapIn: 10
     property int hyprlandGapOut: 10
     property var barMonitors: []
+    property int rofiBorderRadius: 5
+    property int rofiBorderThickness: 2
     property bool isLoadingSettings: true
 
     readonly property string settingsPath:
@@ -64,7 +66,9 @@ ShellRoot {
             "hyprlandBlurVibrancy": hyprlandBlurVibrancy,
             "hyprlandGapIn": hyprlandGapIn,
             "hyprlandGapOut": hyprlandGapOut,
-            "barMonitors": barMonitors
+            "barMonitors": barMonitors,
+            "rofiBorderRadius": rofiBorderRadius,
+            "rofiBorderThickness": rofiBorderThickness
         }
         settingsFile.setText(JSON.stringify(data, null, 2))
     }
@@ -100,6 +104,8 @@ ShellRoot {
                     if (data.hyprlandGapIn !== undefined) root.hyprlandGapIn = data.hyprlandGapIn
                     if (data.hyprlandGapOut !== undefined) root.hyprlandGapOut = data.hyprlandGapOut
                     if (data.barMonitors !== undefined) root.barMonitors = data.barMonitors
+                    if (data.rofiBorderRadius !== undefined) root.rofiBorderRadius = data.rofiBorderRadius
+                    if (data.rofiBorderThickness !== undefined) root.rofiBorderThickness = data.rofiBorderThickness
                 } catch (e) {
                     console.warn("Anarchy-Bar: failed to parse settings:", e)
                 }
@@ -162,6 +168,14 @@ ShellRoot {
         hyprlandPatchTimer.restart()
     }
     onBarMonitorsChanged: saveSettings()
+    onRofiBorderRadiusChanged: {
+        saveSettings()
+        rofiPatchTimer.restart()
+    }
+    onRofiBorderThicknessChanged: {
+        saveSettings()
+        rofiPatchTimer.restart()
+    }
 
     function getMonitorName(monitor) {
         if (monitor && monitor.name) return monitor.name
@@ -308,6 +322,29 @@ ShellRoot {
                 "bash " + root.hyprlandPatchPath + " --sync-all " + value + " " + root.hyprlandActiveOpacity + " " + root.hyprlandInactiveOpacity + " " + root.hyprlandRounding + " " + root.hyprlandRoundingPower + " " + root.hyprlandBlurEnabled + " " + root.hyprlandBlurPasses + " " + root.hyprlandBlurSize + " " + root.hyprlandBlurVibrancy + " " + root.hyprlandGapIn + " " + root.hyprlandGapOut + "; hyprctl reload"
             borderFilesProc.command = ["bash", "-c", syncCommand]
             borderFilesProc.running = true
+        }
+    }
+
+    Process {
+        id: rofiPatchProc
+        running: false
+        stdout: SplitParser { onRead: line => {} }
+        stderr: SplitParser { onRead: line => {} }
+    }
+
+    Timer {
+        id: rofiPatchTimer
+        interval: 150
+        repeat: false
+        onTriggered: {
+            if (rofiPatchProc.running)
+                rofiPatchProc.running = false
+
+            var rofiDir = StandardPaths.writableLocation(StandardPaths.HomeLocation).toString().replace(/^file:\/\//, "") + "/.config/rofi/launcher"
+            var rofiPath = rofiDir + "/launcher.rasi"
+            var patchScript = rofiDir + "/patch-rofi.sh"
+            rofiPatchProc.command = ["bash", patchScript, rofiPath, root.rofiBorderRadius.toString(), root.rofiBorderThickness.toString()]
+            rofiPatchProc.running = true
         }
     }
 

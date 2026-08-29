@@ -23,8 +23,8 @@ window {
     enabled:                     true;
     margin:                      0px;
     padding:                     0px;
-    border:                      2px solid;
-    border-radius:               5px;
+    border: 0px solid;
+    border-radius: 10px;
     border-color:                @border;
     background-color:            @bg;
     cursor:                      "default";
@@ -36,8 +36,8 @@ mainbox {
     spacing:                     10px;
     margin:                      0px;
     padding:                     20px;
-    border:                      0px solid;
-    border-radius:               5px 5px 5px 5px;
+    border: 0px solid;
+    border-radius: 10px 10px 10px 10px;
     border-color:                @bg;
     background-color:            @bg;
     children:                    [ "inputbar", "listview" ];
@@ -49,8 +49,8 @@ inputbar {
     spacing:                     10px;
     margin:                      0px;
     padding:                     15px;
-    border:                      2px solid;
-    border-radius:               5px;
+    border: 2px solid;
+    border-radius: 10px;
     border-color:                @bg;
     background-color:            @border;
     text-color:                  @bg;
@@ -94,8 +94,8 @@ listview {
     spacing:                     5px;
     margin:                      0px;
     padding:                     0px;
-    border:                      0px solid;
-    border-radius:               5px;
+    border: 0px solid;
+    border-radius: 10px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;
@@ -104,7 +104,7 @@ listview {
 scrollbar {
     handle-width:                5px ;
     handle-color:                @selected;
-    border-radius:               5px;
+    border-radius: 10px;
     background-color:            @selected;
 }
 
@@ -114,8 +114,8 @@ element {
     spacing:                     10px;
     margin:                      0px;
     padding:                     5px;
-    border:                      0px solid;
-    border-radius:               5px;
+    border: 0px solid;
+    border-radius: 10px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;
@@ -147,8 +147,8 @@ element-text {
 /*****----- Message -----*****/
 error-message {
     padding:                     15px;
-    border:                      2px solid;
-    border-radius:               5px;
+    border: 2px solid;
+    border-radius: 10px;
     border-color:                @border;
     background-color:            @bg;
     text-color:                  @fg;

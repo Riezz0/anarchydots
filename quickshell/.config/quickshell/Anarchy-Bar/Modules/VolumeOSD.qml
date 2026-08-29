@@ -19,6 +19,7 @@ PanelWindow {
 
     color: "transparent"
     focusable: false
+    exclusiveZone: -1
 
     WlrLayershell.layer: WlrLayer.Overlay
 

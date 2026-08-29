@@ -98,7 +98,12 @@ hl.window_rule({ name = "anarchywelrules", match = { class = "com.anarchy.welcom
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
--- Anarchy-Welcome
-hl.window_rule({ name = "updater", match = { title = "arch-update" },
+-- YouTube Downloader
+hl.window_rule({ name = "ytdl", match = { class = "com.github.yt-dlp-gui" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })
+
+-- MPV
+hl.window_rule({ name = "mpvrules", match = { class = "mpv" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
