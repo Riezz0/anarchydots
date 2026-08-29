@@ -55,7 +55,7 @@ Item {
     }
 
     function launchUpdate() {
-        updateProc.command = [terminal, "-e", "arch-update"]
+        updateProc.command = [terminal, "--app-id", "arch-update", "-e", "arch-update"]
         updateProc.running = true
     }
 

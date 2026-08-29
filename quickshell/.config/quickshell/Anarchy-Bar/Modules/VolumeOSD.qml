@@ -13,8 +13,8 @@ PanelWindow {
     property int osdVolume: 0
     property bool osdMuted: false
 
-    width: 60
-    height: 240
+    implicitWidth: 60
+    implicitHeight: 240
     anchors.right: true
 
     color: "transparent"

@@ -107,3 +107,8 @@ border_color = theme.color2 .. " " .. theme.color15 })
 hl.window_rule({ name = "mpvrules", match = { class = "mpv" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
+
+-- Arch-Update
+hl.window_rule({ name = "archuprules", match = { class = "arch-update" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })
