@@ -25,3 +25,4 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH=/home/riezzo/.opencode/bin:$PATH
 export PATH="$HOME/.npm-global/bin:$HOME/go/bin:$HOME/.local/bin:/usr/lib/qt6/bin:$PATH"
 
+export PATH=~/.npm-global/bin:$PATH
