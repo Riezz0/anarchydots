@@ -3,11 +3,12 @@
 	"logo": {
 		"source": "/home/$USER/.config/fastfetch/arch.png",
     "type": "kitty",
-    "width": 12,
+    "width": 13,
     "height": 5,
 		"padding": {
 			"top": 8,
-			"left": 2
+			"left": 3,
+      "right": 3,
 		}
 	},
 	"display": {
@@ -29,11 +30,6 @@
 			"type": "kernel",
 			"key": "├─",
 			"format": "{1} {2}",
-			"keyColor": "magenta"
-		},
-		{
-			"type": "packages",
-			"key": "├─󰮯",
 			"keyColor": "magenta"
 		},
 		{

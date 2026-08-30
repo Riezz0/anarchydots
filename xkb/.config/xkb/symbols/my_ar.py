@@ -2,7 +2,8 @@ import gi
 import json
 import os
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Pango
+
 
 class KeyboardLayoutApp(Gtk.Application):
     def __init__(self):
@@ -10,7 +11,6 @@ class KeyboardLayoutApp(Gtk.Application):
         self.colors = self.load_pywal_colors()
 
     def load_pywal_colors(self):
-        # Fallback colors
         colors = {
             "background": "#1a1b26", "foreground": "#a9b1d6",
             "color1": "#f7768e", "color2": "#9ece6a", "color4": "#7aa2f7"
@@ -30,10 +30,9 @@ class KeyboardLayoutApp(Gtk.Application):
 
     def do_activate(self):
         win = Gtk.ApplicationWindow(application=self, title="Arabic Phonetic Layout Viewer")
-        win.set_default_size(1050, 550)
+        win.set_default_size(1150, 580)
 
         main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-        # Fixed: Replaced set_margin_all with individual margin setters
         main_vbox.set_margin_top(25)
         main_vbox.set_margin_bottom(25)
         main_vbox.set_margin_start(25)
@@ -43,7 +42,6 @@ class KeyboardLayoutApp(Gtk.Application):
         kb_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         main_vbox.append(kb_vbox)
 
-        # Updated data mapping
         rows = [
             [("`", "ذ", "ّ"), ("1", "١", "!"), ("2", "٢", "@"), ("3", "٣", "#"), ("4", "٤", "$"), ("5", "٥", "%"), ("6", "٦", "^"), ("7", "٧", "&"), ("8", "٨", "*"), ("9", "٩", "("), ("0", "٠", ")"), ("-", "-", "_"), ("=", "=", "+"), ("\\", "ّ", "|")],
             [("Q", "ق", "ؤ"), ("W", "و", "ئ"), ("E", "ش", "÷"), ("R", "ر", "×"), ("T", "ت", "ط"), ("Y", "ي", "ى"), ("U", "ء", "ؤ"), ("I", "إ", "آ"), ("O", "ة", "أ"), ("P", "ا", "ٱ")],
@@ -58,11 +56,10 @@ class KeyboardLayoutApp(Gtk.Application):
                 hbox.append(self.create_key(eng, normal, shift))
             kb_vbox.append(hbox)
 
-        # Legend Section
         legend_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=30)
         legend_box.set_halign(Gtk.Align.CENTER)
         legend_box.set_margin_top(20)
-        
+
         legend_items = [
             (self.colors['color1'], "English Reference"),
             (self.colors['foreground'], "Arabic (Normal)"),
@@ -74,14 +71,14 @@ class KeyboardLayoutApp(Gtk.Application):
             dot = Gtk.Box()
             dot.set_size_request(12, 12)
             dot.add_css_class("legend-dot")
-            
+
             dot_provider = Gtk.CssProvider()
             dot_provider.load_from_data(f".legend-dot {{ background-color: {color}; border-radius: 6px; }}", -1)
             dot.get_style_context().add_provider(dot_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            
+
             label = Gtk.Label(label=text)
             label.add_css_class("legend-text")
-            
+
             item_hbox.append(dot)
             item_hbox.append(label)
             legend_box.append(item_hbox)
@@ -93,19 +90,19 @@ class KeyboardLayoutApp(Gtk.Application):
     def create_key(self, eng, normal, shift):
         overlay = Gtk.Fixed()
         overlay.add_css_class("key-tile")
-        overlay.set_size_request(65, 65)
+        overlay.set_size_request(72, 72)
 
         lbl_eng = Gtk.Label(label=eng)
         lbl_eng.add_css_class("eng-char")
-        overlay.put(lbl_eng, 8, 8)
-
-        lbl_shift = Gtk.Label(label=shift)
-        lbl_shift.add_css_class("shift-char")
-        overlay.put(lbl_shift, 42, 8)
+        overlay.put(lbl_eng, 6, 4)
 
         lbl_norm = Gtk.Label(label=normal)
         lbl_norm.add_css_class("normal-char")
-        overlay.put(lbl_norm, 32, 32)
+        overlay.put(lbl_norm, 24, 28)
+
+        lbl_shift = Gtk.Label(label=shift)
+        lbl_shift.add_css_class("shift-char")
+        overlay.put(lbl_shift, 46, 50)
 
         return overlay
 
@@ -113,7 +110,7 @@ class KeyboardLayoutApp(Gtk.Application):
         css_provider = Gtk.CssProvider()
         css_style = f"""
             * {{
-                font-family: "MesloLGL Nerd Font Propo";
+                font-family: "JetBrainsMono Nerd Font Propo";
                 font-weight: normal;
             }}
             window {{
@@ -126,15 +123,18 @@ class KeyboardLayoutApp(Gtk.Application):
             }}
             .eng-char {{
                 color: {self.colors['color1']};
-                font-size: 12px;
-            }}
-            .shift-char {{
-                color: {self.colors['color2']};
-                font-size: 15px;
+                font-size: 11px;
+                font-weight: bold;
             }}
             .normal-char {{
                 color: {self.colors['foreground']};
-                font-size: 22px;
+                font-family: "JetBrainsMono Nerd Font Propo";
+                font-size: 24px;
+            }}
+            .shift-char {{
+                color: {self.colors['color2']};
+                font-family: "JetBrainsMono Nerd Font Propo";
+                font-size: 16px;
             }}
             .legend-text {{
                 color: {self.colors['foreground']};
@@ -147,6 +147,7 @@ class KeyboardLayoutApp(Gtk.Application):
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+
 
 if __name__ == "__main__":
     app = KeyboardLayoutApp()

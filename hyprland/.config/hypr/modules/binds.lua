@@ -9,6 +9,7 @@ hl.bind("SUPER + E", hl.dsp.exec_cmd("hyprscratch toggle nautipad"),            
 hl.bind("SUPER + T", hl.dsp.exec_cmd("hyprscratch toggle codepad"),                                                         { description = "VS Code Scratchpad" })
 hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("hyprscratch toggle termpad"),                                            { description = "Terminal Scratchpad" })
 hl.bind("SUPER + V", hl.dsp.exec_cmd("hyprscratch toggle vimpad"),                                                          { description = "Neovim Scratchpad" })
+hl.bind("SUPER + K", hl.dsp.exec_cmd("hyprscratch toggle osdpad"),                                                          { description = "AR Keyboard OSD" })
 
 -- App Launch
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("pkill rofi || ~/.config/rofi/launcher/launcher.sh"),                              { description = "App Launcher" })
