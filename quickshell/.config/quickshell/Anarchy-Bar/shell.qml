@@ -103,7 +103,32 @@ ShellRoot {
                     if (data.hyprlandBlurVibrancy !== undefined) root.hyprlandBlurVibrancy = data.hyprlandBlurVibrancy
                     if (data.hyprlandGapIn !== undefined) root.hyprlandGapIn = data.hyprlandGapIn
                     if (data.hyprlandGapOut !== undefined) root.hyprlandGapOut = data.hyprlandGapOut
-                    if (data.barMonitors !== undefined) root.barMonitors = data.barMonitors
+                    if (data.barMonitors !== undefined && data.barMonitors.length > 0) {
+                        var available = []
+                        for (var j = 0; j < Quickshell.screens.length; j++) {
+                            var sn = Quickshell.screens[j]
+                            if (sn && sn.name) available.push(sn.name)
+                        }
+                        var anyMatch = false
+                        for (var k = 0; k < data.barMonitors.length; k++) {
+                            if (available.indexOf(data.barMonitors[k]) !== -1) {
+                                anyMatch = true
+                                break
+                            }
+                        }
+                        if (anyMatch) {
+                            root.barMonitors = data.barMonitors
+                        } else {
+                            root.barMonitors = available
+                        }
+                    } else {
+                        var detected = []
+                        for (var i = 0; i < Quickshell.screens.length; i++) {
+                            var s = Quickshell.screens[i]
+                            if (s && s.name) detected.push(s.name)
+                        }
+                        root.barMonitors = detected
+                    }
                     if (data.rofiBorderRadius !== undefined) root.rofiBorderRadius = data.rofiBorderRadius
                     if (data.rofiBorderThickness !== undefined) root.rofiBorderThickness = data.rofiBorderThickness
                 } catch (e) {
