@@ -66,7 +66,7 @@ ShellRoot {
             "hyprlandBlurVibrancy": hyprlandBlurVibrancy,
             "hyprlandGapIn": hyprlandGapIn,
             "hyprlandGapOut": hyprlandGapOut,
-            "barMonitors": barMonitors,
+            "barMonitors": barMonitors.length > 0 ? barMonitors : undefined,
             "rofiBorderRadius": rofiBorderRadius,
             "rofiBorderThickness": rofiBorderThickness
         }
