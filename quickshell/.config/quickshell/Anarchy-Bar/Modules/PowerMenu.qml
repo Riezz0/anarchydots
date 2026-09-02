@@ -28,6 +28,7 @@ Variants {
         focusable: powerMenu.isOpen
 
         WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.exclusionMode: ExclusionMode.Ignore
         WlrLayershell.keyboardFocus: powerMenu.isOpen && isTargetScreen
             ? WlrKeyboardFocus.OnDemand
             : WlrKeyboardFocus.None

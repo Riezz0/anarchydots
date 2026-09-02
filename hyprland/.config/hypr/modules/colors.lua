@@ -8,27 +8,27 @@ end
 local M = {}
 
 -- Background and Foreground
-M.background = "0xff1e1e2e"
-M.foreground = "0xffcdd6f4"
-M.cursor     = "0xfff5e0dc"
+M.background = "0xff1a1b26"
+M.foreground = "0xffc0caf5"
+M.cursor     = "0xffc0caf5"
 
 -- Colors
-M.color0     = "0xff1e1e2e"
-M.color1     = "0xfff38ba8"
-M.color2     = "0xffa6e3a1"
-M.color3     = "0xfff9e2af"
-M.color4     = "0xff89b4fa"
-M.color5     = "0xfff5c2e7"
-M.color6     = "0xff94e2d5"
-M.color7     = "0xffbac2de"
-M.color8     = "0xff585b70"
-M.color9     = "0xfff38ba8"
-M.color10    = "0xffa6e3a1"
-M.color11    = "0xfff9e2af"
-M.color12    = "0xff89b4fa"
-M.color13    = "0xfff5c2e7"
-M.color14    = "0xff94e2d5"
-M.color15    = "0xffa6adc8"
+M.color0     = "0xff1a1b26"
+M.color1     = "0xfff7768e"
+M.color2     = "0xff9ece6a"
+M.color3     = "0xffe0af68"
+M.color4     = "0xff7aa2f7"
+M.color5     = "0xffbb9af7"
+M.color6     = "0xff7dcfff"
+M.color7     = "0xffa9b1d6"
+M.color8     = "0xff414868"
+M.color9     = "0xffff899d"
+M.color10    = "0xff9fe044"
+M.color11    = "0xfffaba4a"
+M.color12    = "0xff8db0ff"
+M.color13    = "0xffc7a9ff"
+M.color14    = "0xffa4daff"
+M.color15    = "0xffc0caf5"
 
 -- Return the table
 return M

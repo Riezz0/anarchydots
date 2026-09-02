@@ -267,6 +267,17 @@ ShellRoot {
         function close() { isOpen = false }
     }
 
+    Item {
+        id: keybindsPopup
+        property bool isOpen: false
+        property string targetScreen: ""
+        function open() { isOpen = true }
+        function close() {
+            isOpen = false
+            targetScreen = ""
+        }
+    }
+
     Process {
         id: cmdProc
         running: false
@@ -360,6 +371,7 @@ ShellRoot {
     InfoWidgetPopup {}
     SalaatPopup {}
     NotificationsPopup {}
+    KeybindsPopup {}
     VolumeOSD { id: volumeOSD }
     ToastPopup {}
 }

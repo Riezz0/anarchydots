@@ -9,7 +9,7 @@ Variants {
         id: bar
         screen: modelData
         required property var modelData
-        visible: !powerMenu.isOpen && root.isMonitorEnabled(modelData)
+        visible: !powerMenu.isOpen && !keybindsPopup.isOpen && root.isMonitorEnabled(modelData)
 
         anchors {
             top: root.barPosition === "top"

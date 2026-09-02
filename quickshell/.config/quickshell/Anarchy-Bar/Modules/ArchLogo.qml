@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 
 Rectangle {
     id: logoContainer
@@ -18,11 +19,44 @@ Rectangle {
         Behavior on color { ColorAnimation { duration: 150 } }
     }
 
+    Process {
+        id: keybindsDetectProc
+        running: false
+        stdout: StdioCollector {
+            id: detectStdio
+            onStreamFinished: {
+                var name = detectStdio.text.trim()
+                if (name.length > 0) {
+                    keybindsPopup.targetScreen = name
+                } else {
+                    keybindsPopup.targetScreen = Quickshell.screens[0].name
+                }
+                keybindsPopup.open()
+            }
+        }
+    }
+
+    function detectCursorScreen() {
+        keybindsDetectProc.command = ["sh", "-c", "bash ~/.config/quickshell/Anarchy-Bar/Scripts/detect-cursor-monitor.sh"]
+        keybindsDetectProc.running = true
+    }
+
     MouseArea {
         id: logoHover
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: settingsPopup.isOpen ? settingsPopup.close() : settingsPopup.open()
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: function(mouse) {
+            if (mouse.button === Qt.RightButton) {
+                if (keybindsPopup.isOpen) {
+                    keybindsPopup.close()
+                } else {
+                    detectCursorScreen()
+                }
+            } else {
+                settingsPopup.isOpen ? settingsPopup.close() : settingsPopup.open()
+            }
+        }
     }
 }
