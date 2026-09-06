@@ -2,7 +2,7 @@ local mainMod = "SUPER"
 
 -- Session Management
 hl.bind("SUPER + M", hl.dsp.exec_cmd("uwsm stop"),                                                                          { description = "Exit Session" })
-hl.bind("SUPER + L", hl.dsp.exec_cmd("hyprlock"),                                                                           { description = "Lock Screen" })
+hl.bind("SUPER + L", hl.dsp.exec_cmd("qs -p ~/.config/quickshell/Anarchy-Bar/Q-Apps/Lockscreen"),                           { description = "Lock Screen" })
 
 -- Scratchpads
 hl.bind("SUPER + E", hl.dsp.exec_cmd("hyprscratch toggle nautipad"),                                                        { description = "Nautilus Scratchpad" })
@@ -59,4 +59,4 @@ hl.bind("SUPER + MINUS", hl.dsp.exec_cmd("/usr/local/bin/volume.sh down"),      
 hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("/usr/local/bin/volume.sh mute"),                                              { description = "Volume Mute" })
 
 -- Testing
-hl.bind("ALT + W", hl.dsp.exec_cmd("/usr/local/bin/waybar.sh"),                                                             { description = "Waybar Testing" })
+hl.bind("ALT + W", hl.dsp.exec_cmd("~/git/islamiyyah/tester.sh"),                                                           { description = "Islamiyyah App Testing" })

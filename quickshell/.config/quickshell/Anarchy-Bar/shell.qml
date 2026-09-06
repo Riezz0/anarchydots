@@ -3,6 +3,7 @@ import QtCore
 import Quickshell
 import Quickshell.Io
 import "Modules"
+import "Q-Apps/Lockscreen"
 
 ShellRoot {
     id: root

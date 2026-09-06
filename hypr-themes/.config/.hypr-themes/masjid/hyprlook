@@ -12,8 +12,8 @@ inactive_opacity = 0.85,
     shadow = {enabled = false, range = 0, render_power = 0, color = 0xee1a1a1a },
 
     blur = {enabled = true,
-             size = 20,
-passes = 3,
+             size = 5,
+passes = 5,
 vibrancy = 0.6, },},
 
     animations = {

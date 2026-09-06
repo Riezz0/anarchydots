@@ -210,7 +210,7 @@ Variants {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
                                     hoverEnabled: true
-                                    onClicked: powerMenu.runCmd("hyprlock")
+                                    onClicked: { powerMenu.close(); powerMenu.runCmd("qs -p ~/.config/quickshell/Anarchy-Bar/Q-Apps/Lockscreen") }
                                 }
                             }
 
