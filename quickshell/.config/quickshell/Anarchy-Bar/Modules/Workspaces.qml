@@ -24,6 +24,20 @@ Item {
     height: 42
     anchors.verticalCenter: parent.verticalCenter
 
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        onWheel: event => {
+            if (typeof Hyprland === "undefined" || !Hyprland.focusedWorkspace) return
+            var cur = Hyprland.focusedWorkspace.id
+            if (event.angleDelta.y < 0) {
+                Hyprland.dispatch("workspace " + (cur + 1 > 5 ? 1 : cur + 1))
+            } else if (event.angleDelta.y > 0) {
+                Hyprland.dispatch("workspace " + (cur - 1 < 1 ? 5 : cur - 1))
+            }
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         radius: root.barRadius

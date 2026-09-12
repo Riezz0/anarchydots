@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 import QtCore
 import Quickshell
 import Quickshell.Io
@@ -33,7 +34,6 @@ PanelWindow {
     property bool cacheReady: false
     property int cardRadius: 8
     property int cardBorderThickness: 1
-    property string thumbnailStyle: "cover"
     property color background: "#1e1e2e"
     property color foreground: "#cdd6f4"
     property color muted: "#7f849c"
@@ -75,7 +75,6 @@ PanelWindow {
             var data = JSON.parse(settingsFile.text())
             if (data.themeCardRadius !== undefined) cardRadius = data.themeCardRadius
             if (data.themeCardBorderThickness !== undefined) cardBorderThickness = data.themeCardBorderThickness
-            if (data.themeThumbnailStyle !== undefined) thumbnailStyle = data.themeThumbnailStyle
         } catch (e) {}
     }
 
@@ -189,71 +188,75 @@ PanelWindow {
                 else if (currentIndex >= count * 4) currentIndex -= count * 2
             }
 
-            delegate: Rectangle {
+            delegate: Item {
+                id: cardWrapper
                 required property var modelData
                 required property int index
                 width: 230
                 height: 360
-                radius: switcher.cardRadius
-                color: themeCardMouse.containsMouse
-                    ? Qt.rgba(switcher.accent.r, switcher.accent.g, switcher.accent.b, 0.75)
-                    : Qt.rgba(switcher.background.r, switcher.background.g, switcher.background.b, 0.88)
-                border.color: index === themeList.currentIndex ? switcher.accent : switcher.muted
-                border.width: index === themeList.currentIndex
-                    ? Math.max(1, switcher.cardBorderThickness + 2)
-                    : switcher.cardBorderThickness
-                scale: index === themeList.currentIndex ? 1.0 : 0.86
-                Behavior on scale { NumberAnimation { duration: 180 } }
-
-                Image {
-                    id: thumbnail
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.topMargin: 7
-                    anchors.leftMargin: 7
-                    anchors.rightMargin: 7
-                    height: 285
-                        source: switcher.cacheReady
-                        ? "file://" + switcher.cacheDir + "/" + modelData.name + ".png"
-                        : ""
-                    cache: true
-                    fillMode: switcher.thumbnailStyle === "contain"
-                        ? Image.PreserveAspectFit
-                        : (switcher.thumbnailStyle === "stretch" ? Image.Stretch : Image.PreserveAspectCrop)
-                    asynchronous: true
-                    clip: true
-                }
 
                 Rectangle {
-                    anchors.fill: thumbnail
-                    color: "transparent"
-                    border.color: switcher.muted
-                    border.width: 1
-                }
-
-                Text {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 18
-                    text: modelData.name
-                    color: themeCardMouse.containsMouse ? switcher.background : switcher.foreground
-                    font.pixelSize: 15
-                    font.bold: true
-                    font.family: "JetBrainsMono Nerd Font"
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                }
-
-                MouseArea {
-                    id: themeCardMouse
+                    id: card
                     anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        themeList.currentIndex = index
-                        switcher.applyTheme(modelData)
+                    radius: switcher.cardRadius
+                    color: themeCardMouse.containsMouse
+                        ? Qt.rgba(switcher.accent.r, switcher.accent.g, switcher.accent.b, 0.75)
+                        : Qt.rgba(switcher.background.r, switcher.background.g, switcher.background.b, 0.88)
+                    border.color: cardWrapper.index === themeList.currentIndex ? switcher.accent : "transparent"
+                    border.width: cardWrapper.index === themeList.currentIndex ? switcher.cardBorderThickness + 2 : 0
+                    scale: cardWrapper.index === themeList.currentIndex ? 1.0 : 0.86
+                    Behavior on scale { NumberAnimation { duration: 180 } }
+
+                    Image {
+                        id: thumbnail
+                        anchors.fill: parent
+                        anchors.margins: 7
+                        source: switcher.cacheReady
+                            ? "file://" + switcher.cacheDir + "/" + cardWrapper.modelData.name + ".png"
+                            : ""
+                        cache: true
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                        visible: false
+                    }
+
+                    Rectangle {
+                        id: maskRect
+                        anchors.fill: thumbnail
+                        radius: switcher.cardRadius
+                        color: "white"
+                        visible: false
+                    }
+
+                    OpacityMask {
+                        anchors.fill: thumbnail
+                        source: thumbnail
+                        maskSource: maskRect
+                    }
+
+                    Text {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 18
+                        text: cardWrapper.modelData.name
+                        color: themeCardMouse.containsMouse ? switcher.background : switcher.foreground
+                        font.pixelSize: 15
+                        font.bold: true
+                        font.family: "JetBrainsMono Nerd Font"
+                        horizontalAlignment: Text.AlignHCenter
+                        elide: Text.ElideRight
+                    }
+
+                    MouseArea {
+                        id: themeCardMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            themeList.currentIndex = cardWrapper.index
+                            switcher.applyTheme(cardWrapper.modelData)
+                        }
                     }
                 }
             }
@@ -261,7 +264,7 @@ PanelWindow {
 
         Text {
             width: parent.width
-            text: "Use Left/Right to browse  •  Enter to apply  •  Escape to close"
+            text: "Scroll or Left/Right to browse  •  Enter to apply  •  Escape to close"
             color: switcher.muted
             font.pixelSize: 12
             font.family: "JetBrainsMono Nerd Font"
@@ -269,17 +272,25 @@ PanelWindow {
         }
     }
 
-    Item {
+    MouseArea {
         anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        hoverEnabled: true
         focus: true
-
-        WheelHandler {
-            onWheel: event => {
-                event.accepted = true
-                if (event.angleDelta.y < 0) themeList.incrementCurrentIndex()
-                else if (event.angleDelta.y > 0) themeList.decrementCurrentIndex()
-                themeList.positionViewAtIndex(themeList.currentIndex, ListView.Contain)
+        onWheel: event => {
+            event.accepted = true
+            if (event.angleDelta.y < 0) {
+                if (themeList.currentIndex >= switcher.carouselThemes.length - 1)
+                    themeList.currentIndex = 0
+                else
+                    themeList.incrementCurrentIndex()
+            } else if (event.angleDelta.y > 0) {
+                if (themeList.currentIndex <= 0)
+                    themeList.currentIndex = switcher.carouselThemes.length - 1
+                else
+                    themeList.decrementCurrentIndex()
             }
+            themeList.positionViewAtIndex(themeList.currentIndex, ListView.Contain)
         }
 
         Keys.onPressed: event => {

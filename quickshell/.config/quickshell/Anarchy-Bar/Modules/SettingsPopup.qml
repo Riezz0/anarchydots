@@ -378,6 +378,32 @@ PanelWindow {
                         }
                     }
 
+                    Rectangle {
+                        id: themeSwitcherTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 6 ? theme.color1 : (themeSwitcherTabHover.containsMouse ? Qt.darker(theme.color1, 1.25) : "transparent")
+
+                        Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: 12
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Theme Switcher"
+                            font.pixelSize: 13
+                            color: settingsWindow.currentTab === 6 ? theme.background : theme.foreground
+                        }
+
+                        MouseArea {
+                            id: themeSwitcherTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 6
+                        }
+                    }
+
                     Item { Layout.fillHeight: true }
 
                     Text {
@@ -405,14 +431,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : "Widget Settings"))))
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : (settingsWindow.currentTab === 5 ? "Widget Settings" : "Theme Switcher")))))
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : "Customize widget appearance."))))
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : (settingsWindow.currentTab === 5 ? "Customize widget appearance." : "Configure the fullscreen theme switcher.")))))
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -546,6 +572,22 @@ PanelWindow {
                                 value: root.widgetShadowRadius
                                 onMoved: root.widgetShadowRadius = Math.round(value)
                             }
+                        }
+                    }
+
+                    Flickable {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 6
+                        Layout.preferredHeight: settingsWindow.currentTab === 6 ? -1 : 0
+                        visible: settingsWindow.currentTab === 6
+                        clip: true
+                        contentWidth: width
+                        contentHeight: themeSwitcherSettingsContent.implicitHeight
+
+                        ColumnLayout {
+                            id: themeSwitcherSettingsContent
+                            width: parent.width
+                            spacing: 20
 
                             SettingSlider {
                                 label: "Theme Card Radius"
@@ -567,52 +609,6 @@ PanelWindow {
                                 to: 6
                                 value: root.themeCardBorderThickness
                                 onMoved: root.themeCardBorderThickness = Math.round(value)
-                            }
-
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 8
-
-                                Text {
-                                    text: "Theme Thumbnail Style"
-                                    font.pixelSize: 13
-                                    font.bold: true
-                                    color: theme.color5
-                                }
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 8
-
-                                    Repeater {
-                                        model: ["cover", "contain", "stretch"]
-
-                                        Rectangle {
-                                            Layout.fillWidth: true
-                                            Layout.preferredHeight: 36
-                                            radius: root.widgetRadius
-                                            property bool selected: root.themeThumbnailStyle === modelData
-                                            color: selected ? theme.color4 : (styleHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
-                                            border.color: selected ? theme.color4 : theme.muted
-                                            border.width: root.widgetBorderThickness
-
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
-                                                font.pixelSize: 11
-                                                color: parent.selected ? theme.background : theme.foreground
-                                            }
-
-                                            MouseArea {
-                                                id: styleHover
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: root.themeThumbnailStyle = modelData
-                                            }
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
