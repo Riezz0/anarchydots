@@ -1,5 +1,9 @@
 import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtCore
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 Variants {
@@ -9,6 +13,7 @@ Variants {
         id: bar
         screen: modelData
         required property var modelData
+        property bool qAppsOpen: false
         visible: !powerMenu.isOpen && !keybindsPopup.isOpen && root.isMonitorEnabled(modelData)
 
         anchors {
@@ -153,7 +158,10 @@ Variants {
                 anchors.rightMargin: 10
                 spacing: 10
 
-                InfoWidget {}
+                InfoWidget {
+                    id: infoWidget
+                    onQAppsRequested: bar.qAppsOpen = true
+                }
 
                 SystemTray {
                     id: systemTray
@@ -246,6 +254,169 @@ Variants {
 
                 PowerButton {
                     screen: bar.screen
+                }
+            }
+        }
+
+        PanelWindow {
+            id: qAppsDrawer
+            screen: modelData
+            visible: bar.qAppsOpen
+            focusable: bar.qAppsOpen
+            anchors {
+                top: root.barPosition === "top"
+                bottom: root.barPosition === "bottom"
+                right: true
+            }
+            margins {
+                top: root.barPosition === "top" ? 70 : 0
+                bottom: root.barPosition === "bottom" ? 70 : 0
+                right: 10
+            }
+            implicitWidth: 320
+            implicitHeight: 190
+            color: "transparent"
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.keyboardFocus: bar.qAppsOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+            property bool playerHover: false
+            property bool closeHover: false
+
+            Process {
+                id: qPlayerLaunch
+                running: false
+                command: ["bash", "-lc", "qs -p ~/.config/quickshell/Anarchy-Bar/Q-Apps/Q-Player"]
+            }
+
+            Rectangle {
+                x: 5
+                y: 5
+                width: parent.width
+                height: parent.height
+                radius: root.widgetShadowRadius
+                color: Qt.rgba(0, 0, 0, root.widgetShadowOpacity * 0.7)
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                radius: root.widgetRadius
+                clip: true
+                opacity: root.widgetOpacity
+                border.color: theme.color4
+                border.width: root.widgetBorderThickness
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: theme.background }
+                    GradientStop { position: 1.0; color: Qt.darker(theme.background, 1.18) }
+                }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 14
+                    spacing: 10
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text {
+                            text: "Q-Apps Launcher"
+                            color: theme.color4
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 14
+                            font.bold: true
+                        }
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            Layout.preferredWidth: 26
+                            Layout.preferredHeight: 26
+                            radius: root.widgetRadius
+                            color: qAppsDrawer.closeHover ? theme.color1 : Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.08)
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onEntered: qAppsDrawer.closeHover = true
+                                onExited: qAppsDrawer.closeHover = false
+                                onClicked: bar.qAppsOpen = false
+                            }
+                            Text {
+                                anchors.centerIn: parent
+                                text: "x"
+                                color: qAppsDrawer.closeHover ? theme.background : theme.muted
+                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: 13
+                                font.bold: true
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        radius: root.widgetRadius
+                        color: bar.qAppsOpen && qAppsDrawer.playerHover
+                            ? Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.24)
+                            : Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.06)
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 10
+                            spacing: 11
+
+                            Rectangle {
+                                Layout.preferredWidth: 46
+                                Layout.preferredHeight: 46
+                                radius: root.widgetRadius
+                                color: theme.color4
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "\u{F008}"
+                                    color: theme.background
+                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: 25
+                                    font.bold: true
+                                }
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 1
+                                Text {
+                                    text: "Q-PLAYER"
+                                    color: theme.foreground
+                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                }
+                                Text {
+                                    text: "Audio and video"
+                                    color: theme.muted
+                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: 11
+                                }
+                            }
+                            Text {
+                                text: ">"
+                                color: theme.color4
+                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: 16
+                                font.bold: true
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onEntered: qAppsDrawer.playerHover = true
+                            onExited: qAppsDrawer.playerHover = false
+                            onClicked: {
+                                qPlayerLaunch.running = false
+                                qPlayerLaunch.running = true
+                                bar.qAppsOpen = false
+                            }
+                        }
+                    }
                 }
             }
         }

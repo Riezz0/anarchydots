@@ -1,4 +1,7 @@
 import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtCore
 import Quickshell
 import Quickshell.Io
 
@@ -34,6 +37,7 @@ Item {
     property string gpuName: "N/A"
     property bool hasGpu: false
     property string localIp: ""
+    signal qAppsRequested()
 
     // Network
     property real downloadSpeed: 0
@@ -71,8 +75,20 @@ Item {
         id: infoHover
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
+        onPressed: mouse => {
+            if (mouse.button === Qt.RightButton) {
+                infoRoot.qAppsRequested()
+                mouse.accepted = true
+            }
+        }
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton) {
+                infoRoot.qAppsRequested()
+                mouse.accepted = true
+                return
+            }
             if (infoPopup.isOpen) infoPopup.close()
             else infoPopup.open()
         }

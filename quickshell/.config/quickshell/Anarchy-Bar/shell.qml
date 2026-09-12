@@ -45,6 +45,7 @@ ShellRoot {
     property var barMonitors: []
     property int rofiBorderRadius: 5
     property int rofiBorderThickness: 2
+    property int qPlayerButtonRadius: 2
     property bool isLoadingSettings: true
 
     readonly property string settingsPath:
@@ -94,7 +95,8 @@ ShellRoot {
             "hyprlandGapOut": hyprlandGapOut,
             "barMonitors": barMonitors.length > 0 ? barMonitors : undefined,
             "rofiBorderRadius": rofiBorderRadius,
-            "rofiBorderThickness": rofiBorderThickness
+            "rofiBorderThickness": rofiBorderThickness,
+            "qPlayerButtonRadius": qPlayerButtonRadius
         }
         settingsFile.setText(JSON.stringify(data, null, 2))
     }
@@ -169,6 +171,7 @@ ShellRoot {
                     }
                     if (data.rofiBorderRadius !== undefined) root.rofiBorderRadius = data.rofiBorderRadius
                     if (data.rofiBorderThickness !== undefined) root.rofiBorderThickness = data.rofiBorderThickness
+                    if (data.qPlayerButtonRadius !== undefined) root.qPlayerButtonRadius = data.qPlayerButtonRadius
                 } catch (e) {
                     console.warn("Anarchy-Bar: failed to parse settings:", e)
                 }
@@ -251,6 +254,7 @@ ShellRoot {
         saveSettings()
         rofiPatchTimer.restart()
     }
+    onQPlayerButtonRadiusChanged: saveSettings()
 
     function getMonitorName(monitor) {
         if (monitor && monitor.name) return monitor.name

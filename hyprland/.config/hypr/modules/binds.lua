@@ -14,6 +14,7 @@ hl.bind("SUPER + K", hl.dsp.exec_cmd("hyprscratch toggle osdpad"),              
 -- App Launch
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("pkill rofi || ~/.config/rofi/launcher/launcher.sh"),                                                              { description = "App Launcher" })
 hl.bind("SUPER + SHIFT + T", hl.dsp.exec_cmd("~/.config/quickshell/Anarchy-Bar/Scripts/toggle-theme-switcher.sh"),                                          { description = "Theme Switcher" })
+-- hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("~/.config/quickshell/Anarchy-Bar/Scripts/toggle-app-drawer.sh"),                                                  { description = "Theme Switcher" })
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("kitty"),                                                                                                         { description = "Terminal" })
 hl.bind("SUPER + B", hl.dsp.exec_cmd("firefox"),                                                                                                            { description = "Firefox" })
 hl.bind("SUPER + H", hl.dsp.exec_cmd("hyprpicker -a"),                                                                                                      { description = "Color Picker" })

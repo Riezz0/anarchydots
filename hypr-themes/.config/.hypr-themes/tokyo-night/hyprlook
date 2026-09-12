@@ -5,15 +5,15 @@ hl.config({
     general = {gaps_in = 10,gaps_out = 10,border_size = 0,
         col = { active_border = { colors = { theme.color2, theme.color2 }, angle = 45 }, inactive_border = theme.color15 },
     resize_on_border = true, allow_tearing = false, },
-    decoration = {rounding = 10,
+    decoration = {rounding = 11,
 rounding_power = 10,
 active_opacity = 0.85,
 inactive_opacity = 0.85,
     shadow = {enabled = false, range = 0, render_power = 0, color = 0xee1a1a1a },
 
     blur = {enabled = true,
-             size = 5,
-passes = 5,
+             size = 10,
+passes = 6,
 vibrancy = 0.6, },},
 
     animations = {
