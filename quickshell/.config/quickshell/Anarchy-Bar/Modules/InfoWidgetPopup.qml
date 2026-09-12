@@ -21,6 +21,8 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: infoPopup.isOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
+    mask: Region { item: infoPanel }
+
     property int hwTab: 0
 
     Connections {
@@ -35,9 +37,18 @@ PanelWindow {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: infoPopup.close()
+        onClicked: mouse => mouse.accepted = true
         opacity: infoPopup.isOpen ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 150 } }
+    }
+
+    Rectangle {
+        x: parent.width - 10 - 400 + root.widgetShadowX
+        y: 10 + root.widgetShadowY
+        width: 400
+        height: parent.height - 20
+        radius: root.widgetShadowRadius
+        color: Qt.rgba(0, 0, 0, infoPopup.isOpen ? root.widgetShadowOpacity : 0)
     }
 
     Rectangle {
@@ -49,16 +60,15 @@ PanelWindow {
         anchors.bottomMargin: 10
         anchors.rightMargin: infoPopup.isOpen ? 10 : -(width + 20)
         width: 400
-        radius: root.barRadius
+        radius: root.widgetRadius
         color: theme.background
-        opacity: infoPopup.isOpen ? root.popupOpacity : 0
+        opacity: infoPopup.isOpen ? root.widgetOpacity : 0
         clip: true
         border.color: theme.muted
-        border.width: root.popupBorderThickness
+        border.width: root.widgetBorderThickness
         layer.enabled: true
-        layer.effect: OpacityMask { maskSource: Rectangle { width: infoPanel.width; height: infoPanel.height; radius: root.barRadius; color: "white" } }
+        layer.effect: OpacityMask { maskSource: Rectangle { width: infoPanel.width; height: infoPanel.height; radius: root.widgetRadius; color: "white" } }
 
-        Behavior on anchors.rightMargin { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
         MouseArea { anchors.fill: parent; onClicked: mouse => mouse.accepted = true }
@@ -75,19 +85,6 @@ PanelWindow {
                 id: popupCol
                 width: parent.width
                 spacing: 0
-
-                // Close
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.bottomMargin: 16
-                    Item { Layout.fillWidth: true }
-                    Rectangle {
-                        width: 28; height: 28; radius: root.barRadius
-                        color: closeH.containsMouse ? theme.color1 : Qt.darker(theme.background, 1.2)
-                        Text { anchors.centerIn: parent; text: "\u2715"; font.pixelSize: 11; color: closeH.containsMouse ? theme.background : theme.foreground }
-                        MouseArea { id: closeH; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: infoPopup.close() }
-                    }
-                }
 
                 // Weather card
                 Rectangle {

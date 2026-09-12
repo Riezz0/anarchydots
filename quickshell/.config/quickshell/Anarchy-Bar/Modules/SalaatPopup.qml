@@ -25,11 +25,22 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: salaatPopup.isOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
+    mask: Region { item: salaatPanel }
+
     MouseArea {
         anchors.fill: parent
-        onClicked: salaatPopup.close()
+        onClicked: mouse => mouse.accepted = true
         opacity: salaatPopup.isOpen ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 150 } }
+    }
+
+    Rectangle {
+        x: (parent.width - 320) / 2 + root.widgetShadowX
+        y: 10 + root.widgetShadowY
+        width: 320
+        height: salaatPanel.height
+        radius: root.widgetShadowRadius
+        color: Qt.rgba(0, 0, 0, salaatPopup.isOpen ? root.widgetShadowOpacity : 0)
     }
 
     Rectangle {
@@ -40,14 +51,14 @@ PanelWindow {
         width: 320
         implicitHeight: popupColumn.implicitHeight + 32
         height: implicitHeight
-        radius: root.barRadius
+        radius: root.widgetRadius
         color: theme.background
-        opacity: salaatPopup.isOpen ? root.popupOpacity : 0
+        opacity: salaatPopup.isOpen ? root.widgetOpacity : 0
         clip: true
         border.color: theme.color3
-        border.width: root.popupBorderThickness
+        border.width: root.widgetBorderThickness
         layer.enabled: true
-        layer.effect: OpacityMask { maskSource: Rectangle { width: salaatPanel.width; height: salaatPanel.height; radius: root.barRadius; color: "white" } }
+        layer.effect: OpacityMask { maskSource: Rectangle { width: salaatPanel.width; height: salaatPanel.height; radius: root.widgetRadius; color: "white" } }
 
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
@@ -91,8 +102,9 @@ PanelWindow {
 
                         Text { text: modelData.name; font.pixelSize: 14; font.bold: true; font.family: "JetBrainsMono Nerd Font"; color: modelData.name === salaat.nextPrayer ? theme.muted : theme.foreground; Layout.fillWidth: true }
                         Text { text: modelData.time; font.pixelSize: 14; font.bold: true; font.family: "JetBrainsMono Nerd Font"; color: modelData.name === salaat.nextPrayer ? theme.muted : theme.muted }
-                    }
-                }
+    }
+
+}
             }
 
             Rectangle { Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 4; height: 1; color: theme.muted; opacity: 0.4 }

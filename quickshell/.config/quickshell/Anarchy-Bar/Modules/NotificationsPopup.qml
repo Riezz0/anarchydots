@@ -18,6 +18,8 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: notificationsPopup.isOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
+    mask: Region { item: notifPanel }
+
     property real maxPanelHeight: 500
 
     MouseArea {
@@ -35,14 +37,14 @@ PanelWindow {
         width: 440
         implicitHeight: headerCol.implicitHeight + Math.min(notifListContent.implicitHeight, maxPanelHeight - headerCol.implicitHeight - 48) + 48
         height: implicitHeight
-        radius: root.barRadius
+        radius: root.popupRadius
         color: theme.background
         opacity: notificationsPopup.isOpen ? root.popupOpacity : 0
         clip: true
         border.color: theme.color4
         border.width: root.popupBorderThickness
         layer.enabled: true
-        layer.effect: OpacityMask { maskSource: Rectangle { width: notifPanel.width; height: notifPanel.height; radius: root.barRadius; color: "white" } }
+        layer.effect: OpacityMask { maskSource: Rectangle { width: notifPanel.width; height: notifPanel.height; radius: root.popupRadius; color: "white" } }
 
         Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
@@ -61,15 +63,16 @@ PanelWindow {
                 Text { text: notifs.trackedCount.toString(); color: theme.muted; font.pixelSize: 14; font.bold: true; font.family: "JetBrainsMono Nerd Font" }
 
                 Rectangle {
-                    width: 28; height: 28; radius: root.barRadius
+                    width: 28; height: 28; radius: root.popupRadius
                     color: notifCloseHover.containsMouse ? theme.color1 : Qt.darker(theme.background, 1.2)
                     Text { anchors.centerIn: parent; text: "\u2715"; font.pixelSize: 11; color: notifCloseHover.containsMouse ? theme.background : theme.foreground }
                     MouseArea { id: notifCloseHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: notificationsPopup.close() }
-                }
-            }
+    }
+
+}
 
             Rectangle {
-                Layout.fillWidth: true; Layout.bottomMargin: 16; implicitHeight: 36; radius: root.barRadius
+                Layout.fillWidth: true; Layout.bottomMargin: 16; implicitHeight: 36; radius: root.popupRadius
                 color: notifs.dndEnabled ? theme.color1 : "transparent"
                 border { width: root.popupBorderThickness; color: theme.color4 }
 
@@ -84,7 +87,7 @@ PanelWindow {
 
             Rectangle {
                 visible: notifs.trackedCount > 0
-                Layout.fillWidth: true; Layout.bottomMargin: 16; implicitHeight: 32; radius: root.barRadius
+                Layout.fillWidth: true; Layout.bottomMargin: 16; implicitHeight: 32; radius: root.popupRadius
                 color: "transparent"
                 border { width: root.popupBorderThickness; color: theme.color1 }
 
@@ -110,7 +113,7 @@ PanelWindow {
                     Rectangle {
                         required property var modelData
                         required property int index
-                        width: notifListContent.width; implicitHeight: notifItemCol.implicitHeight + 24; radius: root.barRadius
+                        width: notifListContent.width; implicitHeight: notifItemCol.implicitHeight + 24; radius: root.popupRadius
                         color: Qt.darker(theme.background, 1.15)
                         border { width: root.popupBorderThickness; color: modelData.urgency === 1 ? theme.color1 : modelData.urgency === 0 ? theme.color4 : theme.color2 }
 
@@ -122,7 +125,7 @@ PanelWindow {
                                 width: parent.width; spacing: 8
 
                                 Rectangle {
-                                    width: 32; height: 32; radius: root.barRadius
+                                    width: 32; height: 32; radius: root.popupRadius
                                     color: Qt.darker(theme.background, 1.2)
                                     border { width: root.popupBorderThickness; color: theme.muted }
                                     Text { anchors.centerIn: parent; text: "\u{F009E}"; font.pixelSize: 16; font.family: "JetBrainsMono Nerd Font"; color: theme.color4 }
@@ -135,7 +138,7 @@ PanelWindow {
                                 }
 
                                 Rectangle {
-                                    width: 24; height: 24; radius: root.barRadius; color: "transparent"
+                                    width: 24; height: 24; radius: root.popupRadius; color: "transparent"
                                     border { width: root.popupBorderThickness; color: theme.muted }
                                     Text { anchors.centerIn: parent; text: "\u2715"; font.pixelSize: 16; color: theme.muted }
                                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: notifs.dismissNotif(modelData.id) }
@@ -153,7 +156,7 @@ PanelWindow {
             }
         }
 
-        Rectangle { anchors.fill: parent; radius: root.barRadius; color: "transparent"; border.color: theme.color4; border.width: root.popupBorderThickness; z: 10 }
+        Rectangle { anchors.fill: parent; radius: root.popupRadius; color: "transparent"; border.color: theme.color4; border.width: root.popupBorderThickness; z: 10 }
     }
 
     Item { anchors.fill: parent; focus: notificationsPopup.isOpen; Keys.onEscapePressed: notificationsPopup.close() }

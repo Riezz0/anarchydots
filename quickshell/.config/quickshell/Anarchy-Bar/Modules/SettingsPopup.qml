@@ -28,6 +28,8 @@ PanelWindow {
         ? WlrKeyboardFocus.OnDemand
         : WlrKeyboardFocus.None
 
+    mask: Region { item: settingsPanel }
+
     property int currentTab: 0
     property var themes: []
     property string activeTheme: ""
@@ -117,7 +119,16 @@ PanelWindow {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: settingsPopup.close()
+        onClicked: mouse => mouse.accepted = true
+    }
+
+    Rectangle {
+        x: settingsPanel.x + root.widgetShadowX
+        y: settingsPanel.y + root.widgetShadowY
+        width: settingsPanel.width
+        height: settingsPanel.height
+        radius: root.widgetShadowRadius
+        color: Qt.rgba(0, 0, 0, settingsPopup.isOpen ? root.widgetShadowOpacity : 0)
     }
 
     Rectangle {
@@ -125,18 +136,18 @@ PanelWindow {
         anchors.centerIn: parent
         width: Math.min(760, parent.width - 40)
         height: Math.min(620, parent.height - 40)
-        radius: root.barRadius
+        radius: root.widgetRadius
         color: theme.background
-        opacity: settingsPopup.isOpen ? root.popupOpacity : 0
+        opacity: settingsPopup.isOpen ? root.widgetOpacity : 0
         clip: true
         border.color: theme.muted
-        border.width: root.popupBorderThickness
+        border.width: root.widgetBorderThickness
         layer.enabled: true
         layer.effect: OpacityMask {
             maskSource: Rectangle {
                 width: settingsPanel.width
                 height: settingsPanel.height
-                radius: root.barRadius
+                radius: root.widgetRadius
                 color: "white"
             }
         }
@@ -196,7 +207,7 @@ PanelWindow {
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 0 ? theme.color4 : (barTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 0 ? theme.color4 : (barTabHover.containsMouse ? Qt.darker(theme.color4, 1.25) : "transparent")
 
                         RowLayout {
                             id: barTabContent
@@ -227,7 +238,7 @@ PanelWindow {
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 1 ? theme.color5 : (appearanceTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 1 ? theme.color5 : (appearanceTabHover.containsMouse ? Qt.darker(theme.color5, 1.25) : "transparent")
 
                         RowLayout {
                             id: hyprlandTabContent
@@ -257,7 +268,7 @@ PanelWindow {
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 2 ? theme.color2 : (themesTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 2 ? theme.color2 : (themesTabHover.containsMouse ? Qt.darker(theme.color2, 1.25) : "transparent")
 
                         RowLayout {
                             id: themesTabContent
@@ -266,7 +277,7 @@ PanelWindow {
                             anchors.leftMargin: 12
 
                             Text {
-                                text: "Themes"
+                                text: "Popup Settings"
                                 font.pixelSize: 13
                                 color: settingsWindow.currentTab === 2 ? theme.background : theme.foreground
                             }
@@ -287,7 +298,7 @@ PanelWindow {
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 3 ? theme.color1 : (screenTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 3 ? theme.color1 : (screenTabHover.containsMouse ? Qt.darker(theme.color1, 1.25) : "transparent")
 
                         RowLayout {
                             id: screenTabContent
@@ -317,7 +328,7 @@ PanelWindow {
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 4 ? theme.color3 : (rofiTabHover.containsMouse ? Qt.darker(theme.background, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 4 ? theme.color3 : (rofiTabHover.containsMouse ? Qt.darker(theme.color3, 1.25) : "transparent")
 
                         RowLayout {
                             id: rofiTabContent
@@ -338,6 +349,32 @@ PanelWindow {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: settingsWindow.currentTab = 4
+                        }
+                    }
+
+                    Rectangle {
+                        id: widgetTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 5 ? theme.color6 : (widgetTabHover.containsMouse ? Qt.darker(theme.color6, 1.25) : "transparent")
+
+                        Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: 12
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Widget Settings"
+                            font.pixelSize: 13
+                            color: settingsWindow.currentTab === 5 ? theme.background : theme.foreground
+                        }
+
+                        MouseArea {
+                            id: widgetTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 5
                         }
                     }
 
@@ -368,14 +405,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Themes" : (settingsWindow.currentTab === 3 ? "Screen Settings" : "Rofi Settings")))
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : "Widget Settings"))))
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Browse and apply themes." : (settingsWindow.currentTab === 3 ? "Night light and display options." : "Adjust rofi launcher border and radius settings.")))
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : "Customize widget appearance."))))
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -414,6 +451,170 @@ PanelWindow {
                         Layout.bottomMargin: 18
                         color: theme.muted
                         opacity: 0.45
+                    }
+
+                    Flickable {
+                        id: widgetSettingsScroll
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 5
+                        Layout.preferredHeight: settingsWindow.currentTab === 5 ? -1 : 0
+                        visible: settingsWindow.currentTab === 5
+                        clip: true
+                        contentWidth: width
+                        contentHeight: widgetSettingsContent.implicitHeight
+
+                        ColumnLayout {
+                            id: widgetSettingsContent
+                            width: widgetSettingsScroll.width
+                            spacing: 20
+
+                            SettingSlider {
+                                label: "Widget Transparency"
+                                valueText: Math.round(root.widgetOpacity * 100) + "%"
+                                minimumText: "0%"
+                                maximumText: "100%"
+                                from: 0
+                                to: 1
+                                stepSize: 0.05
+                                value: root.widgetOpacity
+                                onMoved: root.widgetOpacity = Math.round(value * 100) / 100
+                            }
+
+                            SettingSlider {
+                                label: "Widget Radius"
+                                valueText: root.widgetRadius + "px"
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.widgetRadius
+                                onMoved: root.widgetRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Widget Border Thickness"
+                                valueText: root.widgetBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "4"
+                                from: 0
+                                to: 4
+                                value: root.widgetBorderThickness
+                                onMoved: root.widgetBorderThickness = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Widget Shadow Opacity"
+                                valueText: Math.round(root.widgetShadowOpacity * 100) + "%"
+                                minimumText: "0%"
+                                maximumText: "100%"
+                                from: 0
+                                to: 1
+                                stepSize: 0.05
+                                value: root.widgetShadowOpacity
+                                onMoved: root.widgetShadowOpacity = Math.round(value * 100) / 100
+                            }
+
+                            SettingSlider {
+                                label: "Widget Shadow Horizontal"
+                                valueText: root.widgetShadowX + "px"
+                                minimumText: "0"
+                                maximumText: "12"
+                                from: 0
+                                to: 12
+                                value: root.widgetShadowX
+                                onMoved: root.widgetShadowX = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Widget Shadow Vertical"
+                                valueText: root.widgetShadowY + "px"
+                                minimumText: "0"
+                                maximumText: "12"
+                                from: 0
+                                to: 12
+                                value: root.widgetShadowY
+                                onMoved: root.widgetShadowY = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Widget Shadow Radius"
+                                valueText: root.widgetShadowRadius + "px"
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.widgetShadowRadius
+                                onMoved: root.widgetShadowRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Theme Card Radius"
+                                valueText: root.themeCardRadius + "px"
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.themeCardRadius
+                                onMoved: root.themeCardRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Theme Card Border"
+                                valueText: root.themeCardBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "6"
+                                from: 0
+                                to: 6
+                                value: root.themeCardBorderThickness
+                                onMoved: root.themeCardBorderThickness = Math.round(value)
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+
+                                Text {
+                                    text: "Theme Thumbnail Style"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: theme.color5
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 8
+
+                                    Repeater {
+                                        model: ["cover", "contain", "stretch"]
+
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 36
+                                            radius: root.widgetRadius
+                                            property bool selected: root.themeThumbnailStyle === modelData
+                                            color: selected ? theme.color4 : (styleHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                            border.color: selected ? theme.color4 : theme.muted
+                                            border.width: root.widgetBorderThickness
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
+                                                font.pixelSize: 11
+                                                color: parent.selected ? theme.background : theme.foreground
+                                            }
+
+                                            MouseArea {
+                                                id: styleHover
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: root.themeThumbnailStyle = modelData
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     Flickable {
@@ -861,7 +1062,7 @@ PanelWindow {
                         Layout.fillWidth: true
                         Layout.fillHeight: settingsWindow.currentTab === 2
                         Layout.preferredHeight: settingsWindow.currentTab === 2 ? -1 : 0
-                        visible: settingsWindow.currentTab === 2
+                        visible: false
                         clip: true
                         contentWidth: width
                         contentHeight: themesContent.implicitHeight
@@ -963,6 +1164,57 @@ PanelWindow {
                                 text: settingsWindow.themes.length + " theme(s) found"
                                 font.pixelSize: 11
                                 color: theme.muted
+                            }
+                        }
+                    }
+
+                    Flickable {
+                        id: popupSettingsScroll
+                        Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 2
+                        Layout.preferredHeight: settingsWindow.currentTab === 2 ? -1 : 0
+                        visible: settingsWindow.currentTab === 2
+                        clip: true
+                        contentWidth: width
+                        contentHeight: popupSettingsContent.implicitHeight
+
+                        ColumnLayout {
+                            id: popupSettingsContent
+                            width: popupSettingsScroll.width
+                            spacing: 20
+
+                            SettingSlider {
+                                label: "Popup Transparency"
+                                valueText: Math.round(root.popupOpacity * 100) + "%"
+                                minimumText: "0%"
+                                maximumText: "100%"
+                                from: 0
+                                to: 1
+                                stepSize: 0.05
+                                value: root.popupOpacity
+                                onMoved: root.popupOpacity = Math.round(value * 100) / 100
+                            }
+
+                            SettingSlider {
+                                label: "Popup Radius"
+                                valueText: root.popupRadius + "px"
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.popupRadius
+                                onMoved: root.popupRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Popup Border Thickness"
+                                valueText: root.popupBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "4"
+                                from: 0
+                                to: 4
+                                value: root.popupBorderThickness
+                                onMoved: root.popupBorderThickness = Math.round(value)
                             }
                         }
                     }
@@ -1110,6 +1362,7 @@ PanelWindow {
         focus: true
         Keys.onEscapePressed: settingsPopup.close()
     }
+
 
     component SettingSlider: ColumnLayout {
         id: sliderRoot

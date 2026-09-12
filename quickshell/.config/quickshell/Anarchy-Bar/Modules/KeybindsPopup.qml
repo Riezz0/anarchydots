@@ -221,7 +221,7 @@ Item {
                     anchors.centerIn: parent
                     width: 1200
                     height: 700
-                    radius: root.barRadius
+                    radius: root.popupRadius
                     color: theme.background
                     opacity: keybindsRoot.isOpen ? root.popupOpacity : 0
                     scale: keybindsRoot.isOpen ? 1.0 : 0.95

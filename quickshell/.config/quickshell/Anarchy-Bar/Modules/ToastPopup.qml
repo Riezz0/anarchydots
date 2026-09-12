@@ -24,6 +24,8 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+    mask: Region { item: toastColumn }
+
     Connections {
         target: notifs
         function onNotificationReceived(appName, summary, body, urgency, timeout, actions) {
@@ -73,7 +75,7 @@ PanelWindow {
 
                 width: 320
                 height: toastContent.implicitHeight + 20
-                radius: root.barRadius
+                radius: root.popupRadius
                 color: theme.background
                 opacity: 0.95
                 border.color: theme.color4

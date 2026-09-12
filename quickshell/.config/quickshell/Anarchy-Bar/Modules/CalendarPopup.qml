@@ -24,25 +24,38 @@ PanelWindow {
         ? WlrKeyboardFocus.OnDemand
         : WlrKeyboardFocus.None
 
+    mask: Region { item: calendarPanel }
+
     property var currentMonth: new Date()
 
     MouseArea {
         anchors.fill: parent
-        onClicked: calendarPopup.close()
+        onClicked: mouse => mouse.accepted = true
+    }
+
+    Rectangle {
+        x: 10 + root.widgetShadowX
+        y: 210 + root.widgetShadowY
+        width: 360
+        height: 340
+        radius: root.widgetShadowRadius
+        color: Qt.rgba(0, 0, 0, calendarPopup.isOpen ? root.widgetShadowOpacity : 0)
     }
 
     Rectangle {
         id: calendarPanel
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.rightMargin: 10
-        width: 320
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.top: parent.top
+        anchors.topMargin: 210
+        width: 360
         height: 340
-        radius: root.barRadius
+        property real contentScale: width / 320
+        radius: root.widgetRadius
         color: theme.background
-        opacity: calendarPopup.isOpen ? root.popupOpacity : 0
+        opacity: calendarPopup.isOpen ? root.widgetOpacity : 0
         border.color: theme.muted
-        border.width: root.popupBorderThickness
+        border.width: root.widgetBorderThickness
         clip: true
 
         Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
@@ -55,8 +68,8 @@ PanelWindow {
         ColumnLayout {
             id: calendarOuter
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 8
+            anchors.margins: 16 * calendarPanel.contentScale
+            spacing: 8 * calendarPanel.contentScale
 
             // Header
             RowLayout {
@@ -64,7 +77,7 @@ PanelWindow {
 
                 Text {
                     text: "◀"
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * calendarPanel.contentScale
                     color: theme.color5
                     MouseArea {
                         anchors.fill: parent
@@ -78,7 +91,7 @@ PanelWindow {
 
                 Text {
                     text: Qt.formatDateTime(calendarWindow.currentMonth, "MMMM yyyy")
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * calendarPanel.contentScale
                     font.bold: true
                     color: theme.foreground
                     Layout.fillWidth: true
@@ -87,7 +100,7 @@ PanelWindow {
 
                 Text {
                     text: "▶"
-                    font.pixelSize: 14
+                    font.pixelSize: 14 * calendarPanel.contentScale
                     color: theme.color5
                     MouseArea {
                         anchors.fill: parent
@@ -103,14 +116,14 @@ PanelWindow {
             // Today button
             Rectangle {
                 Layout.fillWidth: true
-                height: 28
-                radius: 4
+                height: 28 * calendarPanel.contentScale
+                radius: root.widgetRadius
                 color: todayHover.containsMouse ? Qt.darker(theme.color2, 1.2) : theme.color2
 
                 Text {
                     anchors.centerIn: parent
                     text: "Today"
-                    font.pixelSize: 11
+                    font.pixelSize: 11 * calendarPanel.contentScale
                     font.bold: true
                     color: theme.background
                 }
@@ -133,7 +146,7 @@ PanelWindow {
 
                     Text {
                         text: modelData
-                        font.pixelSize: 11
+                        font.pixelSize: 11 * calendarPanel.contentScale
                         color: theme.muted
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
@@ -174,15 +187,15 @@ PanelWindow {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredWidth: 36
-                        Layout.preferredHeight: 28
-                        radius: 4
+                        Layout.preferredWidth: 36 * calendarPanel.contentScale
+                        Layout.preferredHeight: 28 * calendarPanel.contentScale
+                        radius: root.widgetRadius
                         color: modelData.day === 0 ? "transparent" : (modelData.isToday ? theme.color2 : (dayHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent"))
 
                         Text {
                             anchors.centerIn: parent
                             text: modelData.day === 0 ? "" : modelData.day.toString()
-                            font.pixelSize: 11
+                            font.pixelSize: 11 * calendarPanel.contentScale
                             color: modelData.day === 0 ? "transparent" : (modelData.isToday ? theme.background : (modelData.isCurrentMonth ? theme.foreground : theme.muted))
                         }
 
@@ -213,4 +226,5 @@ PanelWindow {
         focus: true
         Keys.onEscapePressed: calendarPopup.close()
     }
+
 }

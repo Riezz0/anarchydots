@@ -1,3 +1,4 @@
+//@ pragma UseQApplication
 import QtQuick
 import QtCore
 import Quickshell
@@ -17,6 +18,18 @@ ShellRoot {
     property int moduleBorderThickness: 0
     property real popupOpacity: 0.95
     property int popupBorderThickness: 0
+    property int popupRadius: 6
+    property bool widgetShadowEnabled: true
+    property int widgetShadowX: 5
+    property int widgetShadowY: 4
+    property int widgetShadowRadius: 6
+    property real widgetShadowOpacity: 0.63
+    property real widgetOpacity: 1.0
+    property int widgetRadius: 6
+    property int widgetBorderThickness: 0
+    property int themeCardRadius: 8
+    property int themeCardBorderThickness: 1
+    property string themeThumbnailStyle: "cover"
     property string workspaceIndicatorStyle: "numbers"
     property int hyprlandBorderThickness: 2
     property real hyprlandActiveOpacity: 0.6
@@ -55,6 +68,18 @@ ShellRoot {
             "moduleBorderThickness": moduleBorderThickness,
             "popupOpacity": popupOpacity,
             "popupBorderThickness": popupBorderThickness,
+            "popupRadius": popupRadius,
+            "widgetShadowEnabled": widgetShadowEnabled,
+            "widgetShadowX": widgetShadowX,
+            "widgetShadowY": widgetShadowY,
+            "widgetShadowRadius": widgetShadowRadius,
+            "widgetShadowOpacity": widgetShadowOpacity,
+            "widgetOpacity": widgetOpacity,
+            "widgetRadius": widgetRadius,
+            "widgetBorderThickness": widgetBorderThickness,
+            "themeCardRadius": themeCardRadius,
+            "themeCardBorderThickness": themeCardBorderThickness,
+            "themeThumbnailStyle": themeThumbnailStyle,
             "workspaceIndicatorStyle": workspaceIndicatorStyle,
             "hyprlandBorderThickness": hyprlandBorderThickness,
             "hyprlandActiveOpacity": hyprlandActiveOpacity,
@@ -92,6 +117,18 @@ ShellRoot {
                     if (data.moduleBorderThickness !== undefined) root.moduleBorderThickness = data.moduleBorderThickness
                     if (data.popupOpacity !== undefined) root.popupOpacity = data.popupOpacity
                     if (data.popupBorderThickness !== undefined) root.popupBorderThickness = data.popupBorderThickness
+                    if (data.popupRadius !== undefined) root.popupRadius = data.popupRadius
+                    if (data.widgetShadowEnabled !== undefined) root.widgetShadowEnabled = data.widgetShadowEnabled
+                    if (data.widgetShadowX !== undefined) root.widgetShadowX = data.widgetShadowX
+                    if (data.widgetShadowY !== undefined) root.widgetShadowY = data.widgetShadowY
+                    if (data.widgetShadowRadius !== undefined) root.widgetShadowRadius = data.widgetShadowRadius
+                    if (data.widgetShadowOpacity !== undefined) root.widgetShadowOpacity = data.widgetShadowOpacity
+                    if (data.widgetOpacity !== undefined) root.widgetOpacity = data.widgetOpacity
+                    if (data.widgetRadius !== undefined) root.widgetRadius = data.widgetRadius
+                    if (data.widgetBorderThickness !== undefined) root.widgetBorderThickness = data.widgetBorderThickness
+                    if (data.themeCardRadius !== undefined) root.themeCardRadius = data.themeCardRadius
+                    if (data.themeCardBorderThickness !== undefined) root.themeCardBorderThickness = data.themeCardBorderThickness
+                    if (data.themeThumbnailStyle !== undefined) root.themeThumbnailStyle = data.themeThumbnailStyle
                     if (data.workspaceIndicatorStyle !== undefined) root.workspaceIndicatorStyle = data.workspaceIndicatorStyle
                     if (data.hyprlandBorderThickness !== undefined) root.hyprlandBorderThickness = data.hyprlandBorderThickness
                     if (data.hyprlandActiveOpacity !== undefined) root.hyprlandActiveOpacity = data.hyprlandActiveOpacity
@@ -148,6 +185,18 @@ ShellRoot {
     onModuleBorderThicknessChanged: saveSettings()
     onPopupOpacityChanged: saveSettings()
     onPopupBorderThicknessChanged: saveSettings()
+    onPopupRadiusChanged: saveSettings()
+    onWidgetShadowEnabledChanged: saveSettings()
+    onWidgetShadowXChanged: saveSettings()
+    onWidgetShadowYChanged: saveSettings()
+    onWidgetShadowRadiusChanged: saveSettings()
+    onWidgetShadowOpacityChanged: saveSettings()
+    onWidgetOpacityChanged: saveSettings()
+    onWidgetRadiusChanged: saveSettings()
+    onWidgetBorderThicknessChanged: saveSettings()
+    onThemeCardRadiusChanged: saveSettings()
+    onThemeCardBorderThicknessChanged: saveSettings()
+    onThemeThumbnailStyleChanged: saveSettings()
     onWorkspaceIndicatorStyleChanged: saveSettings()
     onHyprlandBorderThicknessChanged: {
         saveSettings()

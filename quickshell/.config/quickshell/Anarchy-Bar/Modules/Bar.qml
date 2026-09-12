@@ -45,6 +45,7 @@ Variants {
             anchors.fill: parent
 
             Row {
+                id: rightModules
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 10
@@ -58,6 +59,10 @@ Variants {
                 Workspaces {}
 
                 Volume {}
+
+                MouseBattery {}
+
+                Bluetooth {}
             }
 
             // Center: Salaat marquee
@@ -138,7 +143,7 @@ Variants {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: salaatPopup.open()
+                    onClicked: salaatPopup.isOpen ? salaatPopup.close() : salaatPopup.open()
                 }
             }
 
@@ -149,6 +154,12 @@ Variants {
                 spacing: 10
 
                 InfoWidget {}
+
+                SystemTray {
+                    id: systemTray
+                    trayWindow: bar
+                    menuX: bar.width - rightModules.width + systemTray.x
+                }
 
                 Rectangle {
                     implicitWidth: 42; implicitHeight: 42
@@ -228,7 +239,10 @@ Variants {
                     }
                 }
 
-                Clock {}
+                Clock {
+                    hostWindow: bar
+                    anchorX: rightModules.x + x
+                }
 
                 PowerButton {
                     screen: bar.screen

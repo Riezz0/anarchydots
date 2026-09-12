@@ -40,7 +40,7 @@ PanelWindow {
         width: 420
         implicitHeight: Math.min(updatesColumn.implicitHeight + 32, 500)
         height: implicitHeight
-        radius: root.barRadius
+        radius: root.popupRadius
         color: theme.background
         opacity: updatesPopup.isOpen ? 0.95 : 0
         scale: updatesPopup.isOpen ? 1.0 : 0.95
@@ -97,7 +97,7 @@ PanelWindow {
                 Layout.fillWidth: true
                 Layout.bottomMargin: 12
                 implicitHeight: 32
-                radius: root.barRadius
+                radius: root.popupRadius
                 color: "transparent"
                 border { width: root.popupBorderThickness; color: updates.checking ? theme.muted : theme.color4 }
 
@@ -135,7 +135,7 @@ PanelWindow {
                         required property var modelData
                         width: updatesList.width
                         implicitHeight: entryRow.implicitHeight + 12
-                        radius: 4
+                radius: root.popupRadius
                         color: Qt.darker(theme.background, 1.2)
                         border { width: root.popupBorderThickness; color: theme.color4 }
 
@@ -170,7 +170,7 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 40
-                radius: root.barRadius
+                radius: root.popupRadius
                 color: updates.updatesAvailable ? Qt.rgba(theme.color3.r, theme.color3.g, theme.color3.b, 0.15) : "transparent"
                 border { width: root.popupBorderThickness; color: updates.updatesAvailable ? theme.color3 : theme.muted }
 
@@ -199,4 +199,5 @@ PanelWindow {
         focus: updatesPopup.isOpen
         Keys.onEscapePressed: updatesPopup.close()
     }
+
 }
