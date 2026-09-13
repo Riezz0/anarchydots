@@ -10,32 +10,38 @@ Item {
     property color meterColor: theme.color4
     property real maxValue: 100
 
-    width: 95
-    height: 115
+    width: 110
+    height: 130
 
     Canvas {
         id: canvas
-        anchors.centerIn: parent
-        width: 95
-        height: 95
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        width: 110
+        height: 110
 
         onPaint: {
             var ctx = getContext("2d")
             ctx.reset()
             var cx = width / 2
             var cy = height / 2
-            var r = 38
-            var lw = 6
+            var r = 50
+            var lw = 7
 
-            // Background track
+            // Solid background circle
             ctx.beginPath()
             ctx.arc(cx, cy, r, 0, Math.PI * 2)
-            ctx.strokeStyle = Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.5)
+            ctx.fillStyle = theme.background
+            ctx.fill()
+
+            // Outer border
+            ctx.beginPath()
+            ctx.arc(cx, cy, r, 0, Math.PI * 2)
+            ctx.strokeStyle = Qt.darker(meter.meterColor, 1.8)
             ctx.lineWidth = lw
-            ctx.lineCap = "round"
             ctx.stroke()
 
-            // Progress arc
+            // Progress arc on edge
             var frac = Math.min(Math.max(meter.progress / meter.maxValue, 0), 1)
             if (frac > 0) {
                 ctx.beginPath()
@@ -54,7 +60,7 @@ Item {
                 ctx.beginPath()
                 ctx.moveTo(cx + Math.cos(tickAngle) * innerR, cy + Math.sin(tickAngle) * innerR)
                 ctx.lineTo(cx + Math.cos(tickAngle) * outerR, cy + Math.sin(tickAngle) * outerR)
-                ctx.strokeStyle = Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.3)
+                ctx.strokeStyle = theme.color7
                 ctx.lineWidth = 1
                 ctx.stroke()
             }
@@ -66,40 +72,49 @@ Item {
             function onMeterColorChanged() { canvas.requestPaint() }
         }
 
+        Connections {
+            target: theme
+            function onColorsChanged() { canvas.requestPaint() }
+        }
+
         Component.onCompleted: canvas.requestPaint()
     }
 
-    // Value text centered in circle
+    // Label above circle
     Text {
-        anchors.centerIn: canvas
+        anchors.horizontalCenter: canvas.horizontalCenter
+        anchors.verticalCenter: canvas.verticalCenter
+        anchors.verticalCenterOffset: -16
+        text: meter.label
+        font.pixelSize: 11
+        font.family: "JetBrainsMono Nerd Font"
+        color: theme.foreground
+        z: 1
+    }
+
+    // Value centered
+    Text {
+        anchors.horizontalCenter: canvas.horizontalCenter
+        anchors.verticalCenter: canvas.verticalCenter
+        anchors.verticalCenterOffset: 4
         text: meter.value
-        font.pixelSize: 20
+        font.pixelSize: 24
         font.bold: true
         font.family: "JetBrainsMono Nerd Font"
         color: theme.foreground
         z: 1
     }
 
-    // Label below circle
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: canvas.bottom
-        anchors.topMargin: 3
-        text: meter.label
-        font.pixelSize: 12
-        font.family: "JetBrainsMono Nerd Font"
-        color: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.6)
-    }
-
-    // Sub text below label
+    // SubText below value
     Text {
         visible: meter.subText.length > 0
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.children[2].bottom
-        anchors.topMargin: 2
+        anchors.horizontalCenter: canvas.horizontalCenter
+        anchors.verticalCenter: canvas.verticalCenter
+        anchors.verticalCenterOffset: 24
         text: meter.subText
-        font.pixelSize: 11
+        font.pixelSize: 10
         font.family: "JetBrainsMono Nerd Font"
-        color: Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.4)
+        color: theme.foreground
+        z: 1
     }
 }

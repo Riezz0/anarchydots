@@ -19,10 +19,12 @@ Item {
     property string kbLayout: "US"
     property string salaatScrollText: ""
     property bool salaatReady: false
+    property bool showPassword: false
 
     signal passwordSubmitted(string password)
 
     function forcePasswordFocus() { pwdInput.forceActiveFocus() }
+    function resetPassword() { pwdInput.reset() }
 
     Timer {
         id: focusTimer
@@ -40,42 +42,52 @@ Item {
         visible: dashboard.revealProgress > 0
 
         // Clock
-        Column {
+        Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 4
+            width: 260
+            height: 100
+            radius: rootLock.barRadius
+            color: Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.85)
+            border.color: theme.color5
+            border.width: rootLock.popupBorderThickness
 
-            Text {
-                id: timeText
-                text: {
-                    var d = new Date()
-                    return (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
-                }
-                font.pixelSize: 64
-                font.bold: true
-                font.family: "JetBrainsMono Nerd Font"
-                color: theme.foreground
-                anchors.horizontalCenter: parent.horizontalCenter
+            Column {
+                anchors.centerIn: parent
+                spacing: 4
 
-                Timer {
-                    interval: 1000; running: true; repeat: true
-                    onTriggered: {
+                Text {
+                    id: timeText
+                    text: {
                         var d = new Date()
-                        timeText.text = (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                        return (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                    }
+                    font.pixelSize: 48
+                    font.bold: true
+                    font.family: "JetBrainsMono Nerd Font"
+                    color: theme.foreground
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Timer {
+                        interval: 1000; running: true; repeat: true
+                        onTriggered: {
+                            var d = new Date()
+                            timeText.text = (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                        }
                     }
                 }
-            }
 
-            Text {
-                text: {
-                    var d = new Date()
-                    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-                    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-                    return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate()
+                Text {
+                    text: {
+                        var d = new Date()
+                        var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+                        var months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+                        return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate()
+                    }
+                    font.pixelSize: 13
+                    font.family: "JetBrainsMono Nerd Font"
+                    color: theme.color7
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
-                font.pixelSize: 16
-                font.family: "JetBrainsMono Nerd Font"
-                color: theme.color7
-                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
 
@@ -105,6 +117,7 @@ Item {
                 id: pwdInput
                 anchors.centerIn: parent
                 width: 320
+                showPassword: dashboard.showPassword
                 onAccepted: password => dashboard.passwordSubmitted(password)
             }
         }
@@ -116,13 +129,17 @@ Item {
 
             Rectangle {
                 width: 44; height: 22; radius: rootLock.barRadius / 2
-                color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.5)
-                Text { anchors.centerIn: parent; text: dashboard.kbLayout; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.color7 }
+                color: theme.background
+                border.color: theme.color8
+                border.width: rootLock.popupBorderThickness
+                Text { anchors.centerIn: parent; text: dashboard.kbLayout; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
             }
 
             Rectangle {
                 width: 56; height: 22; radius: rootLock.barRadius / 2
-                color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.5)
+                color: theme.background
+                border.color: theme.color8
+                border.width: rootLock.popupBorderThickness
                 visible: dashboard.batteryCapacity > 0
                 Row {
                     anchors.centerIn: parent; spacing: 3
@@ -194,8 +211,8 @@ Item {
             progress: rightPanel.cpuTemp
             maxValue: 100
             meterColor: rightPanel.cpuTemp >= 80 ? theme.color1 : (rightPanel.cpuTemp >= 60 ? theme.color3 : theme.color4)
-            width: 95
-            height: 115
+            width: 110
+            height: 130
         }
 
         CircularMeter {
@@ -206,8 +223,8 @@ Item {
             progress: rightPanel.ramUsage
             maxValue: 100
             meterColor: rightPanel.ramUsage >= 80 ? theme.color1 : (rightPanel.ramUsage >= 60 ? theme.color3 : theme.color5)
-            width: 95
-            height: 115
+            width: 110
+            height: 130
         }
 
         CircularMeter {
@@ -218,8 +235,8 @@ Item {
             progress: rightPanel.gpuTemp
             maxValue: 100
             meterColor: rightPanel.gpuTemp >= 80 ? theme.color1 : (rightPanel.gpuTemp >= 60 ? theme.color3 : theme.color2)
-            width: 95
-            height: 115
+            width: 110
+            height: 130
         }
     }
 
@@ -235,8 +252,8 @@ Item {
         Rectangle {
             width: 300; height: 44
             radius: rootLock.barRadius
-            color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.12)
-            border.color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.2)
+            color: theme.background
+            border.color: theme.color5
             border.width: rootLock.popupBorderThickness
             anchors.horizontalCenter: parent.horizontalCenter
             clip: true
@@ -278,8 +295,8 @@ Item {
             Rectangle {
                 width: 95; height: 64
                 radius: rootLock.barRadius
-                color: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.12)
-                border.color: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.2)
+                color: theme.background
+                border.color: theme.color2
                 border.width: rootLock.popupBorderThickness
 
                 Row {
@@ -295,8 +312,8 @@ Item {
             Rectangle {
                 width: 95; height: 64
                 radius: rootLock.barRadius
-                color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.12)
-                border.color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.2)
+                color: theme.background
+                border.color: theme.color4
                 border.width: rootLock.popupBorderThickness
 
                 Row {

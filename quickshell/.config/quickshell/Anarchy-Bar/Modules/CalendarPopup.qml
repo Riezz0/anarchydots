@@ -54,7 +54,7 @@ PanelWindow {
         radius: root.widgetRadius
         color: theme.background
         opacity: calendarPopup.isOpen ? root.widgetOpacity : 0
-        border.color: theme.muted
+        border.color: theme.color5
         border.width: root.widgetBorderThickness
         clip: true
 
@@ -215,8 +215,8 @@ PanelWindow {
             anchors.fill: parent
             radius: root.barRadius
             color: "transparent"
-            border.color: theme.muted
-            border.width: root.popupBorderThickness
+            border.color: theme.color5
+            border.width: root.widgetBorderThickness
             z: 10
         }
     }

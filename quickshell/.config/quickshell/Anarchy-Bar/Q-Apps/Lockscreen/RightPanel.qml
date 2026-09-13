@@ -72,8 +72,8 @@ ColumnLayout {
         Layout.rightMargin: 20
         Layout.bottomMargin: 36
         radius: rootLock.barRadius
-        color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.2)
-        border.color: Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.12)
+        color: theme.background
+        border.color: theme.color6
         border.width: rootLock.popupBorderThickness
 
         Row {
@@ -96,8 +96,8 @@ ColumnLayout {
             width: (parent.width - 8) / 2
             height: parent.height
             radius: rootLock.barRadius
-            color: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.12)
-            border.color: Qt.rgba(theme.color2.r, theme.color2.g, theme.color2.b, 0.2)
+            color: theme.background
+            border.color: theme.color2
             border.width: rootLock.popupBorderThickness
 
             Row {
@@ -117,8 +117,8 @@ ColumnLayout {
             width: (parent.width - 10) / 2
             height: parent.height
             radius: rootLock.barRadius
-            color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.12)
-            border.color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.2)
+            color: theme.background
+            border.color: theme.color4
             border.width: rootLock.popupBorderThickness
 
             Row {

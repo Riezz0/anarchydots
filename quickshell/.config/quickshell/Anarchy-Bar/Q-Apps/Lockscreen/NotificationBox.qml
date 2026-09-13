@@ -9,8 +9,8 @@ Rectangle {
     width: parent ? parent.width : 280
     height: 190
     radius: rootLock.barRadius
-    color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.1)
-    border.color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.2)
+    color: theme.background
+    border.color: theme.color5
     border.width: rootLock.popupBorderThickness
     clip: true
 
@@ -54,8 +54,8 @@ Rectangle {
                         width: notifList.width
                         height: 42
                         radius: rootLock.barRadius
-                        color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.15)
-                        border.color: Qt.rgba(theme.color5.r, theme.color5.g, theme.color5.b, 0.1)
+                        color: theme.background
+                        border.color: theme.color5
                         border.width: rootLock.popupBorderThickness
 
                         Row {
@@ -65,14 +65,14 @@ Rectangle {
 
                     Rectangle {
                         width: 26; height: 26; radius: 6
-                        color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.2)
+                        color: theme.color4
                         anchors.verticalCenter: parent.verticalCenter
                         Text {
                             anchors.centerIn: parent
                             text: "󰂚"
                             font.pixelSize: 13
                             font.family: "JetBrainsMono Nerd Font"
-                            color: theme.color4
+                            color: theme.foreground
                         }
                     }
 

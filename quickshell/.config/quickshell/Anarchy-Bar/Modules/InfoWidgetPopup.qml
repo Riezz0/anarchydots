@@ -64,7 +64,7 @@ PanelWindow {
         color: theme.background
         opacity: infoPopup.isOpen ? root.widgetOpacity : 0
         clip: true
-        border.color: theme.muted
+         border.color: theme.color5
         border.width: root.widgetBorderThickness
         layer.enabled: true
         layer.effect: OpacityMask { maskSource: Rectangle { width: infoPanel.width; height: infoPanel.height; radius: root.widgetRadius; color: "white" } }
@@ -92,7 +92,7 @@ PanelWindow {
                     Layout.preferredHeight: 80
                     radius: root.barRadius
                     color: Qt.darker(theme.background, 1.08)
-                    border.color: theme.muted; border.width: root.popupBorderThickness
+                    border.color: theme.muted; border.width: root.widgetBorderThickness
 
                     RowLayout {
                         anchors.fill: parent; anchors.margins: 16; spacing: 12
@@ -120,7 +120,7 @@ PanelWindow {
                         implicitHeight: ethContent.implicitHeight + 20
                         radius: root.barRadius
                         color: Qt.darker(theme.background, 1.08)
-                        border.color: theme.muted; border.width: root.popupBorderThickness
+                        border.color: theme.muted; border.width: root.widgetBorderThickness
 
                         ColumnLayout {
                             id: ethContent
@@ -158,7 +158,7 @@ PanelWindow {
                         implicitHeight: trafficContent.implicitHeight + 20
                         radius: root.barRadius
                         color: Qt.darker(theme.background, 1.08)
-                        border.color: theme.muted; border.width: root.popupBorderThickness
+                        border.color: theme.muted; border.width: root.widgetBorderThickness
 
                         ColumnLayout {
                             id: trafficContent
@@ -200,7 +200,7 @@ PanelWindow {
                         implicitHeight: ifacesContent.implicitHeight + 20
                         radius: root.barRadius
                         color: Qt.darker(theme.background, 1.08)
-                        border.color: theme.muted; border.width: root.popupBorderThickness
+                        border.color: theme.muted; border.width: root.widgetBorderThickness
 
                         ColumnLayout {
                             id: ifacesContent
@@ -250,7 +250,7 @@ PanelWindow {
                         Rectangle {
                             Layout.fillWidth: true; Layout.preferredHeight: 32; radius: root.barRadius
                             color: hwTab === index ? theme.color4 : "transparent"
-                            border.color: hwTab === index ? theme.color4 : theme.muted; border.width: root.popupBorderThickness
+                            border.color: hwTab === index ? theme.color4 : theme.muted; border.width: root.widgetBorderThickness
                             Text { anchors.centerIn: parent; text: modelData; font.pixelSize: 12; font.bold: hwTab === index; color: hwTab === index ? theme.background : theme.foreground }
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: hwTab = index }
                         }
@@ -399,7 +399,7 @@ PanelWindow {
             }
         }
 
-        Rectangle { anchors.fill: parent; radius: root.barRadius; color: "transparent"; border.color: theme.muted; border.width: root.popupBorderThickness; z: 10 }
+        Rectangle { anchors.fill: parent; radius: root.barRadius; color: "transparent"; border.color: theme.color5; border.width: root.widgetBorderThickness; z: 10 }
     }
 
     Item { anchors.fill: parent; focus: infoPopup.isOpen; Keys.onEscapePressed: infoPopup.close() }

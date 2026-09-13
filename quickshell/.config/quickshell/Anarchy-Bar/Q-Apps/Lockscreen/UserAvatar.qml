@@ -14,13 +14,15 @@ Item {
         id: avatarBg
         anchors.fill: parent
         radius: width / 2
-        color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.3)
-        border.color: theme.color7
+        color: theme.background
+        border.color: theme.color4
         border.width: rootLock.popupBorderThickness
 
         Image {
             id: avatarImg
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: parent.width - 4
+            height: parent.height - 4
             source: avatarRoot.avatarPath
             fillMode: Image.PreserveAspectCrop
             visible: false
@@ -28,11 +30,11 @@ Item {
         }
 
         OpacityMask {
-            anchors.fill: parent
+            anchors.fill: avatarImg
             source: avatarImg
             maskSource: Rectangle {
-                width: avatarRoot.width
-                height: avatarRoot.height
+                width: avatarImg.width
+                height: avatarImg.height
                 radius: width / 2
             }
         }

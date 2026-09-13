@@ -5,6 +5,7 @@ Item {
 
     property string password: ""
     property bool shakeActive: false
+    property bool showPassword: false
     property alias textInput: input
 
     signal accepted(string password)
@@ -37,8 +38,8 @@ Item {
         Row {
             anchors.fill: parent
             anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            spacing: 10
+            anchors.rightMargin: 10
+            spacing: 8
 
             Text {
                 text: "󰌾"
@@ -51,11 +52,11 @@ Item {
             TextInput {
                 id: input
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.width - 30
+                width: parent.width - 70
                 height: parent.height - 8
                 color: theme.foreground
                 selectionColor: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.4)
-                echoMode: TextInput.Password
+                echoMode: passwordRoot.showPassword ? TextInput.Normal : TextInput.Password
                 font.pixelSize: 17
                 font.family: "JetBrainsMono Nerd Font"
                 verticalAlignment: TextInput.AlignVCenter
@@ -74,6 +75,29 @@ Item {
 
                 Keys.onReturnPressed: submit()
                 Keys.onEnterPressed: submit()
+            }
+
+            // Eye toggle button
+            Rectangle {
+                width: 32; height: 32; radius: 6
+                color: eyeArea.containsMouse ? Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.2) : "transparent"
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    anchors.centerIn: parent
+                    text: passwordRoot.showPassword ? "󰈈" : "󰈉"
+                    font.pixelSize: 16
+                    font.family: "JetBrainsMono Nerd Font"
+                    color: theme.color7
+                }
+
+                MouseArea {
+                    id: eyeArea
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    onClicked: passwordRoot.showPassword = !passwordRoot.showPassword
+                }
             }
         }
     }
@@ -96,6 +120,7 @@ Item {
 
     function reset() {
         input.text = ""
+        passwordRoot.shakeActive = false
         input.forceActiveFocus()
     }
 }

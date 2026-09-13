@@ -350,6 +350,7 @@ Variants {
                     }
 
                     Rectangle {
+                        id: playerLauncher
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: root.widgetRadius
@@ -368,42 +369,16 @@ Variants {
                                 Layout.preferredHeight: 46
                                 radius: root.widgetRadius
                                 color: theme.color4
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "\u{F008}"
-                                    color: theme.background
-                                    font.family: "JetBrainsMono Nerd Font"
-                                    font.pixelSize: 25
-                                    font.bold: true
-                                }
+                                Text { anchors.centerIn: parent; text: "\u{F008}"; color: theme.background; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 25; font.bold: true }
                             }
-
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 1
-                                Text {
-                                    text: "Q-PLAYER"
-                                    color: theme.foreground
-                                    font.family: "JetBrainsMono Nerd Font"
-                                    font.pixelSize: 14
-                                    font.bold: true
-                                }
-                                Text {
-                                    text: "Audio and video"
-                                    color: theme.muted
-                                    font.family: "JetBrainsMono Nerd Font"
-                                    font.pixelSize: 11
-                                }
+                                Text { text: "Q-PLAYER"; color: theme.foreground; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 14; font.bold: true }
+                                Text { text: "Audio and video"; color: theme.muted; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 11 }
                             }
-                            Text {
-                                text: ">"
-                                color: theme.color4
-                                font.family: "JetBrainsMono Nerd Font"
-                                font.pixelSize: 16
-                                font.bold: true
-                            }
+                            Text { text: ">"; color: theme.color4; font.family: "JetBrainsMono Nerd Font"; font.pixelSize: 16; font.bold: true }
                         }
-
                         MouseArea {
                             anchors.fill: parent
                             hoverEnabled: true
@@ -417,6 +392,7 @@ Variants {
                             }
                         }
                     }
+
                 }
             }
         }

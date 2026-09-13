@@ -42,6 +42,10 @@ Item {
             }
             var arr = notifsRoot.activeNotifications.slice()
             arr.push(notifData)
+            if (arr.length > 50) {
+                var removed = arr.shift()
+                if (removed.appNotification) removed.appNotification.dismiss()
+            }
             notifsRoot.activeNotifications = arr
             notifsRoot.trackedCount = arr.length
             notifsRoot.hasUnread = true
@@ -60,7 +64,6 @@ Item {
             try {
                 var data = JSON.parse(persistFile.text())
                 if (data && data.length > 0) {
-                    notifsRoot.activeNotifications = data
                     notifsRoot.trackedCount = data.length
                     notifsRoot.hasUnread = true
                 }
@@ -83,7 +86,7 @@ Item {
 
     Component.onCompleted: {
         dirCreator.running = true
-        persistFile.reload()
+        notifsRoot.clearAll()
     }
 
     Timer { interval: 1000; running: true; repeat: true; onTriggered: notifsRoot.cleanup() }

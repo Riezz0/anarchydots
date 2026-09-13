@@ -18,42 +18,52 @@ ColumnLayout {
     spacing: 14
     width: 380
 
-    Column {
+    Rectangle {
         Layout.alignment: Qt.AlignHCenter
-        spacing: 2
+        Layout.preferredWidth: 260
+        Layout.preferredHeight: 100
+        radius: rootLock.barRadius
+        color: Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.85)
+        border.color: theme.color5
+        border.width: rootLock.popupBorderThickness
 
-        Text {
-            id: timeText
-            text: {
-                var d = new Date()
-                return (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
-            }
-            font.pixelSize: 64
-            font.bold: true
-            font.family: "JetBrainsMono Nerd Font"
-            color: theme.foreground
-            anchors.horizontalCenter: parent.horizontalCenter
+        Column {
+            anchors.centerIn: parent
+            spacing: 2
 
-            Timer {
-                interval: 1000; running: true; repeat: true
-                onTriggered: {
+            Text {
+                id: timeText
+                text: {
                     var d = new Date()
-                    timeText.text = (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                    return (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                }
+                font.pixelSize: 52
+                font.bold: true
+                font.family: "JetBrainsMono Nerd Font"
+                color: theme.foreground
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Timer {
+                    interval: 1000; running: true; repeat: true
+                    onTriggered: {
+                        var d = new Date()
+                        timeText.text = (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()
+                    }
                 }
             }
-        }
 
-        Text {
-            text: {
-                var d = new Date()
-                var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-                var months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-                return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate()
+            Text {
+                text: {
+                    var d = new Date()
+                    var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+                    var months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+                    return days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate()
+                }
+                font.pixelSize: 13
+                font.family: "JetBrainsMono Nerd Font"
+                color: theme.color7
+                anchors.horizontalCenter: parent.horizontalCenter
             }
-            font.pixelSize: 16
-            font.family: "JetBrainsMono Nerd Font"
-            color: theme.color7
-            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 
@@ -90,13 +100,17 @@ ColumnLayout {
 
         Rectangle {
             width: 44; height: 22; radius: rootLock.barRadius / 2
-            color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.5)
-            Text { anchors.centerIn: parent; text: centerPanel.kbLayout; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.color7 }
+            color: theme.background
+            border.color: theme.color8
+            border.width: rootLock.popupBorderThickness
+            Text { anchors.centerIn: parent; text: centerPanel.kbLayout; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font"; font.bold: true; color: theme.foreground }
         }
 
         Rectangle {
             width: 56; height: 22; radius: rootLock.barRadius / 2
-            color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.5)
+            color: theme.background
+            border.color: theme.color8
+            border.width: rootLock.popupBorderThickness
             visible: centerPanel.batteryCapacity > 0
             Row {
                 anchors.centerIn: parent; spacing: 3

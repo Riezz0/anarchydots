@@ -46,6 +46,10 @@ ShellRoot {
     property int rofiBorderRadius: 5
     property int rofiBorderThickness: 2
     property int qPlayerButtonRadius: 2
+    property string lockscreenWallpaper: ""
+    property int lockscreenRadius: 10
+    property int lockscreenBorderThickness: 2
+    property bool lockscreenShowPassword: false
     property bool isLoadingSettings: true
 
     readonly property string settingsPath:
@@ -96,7 +100,11 @@ ShellRoot {
             "barMonitors": barMonitors.length > 0 ? barMonitors : undefined,
             "rofiBorderRadius": rofiBorderRadius,
             "rofiBorderThickness": rofiBorderThickness,
-            "qPlayerButtonRadius": qPlayerButtonRadius
+            "qPlayerButtonRadius": qPlayerButtonRadius,
+            "lockscreenWallpaper": lockscreenWallpaper,
+                "lockscreenRadius": lockscreenRadius,
+                "lockscreenBorderThickness": lockscreenBorderThickness,
+                "lockscreenShowPassword": lockscreenShowPassword
         }
         settingsFile.setText(JSON.stringify(data, null, 2))
     }
@@ -172,6 +180,10 @@ ShellRoot {
                     if (data.rofiBorderRadius !== undefined) root.rofiBorderRadius = data.rofiBorderRadius
                     if (data.rofiBorderThickness !== undefined) root.rofiBorderThickness = data.rofiBorderThickness
                     if (data.qPlayerButtonRadius !== undefined) root.qPlayerButtonRadius = data.qPlayerButtonRadius
+                    if (data.lockscreenWallpaper !== undefined) root.lockscreenWallpaper = data.lockscreenWallpaper
+                    if (data.lockscreenRadius !== undefined) root.lockscreenRadius = data.lockscreenRadius
+                    if (data.lockscreenBorderThickness !== undefined) root.lockscreenBorderThickness = data.lockscreenBorderThickness
+                    if (data.lockscreenShowPassword !== undefined) root.lockscreenShowPassword = data.lockscreenShowPassword
                 } catch (e) {
                     console.warn("Anarchy-Bar: failed to parse settings:", e)
                 }
@@ -255,6 +267,9 @@ ShellRoot {
         rofiPatchTimer.restart()
     }
     onQPlayerButtonRadiusChanged: saveSettings()
+    onLockscreenWallpaperChanged: saveSettings()
+    onLockscreenRadiusChanged: saveSettings()
+    onLockscreenBorderThicknessChanged: saveSettings()
 
     function getMonitorName(monitor) {
         if (monitor && monitor.name) return monitor.name

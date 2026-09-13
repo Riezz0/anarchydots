@@ -30,8 +30,8 @@ Canvas {
     Rectangle {
         anchors.fill: parent
         radius: rootLock.barRadius
-        color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.2)
-        border.color: Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.12)
+        color: theme.background
+        border.color: theme.color8
         border.width: rootLock.popupBorderThickness
     }
 
@@ -57,8 +57,8 @@ Canvas {
         ctx.closePath()
 
         var grad = ctx.createLinearGradient(0, height - fillH, 0, height)
-        grad.addColorStop(0, Qt.rgba(fillGradientStart.r, fillGradientStart.g, fillGradientStart.b, 0.6))
-        grad.addColorStop(1, Qt.rgba(fillGradientEnd.r, fillGradientEnd.g, fillGradientEnd.b, 0.4))
+        grad.addColorStop(0, fillGradientStart)
+        grad.addColorStop(1, fillGradientEnd)
         ctx.fillStyle = grad
         ctx.fill()
 
@@ -67,11 +67,11 @@ Canvas {
         ctx.textAlign = "left"
         ctx.textBaseline = "top"
 
-        ctx.fillStyle = Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.7)
+        ctx.fillStyle = theme.foreground
         ctx.font = "14px JetBrainsMono Nerd Font"
         ctx.fillText(icon, 10, 10)
 
-        ctx.fillStyle = Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.6)
+        ctx.fillStyle = theme.foreground
         ctx.font = "11px JetBrainsMono Nerd Font"
         ctx.fillText(title, 28, 11)
 
@@ -80,7 +80,7 @@ Canvas {
         ctx.fillText(value, 10, 34)
 
         if (subText.length > 0) {
-            ctx.fillStyle = Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.5)
+            ctx.fillStyle = theme.foreground
             ctx.font = "10px JetBrainsMono Nerd Font"
             ctx.fillText(subText, 10, 58)
         }

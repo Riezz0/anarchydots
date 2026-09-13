@@ -10,9 +10,13 @@ Scope {
     property bool isUnlocking: false
     property string currentUsername: "user"
     property string currentAvatar: ""
-    property int barRadius: 10
-    property int popupBorderThickness: 2
+    property int barRadius
+    property int popupBorderThickness
     property var notifData: []
+    property string wallpaperPath: ""
+    property string statusMessage: ""
+    property color statusColor: theme.color2
+    property bool showPassword: false
 
     Auth { id: auth }
     Battery { id: battery }
@@ -64,15 +68,34 @@ Scope {
 
     function unlock() {
         isUnlocking = true
+        rootLock.statusMessage = "Unlocked"
+        rootLock.statusColor = theme.color2
+        statusTimer.restart()
         unlockDelay.start()
     }
 
     Timer { id: unlockDelay; interval: 300; onTriggered: { locked = false; isUnlocking = false } }
 
+    Timer {
+        id: statusTimer
+        interval: 1000
+        onTriggered: rootLock.statusMessage = ""
+    }
+
     Connections {
         target: auth
-        function onAuthSucceeded() { rootLock.unlock() }
-        function onAuthFailed() { auth.cancel() }
+        function onAuthSucceeded() {
+            rootLock.statusMessage = "Unlocked"
+            rootLock.statusColor = theme.color2
+            statusTimer.restart()
+            rootLock.unlock()
+        }
+        function onAuthFailed() {
+            rootLock.statusMessage = "Wrong password"
+            rootLock.statusColor = theme.color1
+            statusTimer.restart()
+            dashboard.resetPassword()
+        }
     }
 
     Variants {
@@ -95,10 +118,22 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
             WlrLayershell.namespace: "lockscreen"
 
+            // Wallpaper background
+            Image {
+                id: wallpaperImage
+                anchors.fill: parent
+                source: rootLock.wallpaperPath.startsWith("file://")
+                    ? rootLock.wallpaperPath
+                    : (rootLock.wallpaperPath !== "" ? "file://" + rootLock.wallpaperPath : "")
+                fillMode: Image.PreserveAspectCrop
+                visible: rootLock.wallpaperPath !== ""
+            }
+
+            // Fallback solid color background
             Rectangle {
                 anchors.fill: parent
                 color: theme.background
-                opacity: 1.0
+                visible: rootLock.wallpaperPath === ""
             }
 
             IntroAnimation {
@@ -135,6 +170,7 @@ Scope {
 
                     dashboard.salaatScrollText = Qt.binding(function() { return salaat.scrollText })
                     dashboard.salaatReady = Qt.binding(function() { return salaat.loaded })
+                    dashboard.showPassword = Qt.binding(function() { return rootLock.showPassword })
 
                     rightPanel.cpuUsage = Qt.binding(function() { return stats.cpuUsage })
                     rightPanel.cpuTemp = Qt.binding(function() { return stats.cpuTemp })
@@ -154,7 +190,10 @@ Scope {
                     dashboard.forcePasswordFocus()
                 }
 
-                onPasswordSubmitted: password => auth.startAuth(password)
+                onPasswordSubmitted: password => {
+                    auth.currentText = password
+                    auth.tryUnlock()
+                }
             }
 
             LockPowerMenu {
@@ -167,15 +206,29 @@ Scope {
                 onPowerOff: { rootLock.locked = false; powerProc.command = ["systemctl", "poweroff"]; powerProc.running = true }
             }
 
+            // Status message banner
             Rectangle {
-                z: 100
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.margins: 16
-                width: 36; height: 36; radius: 18
-                color: closeArea.containsMouse ? Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.3) : Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.3)
-                Text { anchors.centerIn: parent; text: "󰅖"; font.pixelSize: 16; font.family: "JetBrainsMono Nerd Font"; color: theme.foreground }
-                MouseArea { id: closeArea; anchors.fill: parent; cursorShape: Qt.PointingHandCursor; hoverEnabled: true; onClicked: rootLock.locked = false }
+                visible: rootLock.statusMessage !== ""
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 300
+                width: statusText.width + 40
+                height: 36
+                radius: rootLock.barRadius
+                color: rootLock.statusColor
+                opacity: 0.9
+
+                Text {
+                    id: statusText
+                    anchors.centerIn: parent
+                    text: rootLock.statusMessage
+                    font.pixelSize: 13
+                    font.family: "JetBrainsMono Nerd Font"
+                    font.bold: true
+                    color: theme.background
+                }
+
+                Behavior on opacity { NumberAnimation { duration: 200 } }
             }
 
             Component.onCompleted: { if (isPrimary) introAnim.start() }

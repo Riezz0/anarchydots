@@ -132,3 +132,8 @@ hl.window_rule({ name = "qrules", match = { class = "qplayer" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
+-- Q-Clipboard
+hl.window_rule({ name = "qcliprules", match = { class = "qclipboard" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })
+

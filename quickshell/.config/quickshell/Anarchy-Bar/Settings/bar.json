@@ -11,10 +11,10 @@
   "widgetShadowX": 5,
   "widgetShadowY": 5,
   "widgetShadowRadius": 10,
-  "widgetShadowOpacity": 0.45,
+  "widgetShadowOpacity": 0,
   "widgetOpacity": 1,
   "widgetRadius": 10,
-  "widgetBorderThickness": 2,
+  "widgetBorderThickness": 0,
   "themeCardRadius": 10,
   "themeCardBorderThickness": 2,
   "themeThumbnailStyle": "cover",
@@ -35,5 +35,9 @@
   ],
   "rofiBorderRadius": 10,
   "rofiBorderThickness": 0,
-  "qPlayerButtonRadius": 10
+  "qPlayerButtonRadius": 10,
+  "lockscreenWallpaper": "~/.config/hypr/lock.png",
+  "lockscreenRadius": 10,
+  "lockscreenBorderThickness": 0,
+  "lockscreenShowPassword": false
 }

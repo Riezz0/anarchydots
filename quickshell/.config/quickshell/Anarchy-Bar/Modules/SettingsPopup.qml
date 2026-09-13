@@ -140,7 +140,7 @@ PanelWindow {
         color: theme.background
         opacity: settingsPopup.isOpen ? root.widgetOpacity : 0
         clip: true
-        border.color: theme.muted
+        border.color: theme.color5
         border.width: root.widgetBorderThickness
         layer.enabled: true
         layer.effect: OpacityMask {
@@ -431,6 +431,32 @@ PanelWindow {
                         }
                     }
 
+                    Rectangle {
+                        id: lockscreenTab
+                        Layout.preferredHeight: 42
+                        Layout.topMargin: 10
+                        Layout.fillWidth: true
+                        radius: root.barRadius
+                        color: settingsWindow.currentTab === 8 ? theme.color6 : (lockscreenTabHover.containsMouse ? Qt.darker(theme.color6, 1.25) : "transparent")
+
+                        Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: 12
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Lockscreen"
+                            font.pixelSize: 13
+                            color: settingsWindow.currentTab === 8 ? theme.background : theme.foreground
+                        }
+
+                        MouseArea {
+                            id: lockscreenTabHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: settingsWindow.currentTab = 8
+                        }
+                    }
+
                     Item { Layout.fillHeight: true }
 
                     Text {
@@ -458,14 +484,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : (settingsWindow.currentTab === 5 ? "Widget Settings" : (settingsWindow.currentTab === 6 ? "Theme Switcher" : "Q-Apps"))))))
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : (settingsWindow.currentTab === 5 ? "Widget Settings" : (settingsWindow.currentTab === 6 ? "Theme Switcher" : (settingsWindow.currentTab === 7 ? "Q-Apps" : "Lockscreen")))))))
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : (settingsWindow.currentTab === 5 ? "Customize widget appearance." : (settingsWindow.currentTab === 6 ? "Configure the fullscreen theme switcher." : "Configure Q-Apps."))))))
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : (settingsWindow.currentTab === 5 ? "Customize widget appearance." : (settingsWindow.currentTab === 6 ? "Configure the fullscreen theme switcher." : (settingsWindow.currentTab === 7 ? "Configure Q-Apps." : "Customize lockscreen appearance.")))))))
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -677,6 +703,99 @@ PanelWindow {
 
                     Flickable {
                         Layout.fillWidth: true
+                        Layout.fillHeight: settingsWindow.currentTab === 8
+                        Layout.preferredHeight: settingsWindow.currentTab === 8 ? -1 : 0
+                        visible: settingsWindow.currentTab === 8
+                        clip: true
+                        contentWidth: width
+                        contentHeight: lockscreenSettingsContent.implicitHeight
+
+                        ColumnLayout {
+                            id: lockscreenSettingsContent
+                            width: parent.width
+                            spacing: 20
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: "Lockscreen Appearance"
+                                font.pixelSize: 15
+                                font.bold: true
+                                color: theme.color6
+                            }
+
+                            SettingSlider {
+                                label: "Lockscreen Radius"
+                                valueText: root.lockscreenRadius + "px"
+                                minimumText: "0"
+                                maximumText: "50"
+                                from: 0
+                                to: 50
+                                value: root.lockscreenRadius
+                                onMoved: root.lockscreenRadius = Math.round(value)
+                            }
+
+                            SettingSlider {
+                                label: "Lockscreen Border"
+                                valueText: root.lockscreenBorderThickness + "px"
+                                minimumText: "0"
+                                maximumText: "6"
+                                from: 0
+                                to: 6
+                                value: root.lockscreenBorderThickness
+                                onMoved: root.lockscreenBorderThickness = Math.round(value)
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: 40
+                                radius: 8
+                                color: Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.2)
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 12
+                                    anchors.rightMargin: 12
+
+                                    Text {
+                                        text: "Show Password"
+                                        font.pixelSize: 13
+                                        font.family: "JetBrainsMono Nerd Font"
+                                        color: theme.foreground
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Item {
+                                        width: parent.width - 130
+                                        height: parent.height
+                                    }
+
+                                    Rectangle {
+                                        width: 40; height: 22; radius: 11
+                                        color: root.lockscreenShowPassword ? theme.color2 : Qt.rgba(theme.color7.r, theme.color7.g, theme.color7.b, 0.3)
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Rectangle {
+                                            x: root.lockscreenShowPassword ? 20 : 2
+                                            width: 18; height: 18; radius: 9
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+
+                                            Behavior on x { NumberAnimation { duration: 150 } }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: root.lockscreenShowPassword = !root.lockscreenShowPassword
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Flickable {
+                        Layout.fillWidth: true
                         clip: true
                         contentWidth: width
                         contentHeight: settingsContent.implicitHeight
@@ -749,8 +868,8 @@ PanelWindow {
                                 }
                             }
 
-                            SettingSlider {
-                                label: "Bar Opacity"
+                             SettingSlider {
+                                 label: "Bar Opacity"
                                 valueText: Math.round(root.barOpacity * 100) + "%"
                                 minimumText: "0%"
                                 maximumText: "100%"
@@ -758,10 +877,10 @@ PanelWindow {
                                 to: 1
                                 stepSize: 0.05
                                 value: root.barOpacity
-                                onMoved: root.barOpacity = Math.round(value * 100) / 100
-                            }
+                                 onMoved: root.barOpacity = Math.round(value * 100) / 100
+                             }
 
-                            SettingSlider {
+                             SettingSlider {
                                 label: "Popup Opacity"
                                 valueText: Math.round(root.popupOpacity * 100) + "%"
                                 minimumText: "0%"
@@ -782,28 +901,6 @@ PanelWindow {
                                 to: 4
                                 value: root.barBorderThickness
                                 onMoved: root.barBorderThickness = Math.round(value)
-                            }
-
-                            SettingSlider {
-                                label: "Module Border"
-                                valueText: root.moduleBorderThickness + "px"
-                                minimumText: "0"
-                                maximumText: "4"
-                                from: 0
-                                to: 4
-                                value: root.moduleBorderThickness
-                                onMoved: root.moduleBorderThickness = Math.round(value)
-                            }
-
-                            SettingSlider {
-                                label: "Popup Border"
-                                valueText: root.popupBorderThickness + "px"
-                                minimumText: "0"
-                                maximumText: "4"
-                                from: 0
-                                to: 4
-                                value: root.popupBorderThickness
-                                onMoved: root.popupBorderThickness = Math.round(value)
                             }
 
                             ColumnLayout {
@@ -1412,6 +1509,15 @@ PanelWindow {
                     }
 
                 }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                radius: root.widgetRadius
+                color: "transparent"
+                border.color: theme.color5
+                border.width: root.widgetBorderThickness
+                z: 10
             }
         }
 

@@ -8,44 +8,49 @@ Scope {
     signal authSucceeded()
     signal authFailed()
 
-    property bool authenticating: false
-    property string password: ""
+    property string currentText: ""
+    property bool unlockInProgress: false
 
-    PamContext {
-        id: pamContext
+    onCurrentTextChanged: {}
 
-        onCompleted: {
-            authRoot.authenticating = false
-            if (result === PamResult.Success) {
-                authRoot.authSucceeded()
-            } else {
-                authRoot.authFailed()
-            }
-        }
-
-        onError: {
-            authRoot.authenticating = false
-            authRoot.authFailed()
-        }
-
-        onResponseRequiredChanged: {
-            if (pamContext.responseRequired) {
-                pamContext.respond(authRoot.password)
-            }
-        }
-    }
-
-    function startAuth(pass) {
-        if (authenticating) return
-        password = pass
-        authenticating = true
-        pamContext.start()
+    function tryUnlock() {
+        if (currentText === "") return
+        unlockInProgress = true
+        pam.start()
     }
 
     function cancel() {
-        if (authenticating) {
-            pamContext.abort()
-            authenticating = false
+        if (pam.active) {
+            pam.abort()
+            unlockInProgress = false
+        }
+    }
+
+    PamContext {
+        id: pam
+
+        configDirectory: Qt.resolvedUrl("pam")
+        config: "password.conf"
+
+        onPamMessage: {
+            if (this.responseRequired) {
+                this.respond(authRoot.currentText)
+            }
+        }
+
+        onCompleted: result => {
+            if (result === PamResult.Success) {
+                authRoot.authSucceeded()
+            } else {
+                authRoot.currentText = ""
+                authRoot.authFailed()
+            }
+            authRoot.unlockInProgress = false
+        }
+
+        onError: {
+            authRoot.unlockInProgress = false
+            authRoot.authFailed()
         }
     }
 }

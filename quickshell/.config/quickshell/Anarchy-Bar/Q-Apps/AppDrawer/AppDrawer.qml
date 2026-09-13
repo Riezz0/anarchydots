@@ -13,7 +13,7 @@ PanelWindow {
     readonly property int cardWidth: 460
     readonly property int cardHeight: 408
     readonly property int rowHeight: 52
-    readonly property string wallpaperPath: "file:///home/riezzo/.config/activebg/Wall.png"
+    readonly property string wallpaperPath: "file://" + StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/activebg/Wall.png"
 
     property string cursorMonitor: ""
     property string iconThemeName: "GruvboxDark-Icons"

@@ -12,8 +12,8 @@ Rectangle {
     width: parent ? parent.width : 280
     height: 130
     radius: rootLock.barRadius
-    color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.1)
-    border.color: Qt.rgba(theme.color4.r, theme.color4.g, theme.color4.b, 0.2)
+    color: theme.background
+    border.color: theme.color4
     border.width: rootLock.popupBorderThickness
 
     Column {
