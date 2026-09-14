@@ -34,8 +34,7 @@ ShellRoot {
     FileView {
         id: notifFile
         path: lockRoot.cacheDir + "/notifications.json"
-        watchChanges: true
-        onFileChanged: reload()
+        watchChanges: false
         onLoaded: notifReader.parse(text())
     }
 
@@ -59,8 +58,7 @@ ShellRoot {
     FileView {
         id: settingsFile
         path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/Anarchy-Bar/Settings/bar.json"
-        watchChanges: true
-        onFileChanged: reload()
+        watchChanges: false
         onLoaded: {
             if (text().length > 0) {
                 try {
@@ -76,12 +74,5 @@ ShellRoot {
                 } catch (e) {}
             }
         }
-    }
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: settingsFile.reload()
     }
 }

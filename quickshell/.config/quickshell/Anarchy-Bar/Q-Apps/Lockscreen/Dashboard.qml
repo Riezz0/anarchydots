@@ -150,6 +150,16 @@ Item {
         }
     }
 
+    // Hadith card - left side, below notifications
+    HadithCard {
+        id: hadithCard
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 40
+        opacity: dashboard.wingsReveal
+        visible: dashboard.revealProgress > 0
+    }
+
     // Hidden - data only
     LeftPanel {
         id: leftPanelInstance
