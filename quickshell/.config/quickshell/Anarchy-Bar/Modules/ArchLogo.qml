@@ -5,6 +5,8 @@ import Quickshell.Io
 Rectangle {
     id: logoContainer
 
+    property var hostWindow: null
+    property real anchorX: 0
     width: 40
     height: 40
     radius: root.barRadius
@@ -58,5 +60,19 @@ Rectangle {
                 settingsPopup.isOpen ? settingsPopup.close() : settingsPopup.open()
             }
         }
+    }
+
+    Loader {
+        id: logoTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: logoHover.containsMouse
+        property real tooltipAnchorX: logoContainer.anchorX
+        onLoaded: {
+            item.hostWindow = logoContainer.hostWindow
+            item.title = "Anarchy-Bar"
+            item.details = "LEFT CLICK  Bar settings\nRIGHT CLICK  Keybinds"
+        }
+        Binding { target: logoTooltip.item; property: "shown"; value: logoTooltip.tooltipShown; when: logoTooltip.item !== null }
+        Binding { target: logoTooltip.item; property: "anchorX"; value: logoTooltip.tooltipAnchorX; when: logoTooltip.item !== null }
     }
 }

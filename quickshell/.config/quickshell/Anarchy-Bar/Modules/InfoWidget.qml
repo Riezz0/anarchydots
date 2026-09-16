@@ -8,6 +8,8 @@ import Quickshell.Io
 Item {
     id: infoRoot
 
+    property var hostWindow: null
+    property real anchorX: 0
     property string tempC: "--"
     property string condition: "Loading..."
     property string city: ""
@@ -92,6 +94,20 @@ Item {
             if (infoPopup.isOpen) infoPopup.close()
             else infoPopup.open()
         }
+    }
+
+    Loader {
+        id: infoTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: infoHover.containsMouse
+        property real tooltipAnchorX: infoRoot.anchorX
+        onLoaded: {
+            item.hostWindow = infoRoot.hostWindow
+            item.title = "System Info"
+            item.details = "LEFT CLICK  Weather and system info\nRIGHT CLICK  Q-Apps launcher"
+        }
+        Binding { target: infoTooltip.item; property: "shown"; value: infoTooltip.tooltipShown; when: infoTooltip.item !== null }
+        Binding { target: infoTooltip.item; property: "anchorX"; value: infoTooltip.tooltipAnchorX; when: infoTooltip.item !== null }
     }
 
     Process {

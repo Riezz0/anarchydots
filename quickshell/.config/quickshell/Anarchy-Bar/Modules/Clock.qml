@@ -92,6 +92,20 @@ Rectangle {
         }
     }
 
+    Loader {
+        id: clockTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: clockHover.containsMouse
+        property real tooltipAnchorX: clockContainer.anchorX
+        onLoaded: {
+            item.hostWindow = clockContainer.hostWindow
+            item.title = "Clock and Calendar"
+            item.details = "LEFT CLICK  Calendar\nRIGHT CLICK  Clock details"
+        }
+        Binding { target: clockTooltip.item; property: "shown"; value: clockTooltip.tooltipShown; when: clockTooltip.item !== null }
+        Binding { target: clockTooltip.item; property: "anchorX"; value: clockTooltip.tooltipAnchorX; when: clockTooltip.item !== null }
+    }
+
     property bool clockPopupOpen: false
 
     PopupWindow {

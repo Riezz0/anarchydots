@@ -56,18 +56,44 @@ Variants {
                 anchors.leftMargin: 10
                 spacing: 10
 
-                ArchLogo {
-                    height: 42
-                    width: 42
-                }
+                 ArchLogo {
+                     height: 42
+                     width: 42
+                     hostWindow: bar
+                     anchorX: rightModules.x + x + width / 2
+                 }
 
-                Workspaces {}
+                 Workspaces {
+                     hostWindow: bar
+                     anchorX: rightModules.x + x + width / 2
+                 }
 
-                Volume {}
+                 Volume {
+                     hostWindow: bar
+                     anchorX: rightModules.x + x + width / 2
+                 }
 
-                MouseBattery {}
+                 MouseBattery {
+                     hostWindow: bar
+                     anchorX: rightModules.x + x + width / 2
+                 }
 
-                Bluetooth {}
+                 Bluetooth {
+                     hostWindow: bar
+                     anchorX: rightModules.x + x + width / 2
+                 }
+
+                 Loader {
+                     id: scratchpadLoader
+                     source: "ScratchpadIndicators.qml"
+                     property real scratchpadAnchorX: rightModules.x + x + width / 2
+                     height: 42
+                     anchors.verticalCenter: parent.verticalCenter
+                     onLoaded: {
+                         item.hostWindow = bar
+                     }
+                     Binding { target: scratchpadLoader.item; property: "anchorX"; value: scratchpadLoader.scratchpadAnchorX; when: scratchpadLoader.item !== null }
+                 }
             }
 
             // Center: Salaat marquee
@@ -150,27 +176,47 @@ Variants {
                     cursorShape: Qt.PointingHandCursor
                     onClicked: salaatPopup.isOpen ? salaatPopup.close() : salaatPopup.open()
                 }
+
+                Loader {
+                    id: salaatTooltip
+                    source: "BarTooltip.qml"
+                    property bool tooltipShown: salaatHover.containsMouse
+                    property real tooltipAnchorX: salaatMarquee.x + salaatMarquee.width / 2
+                    onLoaded: {
+                        item.hostWindow = bar
+                        item.title = "Prayer Times"
+                        item.details = "LEFT CLICK  Open prayer details"
+                    }
+                    Binding { target: salaatTooltip.item; property: "shown"; value: salaatTooltip.tooltipShown; when: salaatTooltip.item !== null }
+                    Binding { target: salaatTooltip.item; property: "anchorX"; value: salaatTooltip.tooltipAnchorX; when: salaatTooltip.item !== null }
+                }
             }
 
             Row {
+                id: statusModules
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 spacing: 10
 
-                InfoWidget {
-                    id: infoWidget
-                    onQAppsRequested: bar.qAppsOpen = true
-                }
+                  InfoWidget {
+                      id: infoWidget
+                      hostWindow: bar
+                      anchorX: statusModules.x + x + width / 2
+                     onQAppsRequested: bar.qAppsOpen = true
+                 }
 
-                SystemTray {
-                    id: systemTray
-                    trayWindow: bar
-                    menuX: bar.width - rightModules.width + systemTray.x
-                }
+                 SystemTray {
+                     id: systemTray
+                     trayWindow: bar
+                     hostWindow: bar
+                     anchorX: parent.x + x + width / 2
+                     menuX: bar.width - rightModules.width + systemTray.x
+                 }
 
-                Rectangle {
-                    implicitWidth: 42; implicitHeight: 42
+                 Rectangle {
+                     id: notifButton
+                     implicitWidth: 42; implicitHeight: 42
                     radius: root.barRadius
                     color: "transparent"
 
@@ -195,18 +241,34 @@ Variants {
                         }
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: false
+                     MouseArea {
+                         id: notifHover
+                         anchors.fill: parent
+                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             if (notificationsPopup.isOpen) notificationsPopup.close()
                             else notificationsPopup.open()
-                        }
-                    }
-                }
+                         }
+                     }
 
-                Rectangle {
+                     Loader {
+                         id: notificationTooltip
+                         source: "BarTooltip.qml"
+                         property bool tooltipShown: notifHover.containsMouse
+                         property real tooltipAnchorX: statusModules.x + notifButton.x + notifButton.width / 2
+                         onLoaded: {
+                             item.hostWindow = bar
+                             item.title = "Notifications"
+                             item.details = "LEFT CLICK  Open notifications"
+                         }
+                         Binding { target: notificationTooltip.item; property: "shown"; value: notificationTooltip.tooltipShown; when: notificationTooltip.item !== null }
+                         Binding { target: notificationTooltip.item; property: "anchorX"; value: notificationTooltip.tooltipAnchorX; when: notificationTooltip.item !== null }
+                     }
+                 }
+
+                 Rectangle {
+                     id: updatesButton
                     implicitWidth: updatesRow.implicitWidth + 20
                     implicitHeight: 42
                     radius: root.barRadius
@@ -238,23 +300,39 @@ Variants {
                         }
                     }
 
-                    MouseArea {
+                     MouseArea {
                         id: updatesBtnHover
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: updatesPopup.open()
-                    }
-                }
+                         onClicked: updatesPopup.open()
+                     }
 
-                Clock {
-                    hostWindow: bar
-                    anchorX: rightModules.x + x
-                }
+                     Loader {
+                         id: updatesTooltip
+                         source: "BarTooltip.qml"
+                         property bool tooltipShown: updatesBtnHover.containsMouse
+                         property real tooltipAnchorX: statusModules.x + updatesButton.x + updatesButton.width / 2
+                         onLoaded: {
+                             item.hostWindow = bar
+                             item.title = "System Updates"
+                             item.details = "LEFT CLICK  Open updates\nAutomatically checks periodically"
+                         }
+                         Binding { target: updatesTooltip.item; property: "shown"; value: updatesTooltip.tooltipShown; when: updatesTooltip.item !== null }
+                         Binding { target: updatesTooltip.item; property: "anchorX"; value: updatesTooltip.tooltipAnchorX; when: updatesTooltip.item !== null }
+                     }
+                 }
 
-                PowerButton {
-                    screen: bar.screen
-                }
+                 Clock {
+                     hostWindow: bar
+                     anchorX: parent.x + x + width / 2
+                 }
+
+                 PowerButton {
+                     screen: bar.screen
+                     hostWindow: bar
+                     anchorX: parent.x + x + width / 2
+                 }
             }
         }
 

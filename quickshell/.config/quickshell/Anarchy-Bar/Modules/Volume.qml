@@ -5,6 +5,8 @@ import Quickshell.Io
 Item {
     id: volumeRoot
 
+    property var hostWindow: null
+    property real anchorX: 0
     property int volume: 0
     property bool muted: false
     property bool loaded: false
@@ -29,7 +31,7 @@ Item {
             text: muted ? "\u{F466}" : (volume === 0 ? "\u{F466}" : (volume >= 66 ? "\u{F028}" : (volume >= 33 ? "\u{F027}" : "\u{F026}")))
             font.pixelSize: 20
             font.family: "JetBrainsMono Nerd Font"
-            color: volHover.containsMouse ? theme.background : theme.muted
+            color: volHover.containsMouse ? theme.background : theme.color3
             Behavior on color { ColorAnimation { duration: 150 } }
         }
 
@@ -54,6 +56,20 @@ Item {
             else if (wheel.angleDelta.y < 0) adjustVolume(-5)
         }
         onClicked: pulseCmd.running = true
+    }
+
+    Loader {
+        id: volumeTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: volHover.containsMouse
+        property real tooltipAnchorX: volumeRoot.anchorX
+        onLoaded: {
+            item.hostWindow = volumeRoot.hostWindow
+            item.title = "Volume"
+            item.details = "LEFT CLICK  Open mixer\nWHEEL  Adjust volume"
+        }
+        Binding { target: volumeTooltip.item; property: "shown"; value: volumeTooltip.tooltipShown; when: volumeTooltip.item !== null }
+        Binding { target: volumeTooltip.item; property: "anchorX"; value: volumeTooltip.tooltipAnchorX; when: volumeTooltip.item !== null }
     }
 
     function adjustVolume(delta) {

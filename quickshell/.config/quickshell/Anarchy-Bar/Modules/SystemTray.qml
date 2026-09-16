@@ -6,6 +6,8 @@ import Quickshell.Services.SystemTray
 Item {
     id: tray
 
+    property var hostWindow: null
+    property real anchorX: 0
     implicitHeight: 42
     property real menuX: 0
     property var activeMenu: null
@@ -44,6 +46,20 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: tray.expanded = !tray.expanded
         }
+    }
+
+    Loader {
+        id: trayTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: trayToggleMouse.containsMouse
+        property real tooltipAnchorX: tray.anchorX
+        onLoaded: {
+            item.hostWindow = tray.hostWindow
+            item.title = "System Tray"
+            item.details = "LEFT CLICK  Show / hide tray icons"
+        }
+        Binding { target: trayTooltip.item; property: "shown"; value: trayTooltip.tooltipShown; when: trayTooltip.item !== null }
+        Binding { target: trayTooltip.item; property: "anchorX"; value: trayTooltip.tooltipAnchorX; when: trayTooltip.item !== null }
     }
 
     Row {

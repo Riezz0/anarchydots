@@ -5,11 +5,13 @@ import Quickshell.Io
 Item {
     id: bluetoothRoot
 
+    property var hostWindow: null
+    property real anchorX: 0
     property bool powered: false
     property int connected: 0
     property color stateColor: {
         if (!powered) return theme.muted
-        if (connected > 0) return theme.color2
+        if (connected > 0) return theme.color4
         return theme.color4
     }
 
@@ -52,6 +54,20 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: bluemanProcess.running = true
+    }
+
+    Loader {
+        id: bluetoothTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: bluetoothHover.containsMouse
+        property real tooltipAnchorX: bluetoothRoot.anchorX
+        onLoaded: {
+            item.hostWindow = bluetoothRoot.hostWindow
+            item.title = "Bluetooth"
+            item.details = "LEFT CLICK  Open Bluetooth manager"
+        }
+        Binding { target: bluetoothTooltip.item; property: "shown"; value: bluetoothTooltip.tooltipShown; when: bluetoothTooltip.item !== null }
+        Binding { target: bluetoothTooltip.item; property: "anchorX"; value: bluetoothTooltip.tooltipAnchorX; when: bluetoothTooltip.item !== null }
     }
 
     Process {

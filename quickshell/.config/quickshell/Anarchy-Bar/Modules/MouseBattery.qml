@@ -5,6 +5,8 @@ import Quickshell.Io
 Item {
     id: mouseBatteryRoot
 
+    property var hostWindow: null
+    property real anchorX: 0
     property int battery: -1
     property color batteryColor: {
         if (battery < 0) return theme.muted
@@ -52,6 +54,20 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: piperProcess.running = true
+    }
+
+    Loader {
+        id: mouseBatteryTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: mouseBatteryHover.containsMouse
+        property real tooltipAnchorX: mouseBatteryRoot.anchorX
+        onLoaded: {
+            item.hostWindow = mouseBatteryRoot.hostWindow
+            item.title = "Mouse Battery"
+            item.details = "LEFT CLICK  Open Piper"
+        }
+        Binding { target: mouseBatteryTooltip.item; property: "shown"; value: mouseBatteryTooltip.tooltipShown; when: mouseBatteryTooltip.item !== null }
+        Binding { target: mouseBatteryTooltip.item; property: "anchorX"; value: mouseBatteryTooltip.tooltipAnchorX; when: mouseBatteryTooltip.item !== null }
     }
 
     Process {

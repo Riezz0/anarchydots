@@ -5,7 +5,10 @@ import Quickshell.Hyprland
 Item {
     id: workspaceContainer
 
+    property var hostWindow: null
+    property real anchorX: 0
     property int _tick: 0
+    property bool hovered: false
 
     function arabicNum(n) {
         var a = ["\u0660","\u0661","\u0662","\u0663","\u0664","\u0665","\u0666","\u0667","\u0668","\u0669"]
@@ -27,6 +30,9 @@ Item {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.NoButton
+        hoverEnabled: true
+        onEntered: workspaceContainer.hovered = true
+        onExited: workspaceContainer.hovered = false
         onWheel: event => {
             if (typeof Hyprland === "undefined" || !Hyprland.focusedWorkspace) return
             var cur = Hyprland.focusedWorkspace.id
@@ -44,6 +50,20 @@ Item {
         border.color: theme.muted
         border.width: root.moduleBorderThickness
         color: "transparent"
+    }
+
+    Loader {
+        id: workspaceTooltip
+        source: "BarTooltip.qml"
+        property bool tooltipShown: workspaceContainer.hovered
+        property real tooltipAnchorX: workspaceContainer.anchorX
+        onLoaded: {
+            item.hostWindow = workspaceContainer.hostWindow
+            item.title = "Workspaces"
+            item.details = "LEFT CLICK  Switch workspace\nWHEEL  Previous / next"
+        }
+        Binding { target: workspaceTooltip.item; property: "shown"; value: workspaceTooltip.tooltipShown; when: workspaceTooltip.item !== null }
+        Binding { target: workspaceTooltip.item; property: "anchorX"; value: workspaceTooltip.tooltipAnchorX; when: workspaceTooltip.item !== null }
     }
 
     Row {
@@ -198,6 +218,5 @@ Item {
             }
         }
 
-        Item { width: 6; height: 1 }
     }
 }
