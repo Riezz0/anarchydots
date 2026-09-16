@@ -41,8 +41,6 @@ xkb_symbols "basic" {
     key <AC07> { [ U062c, U0027 ] }; // J -> Jeem (ج), Shift: Quote (')
     key <AC08> { [ U0643, U062e ] }; // K -> Kaf (ك), Shift: Khah (خ)
     key <AC09> { [ U0644, U0624 ] }; // L -> Lam (ل), Shift: Waw Hamza (ؤ)
-    key <AC10> { [ UFEFB, UFEF5 ] }; // ; key -> لا (Normal), Shift -> لآ (Madda)
-    key <AC11> { [ UFEF7, UFEF9 ] }; // ' key -> لأ (Hamza Above), Shift -> لإ (Hamza Below)
 
     // Row B (Bottom: Z-M)
     key <AB01> { [ U0632, U0630 ] }; // Z -> Zain (ز), Shift: Thal (ذ)

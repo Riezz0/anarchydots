@@ -134,8 +134,8 @@ PanelWindow {
                     delegate: Rectangle {
                         required property var modelData
                         width: updatesList.width
-                        implicitHeight: entryRow.implicitHeight + 12
-                radius: root.popupRadius
+                        implicitHeight: 32
+                        radius: root.popupRadius
                         color: Qt.darker(theme.background, 1.2)
                         border { width: root.popupBorderThickness; color: theme.color4 }
 
@@ -151,6 +151,8 @@ PanelWindow {
                                 font.pixelSize: 12
                                 font.family: "JetBrainsMono Nerd Font"
                                 Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignVCenter
+                                verticalAlignment: Text.AlignVCenter
                                 elide: Text.ElideRight
                             }
                         }

@@ -10,6 +10,7 @@ Item {
     property bool loaded: false
     property bool checking: false
     property var updateList: []
+    property bool notifyOnUpdates: true
 
     property string terminal: "kitty"
 
@@ -29,6 +30,7 @@ Item {
         var clean = stripAnsi(output)
         var lines = clean.split("\n")
         var list = []
+        var hadUpdates = updatesRoot.updatesAvailable
 
         for (var i = 0; i < lines.length; i++) {
             var t = lines[i].trim()
@@ -46,6 +48,20 @@ Item {
         updatesRoot.updateCount = list.length
         updatesRoot.updatesAvailable = list.length > 0
         updatesRoot.loaded = true
+
+        if (updatesRoot.notifyOnUpdates && list.length > 0 && !hadUpdates)
+            notifyUpdates(list.length)
+    }
+
+    function notifyUpdates(count) {
+        notifyProc.command = [
+            "notify-send",
+            "-a", "Anarchy-Bar",
+            "-u", "normal",
+            "System Updates",
+            count + (count === 1 ? " update is available" : " updates are available")
+        ]
+        notifyProc.running = true
     }
 
     function refresh() {
@@ -82,6 +98,11 @@ Item {
                 updatesRoot.refresh()
             }
         }
+    }
+
+    Process {
+        id: notifyProc
+        running: false
     }
 
     Timer {

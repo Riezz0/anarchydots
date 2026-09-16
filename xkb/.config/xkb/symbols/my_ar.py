@@ -110,7 +110,7 @@ class KeyboardLayoutApp(Gtk.Application):
         css_provider = Gtk.CssProvider()
         css_style = f"""
             * {{
-                font-family: "JetBrainsMono Nerd Font Propo";
+                font-family: "Lateef";
                 font-weight: normal;
             }}
             window {{
