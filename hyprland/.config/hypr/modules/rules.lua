@@ -74,7 +74,7 @@ float = true, size = "1200 700", center = true, opacity = "1", animation = "slid
 border_color = theme.color2 .. " " .. theme.color15 })
 
 -- AR KB Layout
-hl.window_rule({ name = "corectrlrules", match = { class = "com.layout.viewer" },
+hl.window_rule({ name = "arkbrules", match = { class = "ARKB" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
@@ -129,11 +129,6 @@ border_color = theme.color2 .. " " .. theme.color15 })
 
 -- Q-Player
 hl.window_rule({ name = "qrules", match = { class = "qplayer" },
-float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
-border_color = theme.color2 .. " " .. theme.color15 })
-
--- Q-Clipboard
-hl.window_rule({ name = "qcliprules", match = { class = "qclipboard" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 

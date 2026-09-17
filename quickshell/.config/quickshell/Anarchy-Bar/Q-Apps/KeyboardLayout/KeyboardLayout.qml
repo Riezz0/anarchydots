@@ -1,5 +1,6 @@
 import QtQuick
 import QtCore
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 
@@ -16,8 +17,10 @@ Window {
     property color keySurface: "#292929"
     property color keyBorder: "#504945"
     property var keyMap: ({})
-    property real keyUnit: Math.min(76, (width - 140) / 17.4)
-    property real keyHeight: Math.max(64, Math.min(86, keyUnit * 1.12))
+    property var legendRows: []
+    property var modifierItems: []
+    property real keyboardHeight: 74
+    property real keyboardUnit: Math.max(42, Math.min(84, (contentArea.width - 90) / 17))
 
     visible: true
     width: targetScreen ? Math.min(1450, Math.max(1100, targetScreen.width - 80)) : 1300
@@ -42,6 +45,14 @@ Window {
         watchChanges: true
         onLoaded: keyboardWindow.loadColors()
         onFileChanged: keyboardWindow.loadColors()
+    }
+
+    // Pywal replaces this file atomically, so inotify may miss a theme change.
+    Timer {
+        interval: 2000
+        running: true
+        repeat: true
+        onTriggered: walFile.reload()
     }
 
     function loadColors() {
@@ -71,6 +82,17 @@ Window {
         return token.replace(/^['"]|['"]$/g, "")
     }
 
+    function isHaraka(value) {
+        return /[\u064B-\u065F\u0670]/.test(value)
+    }
+
+    function rowWidth(row) {
+        var total = (row.length - 1) * 6
+        for (var i = 0; i < row.length; i++)
+            total += row[i].width * keyboardUnit
+        return total
+    }
+
     function parseLayout(source) {
         var parsed = {}
         var expression = /key\s+<([A-Z0-9]+)>\s*\{\s*\[\s*([^,]+),\s*([^\]]+)\]/g
@@ -82,6 +104,31 @@ Window {
             }
         }
         keyMap = parsed
+        rebuildLegend()
+    }
+
+    function rebuildLegend() {
+        var groupedEntries = []
+        var modifiers = []
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+            var row = rows[rowIndex]
+            var entries = []
+            for (var keyIndex = 0; keyIndex < row.length; keyIndex++) {
+                var item = row[keyIndex]
+                if (item.special) {
+                    modifiers.push(item.normal)
+                    continue
+                }
+                var values = keyMap[item.id] || {}
+                var normal = values.normal !== undefined ? values.normal : item.normal
+                var shift = values.shift !== undefined && !/^[0-9]$/.test(values.shift) ? values.shift : item.shift
+                entries.push({ label: item.label, normal: normal, shift: shift })
+            }
+            if (entries.length > 0)
+                groupedEntries.push(entries)
+        }
+        legendRows = groupedEntries
+        modifierItems = modifiers
     }
 
     function key(id, label, fallbackNormal, fallbackShift, width, fnLabel) {
@@ -125,6 +172,7 @@ Window {
     Component.onCompleted: {
         layoutFile.reload()
         walFile.reload()
+        rebuildLegend()
         requestActivate()
     }
 
@@ -132,16 +180,14 @@ Window {
         anchors.fill: parent
         radius: 16
         color: keyboardWindow.background
-        border.width: 2
-        border.color: keyboardWindow.accent
+            border.width: 0
 
         Rectangle {
             anchors.fill: parent
             anchors.margins: 2
             radius: 14
             color: "transparent"
-            border.width: 1
-            border.color: Qt.rgba(keyboardWindow.foreground.r, keyboardWindow.foreground.g, keyboardWindow.foreground.b, 0.08)
+            border.width: 0
         }
 
         Item {
@@ -205,81 +251,94 @@ Window {
             }
 
             Column {
-                id: keyboardStack
-                width: keyboardWindow.keyUnit * 17 + 64
-                x: (parent.width - width) / 2
-                y: headerRow.height + 18
-                spacing: 4
+                id: keyboardArea
+                anchors.top: headerRow.bottom
+                anchors.topMargin: 18
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spacing: 6
 
                 Repeater {
                     model: keyboardWindow.rows
 
                     Row {
-                        required property int index
                         required property var modelData
-                        anchors.left: parent.left
-                        spacing: 4
+                        required property int index
+                        width: keyboardWindow.rowWidth(modelData)
+                        height: keyboardWindow.keyboardHeight
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 6
 
                         Repeater {
                             model: parent.modelData
 
                             Rectangle {
                                 required property var modelData
-                                width: keyboardWindow.keyUnit * modelData.width + 6 * (modelData.width - 1)
-                                height: modelData.compact ? keyboardWindow.keyHeight * 0.68 : keyboardWindow.keyHeight
+                                width: keyboardWindow.keyboardUnit * modelData.width
+                                height: keyboardWindow.keyboardHeight
+                                clip: true
                                 radius: 7
                                 color: keyHover.containsMouse ? Qt.lighter(keyboardWindow.keySurface, 1.18) : keyboardWindow.keySurface
                                 border.width: 1
                                 border.color: keyHover.containsMouse ? keyboardWindow.accent : keyboardWindow.keyBorder
 
                                 Text {
-                                    anchors.left: parent.left
                                     anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.topMargin: 6
                                     anchors.leftMargin: 8
-                                    anchors.topMargin: 5
-                                    text: modelData.label
+                                    text: modelData.special ? "" : modelData.label
                                     color: keyboardWindow.red
                                     font.family: "JetBrainsMono Nerd Font"
-                                    font.pixelSize: Math.max(9, keyboardWindow.keyUnit * 0.16)
+                                    font.pixelSize: 10
                                     font.bold: true
                                 }
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData.normal
-                                    color: keyboardWindow.foreground
-                                    font.family: modelData.special ? "JetBrainsMono Nerd Font" : "KFGQPC Uthmanic Script HAFS"
-                                    font.pixelSize: modelData.special ? Math.max(10, keyboardWindow.keyUnit * 0.17) : Math.max(28, keyboardWindow.keyUnit * 0.46)
-                                    font.weight: modelData.special ? Font.DemiBold : Font.Normal
-                                    horizontalAlignment: Text.AlignHCenter
-                                    wrapMode: Text.WordWrap
-                                }
-
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.bottom: parent.bottom
-                                    anchors.bottomMargin: 5
-                                    text: modelData.fn
-                                    visible: modelData.fn.length > 0
+                                    text: modelData.special ? modelData.normal : ""
                                     color: keyboardWindow.muted
                                     font.family: "JetBrainsMono Nerd Font"
-                                    font.pixelSize: Math.max(9, keyboardWindow.keyUnit * 0.15)
+                                    font.pixelSize: Math.max(9, Math.min(13, parent.width * 0.15))
+                                    font.bold: true
+                                    horizontalAlignment: Text.AlignHCenter
                                 }
 
                                 Text {
-                                    width: parent.width * 0.52
+                                    visible: !modelData.special
+                                    anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.bottom: parent.bottom
-                                    anchors.rightMargin: 8
-                                    anchors.bottomMargin: 5
-                                    text: modelData.shift
-                                    visible: !modelData.special
-                                    color: keyboardWindow.accent
-                                    font.family: "KFGQPC Uthmanic Script HAFS"
-                                    font.pixelSize: Math.max(24, keyboardWindow.keyUnit * 0.42)
+                                    anchors.leftMargin: 6
+                                    anchors.rightMargin: 6
+                                    anchors.bottomMargin: 4
+                                    height: 44
+                                    text: modelData.normal
+                                    color: keyboardWindow.foreground
+                                    font.family: "Noto Naskh Arabic UI"
+                                    font.pixelSize: keyboardWindow.isHaraka(modelData.normal) ? 42 : 25
                                     font.weight: Font.Normal
-                                    font.bold: false
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    visible: !modelData.special
+                                    width: Math.min(parent.width * 0.42, 42)
+                                    height: 30
+                                    anchors.top: parent.top
+                                    anchors.right: parent.right
+                                    anchors.topMargin: 4
+                                    anchors.rightMargin: 5
+                                    text: modelData.shift
+                                    color: keyboardWindow.accent
+                                    font.family: "Noto Naskh Arabic UI"
+                                    font.pixelSize: keyboardWindow.isHaraka(modelData.shift) ? 36 : 25
+                                    font.weight: Font.Normal
                                     horizontalAlignment: Text.AlignRight
+                                    verticalAlignment: Text.AlignVCenter
+                                    elide: Text.ElideRight
                                 }
 
                                 MouseArea {
@@ -293,9 +352,110 @@ Window {
                 }
             }
 
+            /*
+            GridLayout {
+                    width: parent.width
+                    columns: 7
+                    columnSpacing: 8
+                    rowSpacing: 8
+
+                    Repeater {
+                        model: keyboardWindow.legendItems
+
+                        Rectangle {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 54
+                            radius: 7
+                            color: legendHover.containsMouse ? Qt.lighter(keyboardWindow.keySurface, 1.18) : keyboardWindow.keySurface
+                            border.width: 1
+                            border.color: legendHover.containsMouse ? keyboardWindow.accent : keyboardWindow.keyBorder
+
+                            Text {
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.topMargin: 6
+                                anchors.leftMargin: 9
+                                text: modelData.label
+                                color: keyboardWindow.red
+                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: 10
+                                font.bold: true
+                            }
+
+                            Row {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                                anchors.leftMargin: 9
+                                anchors.rightMargin: 9
+                                anchors.bottomMargin: 5
+                                spacing: 8
+
+                                Text {
+                                    width: (parent.width - parent.spacing) / 2
+                                    text: modelData.normal
+                                    color: keyboardWindow.foreground
+                                    font.family: "KFGQPC Uthmanic Script HAFS"
+                                    font.pixelSize: 24
+                                    horizontalAlignment: Text.AlignHCenter
+                                    elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    width: (parent.width - parent.spacing) / 2
+                                    text: modelData.shift
+                                    color: keyboardWindow.accent
+                                    font.family: "KFGQPC Uthmanic Script HAFS"
+                                    font.pixelSize: 24
+                                    horizontalAlignment: Text.AlignHCenter
+                                    elide: Text.ElideRight
+                                }
+                            }
+
+                            MouseArea {
+                                id: legendHover
+                                anchors.fill: parent
+                                hoverEnabled: true
+                            }
+                        }
+                    }
+                }
+
+                Row {
+                    width: parent.width
+                    spacing: 8
+
+                    Repeater {
+                        model: keyboardWindow.modifierItems
+
+                        Rectangle {
+                            required property string modelData
+                            width: Math.max(70, modifierLabel.implicitWidth + 24)
+                            height: 32
+                            radius: 6
+                            color: keyboardWindow.keySurface
+                            border.width: 1
+                            border.color: keyboardWindow.keyBorder
+
+                            Text {
+                                id: modifierLabel
+                                anchors.centerIn: parent
+                                text: modelData
+                                color: keyboardWindow.muted
+                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: 10
+                                font.bold: true
+                            }
+                        }
+                    }
+                }
+            }
+            */
+
             Row {
                 id: legendRow
-                y: keyboardStack.y + keyboardStack.height + 18
+                anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 28
 

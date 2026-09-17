@@ -12,7 +12,7 @@ Item {
         { name: "termpad", className: "termpad", icon: "\u{F489}", tooltip: "Terminal" },
         { name: "vimpad", className: "vimpad", icon: "\u{E62B}", tooltip: "Neovim" },
         { name: "codepad", className: "codepad", icon: "\u{E70C}", tooltip: "VSS Code" },
-        { name: "osdpad", className: "com.layout.viewer", icon: "\u{F11C}", tooltip: "Arabic Keyboard Layout" }
+        { name: "osdpad", className: "ARKB", icon: "\u{F11C}", tooltip: "Arabic Keyboard Layout" }
     ]
     property var scratchpadClients: []
     property string activeScratchpadClass: ""
