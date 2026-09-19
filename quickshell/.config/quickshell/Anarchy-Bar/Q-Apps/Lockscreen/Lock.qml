@@ -206,35 +206,6 @@ Scope {
                 onPowerOff: { rootLock.locked = false; powerProc.command = ["systemctl", "poweroff"]; powerProc.running = true }
             }
 
-            // X close button - test mode
-            Rectangle {
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.margins: 20
-                width: 36; height: 36; radius: 18
-                color: testCloseArea.containsMouse ? theme.color1 : Qt.rgba(theme.color8.r, theme.color8.g, theme.color8.b, 0.3)
-                border.color: theme.color8
-                border.width: 1
-                z: 100
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "X"
-                    font.pixelSize: 14
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.bold: true
-                    color: theme.foreground
-                }
-
-                MouseArea {
-                    id: testCloseArea
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    hoverEnabled: true
-                    onClicked: rootLock.locked = false
-                }
-            }
-
             // Status message banner
             Rectangle {
                 visible: rootLock.statusMessage !== ""

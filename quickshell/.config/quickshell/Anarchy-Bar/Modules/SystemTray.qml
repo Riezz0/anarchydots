@@ -1,7 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.SystemTray
+import Quickshell.Widgets
 
 Item {
     id: tray
@@ -22,6 +24,13 @@ Item {
 
     function closeMenu() {
         activeMenu = null
+    }
+
+    function resolveMenuIcon(icon) {
+        var value = String(icon || "")
+        if (value === "" || value.indexOf("://") !== -1 || value.indexOf("/") !== -1)
+            return value
+        return Quickshell.iconPath(value, true)
     }
 
     Rectangle {
@@ -194,32 +203,51 @@ Item {
                         id: menuRepeater
                         model: menuOpener.children
 
-                        delegate: Rectangle {
-                            required property var modelData
-                            property real requiredWidth: modelData.isSeparator ? 0 : menuLabel.implicitWidth + 70
+                            delegate: Rectangle {
+                                id: menuEntry
+                                required property var modelData
+                                property string resolvedIcon: tray.resolveMenuIcon(modelData.icon)
+                                property real requiredWidth: modelData.isSeparator ? 0 : menuLabel.implicitWidth + 30
                             width: menuColumn.width
                             height: modelData.isSeparator ? 6 : 32
                             radius: root.barRadius
                             color: menuEntryMouse.containsMouse && !modelData.isSeparator
                                 ? theme.color3 : "transparent"
 
-                            Image {
+                                IconImage {
                                 id: menuIcon
                                 anchors.left: parent.left
                                 anchors.leftMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
                                 width: 18
                                 height: 18
-                                source: modelData.icon
-                                sourceSize.width: width
-                                sourceSize.height: height
-                                visible: source !== ""
-                                fillMode: Image.PreserveAspectFit
-                            }
+                                source: resolvedIcon
+                                asynchronous: true
+                                mipmap: true
+                                    visible: false
+                                }
+
+                                Process {
+                                    id: menuIconLookup
+                                    running: modelData.icon !== ""
+                                    command: ["bash", "-c",
+                                        "icon=\"$1\"; case \"$icon\" in *://*|/*) exit 0;; esac; " +
+                                        "for root in \"$HOME/.local/share/icons\" \"$HOME/.icons\" /usr/local/share/icons /usr/share/icons; do " +
+                                        "[ -d \"$root\" ] || continue; " +
+                                        "file=$(find -L \"$root\" -type f \\\( -iname \"$icon.svg\" -o -iname \"$icon.png\" -o -iname \"$icon.xpm\" \\\) -print -quit 2>/dev/null); " +
+                                        "[ -n \"$file\" ] && printf 'file://%s' \"$file\" && exit 0; done",
+                                        "icon", modelData.icon]
+                                    stdout: StdioCollector {
+                                        onStreamFinished: {
+                                            var fallback = this.text.trim()
+                                            if (fallback !== "") menuEntry.resolvedIcon = fallback
+                                        }
+                                    }
+                                }
 
                             Text {
                                 anchors.centerIn: menuIcon
-                                visible: menuIcon.status === Image.Error || menuIcon.source === ""
+                                visible: false
                                 text: modelData.text ? modelData.text.charAt(0).toUpperCase() : "?"
                                 color: theme.muted
                                 font.pixelSize: 12
@@ -232,7 +260,7 @@ Item {
                                 anchors.leftMargin: menuIcon.visible ? 8 : 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.text
-                                color: modelData.enabled ? theme.muted : theme.muted
+                                color: menuEntryMouse.containsMouse ? theme.background : theme.muted
                                 font.pixelSize: 13
                                 font.family: "JetBrainsMono Nerd Font"
                             }
@@ -242,7 +270,7 @@ Item {
                                 anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.hasChildren ? ">" : ""
-                                color: theme.muted
+                                color: menuEntryMouse.containsMouse ? theme.background : theme.muted
                                 font.pixelSize: 16
                             }
 
@@ -253,10 +281,21 @@ Item {
                                 enabled: !modelData.isSeparator && modelData.enabled
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    if (modelData.hasChildren) return
+                                    if (modelData.hasChildren) {
+                                        submenuAnchor.open()
+                                        return
+                                    }
                                     modelData.triggered()
                                     tray.closeMenu()
                                 }
+                            }
+
+                            QsMenuAnchor {
+                                id: submenuAnchor
+                                menu: modelData.hasChildren ? modelData.menu : null
+                                anchor.item: menuEntry
+                                anchor.edges: Edges.Right
+                                anchor.gravity: Edges.Left
                             }
 
                             Component.onCompleted: trayMenu.updateWidth()
