@@ -17,11 +17,13 @@ PanelWindow {
             if (Quickshell.screens[i].name === cursorMonitor)
                 return Quickshell.screens[i]
         }
-        return Quickshell.screens[0]
+        return Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
     }
 
+    // Cursor detection can fail on VMs or before Hyprland reports its outputs.
+    // Keep the app usable by falling back to the first Quickshell screen.
     screen: monitorForCursor()
-    visible: cursorMonitor.length > 0
+    visible: Quickshell.screens.length > 0
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
     focusable: true
