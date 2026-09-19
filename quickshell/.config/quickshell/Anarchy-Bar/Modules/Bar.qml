@@ -203,7 +203,10 @@ Variants {
                       id: infoWidget
                       hostWindow: bar
                       anchorX: statusModules.x + x + width / 2
-                     onQAppsRequested: bar.qAppsOpen = true
+                       onQAppsRequested: {
+                           infoPopup.close()
+                           bar.qAppsOpen = true
+                       }
                  }
 
                  SystemTray {

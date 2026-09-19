@@ -81,16 +81,20 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onPressed: mouse => {
             if (mouse.button === Qt.RightButton) {
+                infoPopup.close()
                 infoRoot.qAppsRequested()
                 mouse.accepted = true
             }
         }
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
+                infoPopup.close()
                 infoRoot.qAppsRequested()
                 mouse.accepted = true
                 return
             }
+            if (infoRoot.hostWindow && infoRoot.hostWindow.qAppsOpen)
+                infoRoot.hostWindow.qAppsOpen = false
             if (infoPopup.isOpen) infoPopup.close()
             else infoPopup.open()
         }

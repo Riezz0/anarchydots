@@ -1,6 +1,6 @@
 * {
-bg: #15161e;
-fg: #c0caf5;
-border: #9ece6a;
-selected: #7aa2f7;
+bg: #1d2021;
+fg: #d5c4a1;
+border: #b8bb26;
+selected: #83a598;
 }
