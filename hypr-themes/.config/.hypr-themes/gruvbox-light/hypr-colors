@@ -1,0 +1,34 @@
+-- Define the helper function locally
+local function rgba(r, g, b, a)
+    -- Hyprland color format: 0xRRGGBBAA
+    return string.format("0x%02x%02x%02x%02x", r, g, b, math.floor(a * 255))
+end
+
+-- Create and populate the table
+local M = {}
+
+-- Background and Foreground
+M.background = "0xfffbf1c7"
+M.foreground = "0xff3c3836"
+M.cursor     = "0xff3c3836"
+
+-- Colors
+M.color0     = "0xfffbf1c7"
+M.color1     = "0xffcc241d"
+M.color2     = "0xff98971a"
+M.color3     = "0xffd79921"
+M.color4     = "0xff458588"
+M.color5     = "0xffb16286"
+M.color6     = "0xff689d6a"
+M.color7     = "0xff7c6f64"
+M.color8     = "0xff928374"
+M.color9     = "0xff9d0006"
+M.color10    = "0xff79740e"
+M.color11    = "0xffb57614"
+M.color12    = "0xff076678"
+M.color13    = "0xff8f3f71"
+M.color14    = "0xff427b58"
+M.color15    = "0xff3c3836"
+
+-- Return the table
+return M

@@ -1,43 +1,43 @@
 {
     "name": "pywal",
     "variables": {
-        "accent_color": "#89b4fa",
-        "accent_bg_color": "#89b4fa",
-        "accent_fg_color": "#dbe8fd",
-        "destructive_color": "#f9e2af",
-        "destructive_bg_color": "#f9e2af",
-        "destructive_fg_color": "#fdf6e7",
-        "success_color": "#f5c2e7",
-        "success_bg_color": "#f5c2e7",
-        "success_fg_color": "#a6adc8",
-        "warning_color": "#94e2d5",
-        "warning_bg_color": "#94e2d5",
-        "warning_fg_color": "#a6adc8",
-        "error_color": "#f9e2af",
-        "error_bg_color": "#f9e2af",
-        "error_fg_color": "#a6adc8",
-        "window_bg_color": "#1e1e2e",
-        "window_fg_color": "#a6adc8",
-        "view_bg_color": "#202030",
-        "view_fg_color": "#a6adc8",
-        "headerbar_bg_color": "#1e1e2e",
-        "headerbar_fg_color": "#a6adc8",
-        "headerbar_border_color": "#242434",
-        "headerbar_backdrop_color": "#89b4fa",
-        "headerbar_shade_color": "#222232",
-        "card_bg_color": "#222232",
-        "card_fg_color": "#a6adc8",
-        "card_shade_color": "#202030",
-        "dialog_bg_color": "#1e1e2e",
-        "dialog_fg_color": "#a6adc8",
-        "popover_bg_color": "#1e1e2e",
-        "popover_fg_color": "#a6adc8",
-        "shade_color": "#1e1e2e",
-        "scrollbar_outline_color": "#89b4fa",
-        "sidebar_bg_color": "#1e1e2e",
-        "sidebar_fg_color": "#a6adc8",
-        "sidebar_backdrop_color": "#202030",
-        "sidebar_shade_color": "#222232"
+        "accent_color": "#B8C1B1",
+        "accent_bg_color": "#B8C1B1",
+        "accent_fg_color": "#e9ece7",
+        "destructive_color": "#DDB587",
+        "destructive_bg_color": "#a58765",
+        "destructive_fg_color": "#f4e8db",
+        "success_color": "#E5C58F",
+        "success_bg_color": "#E5C58F",
+        "success_fg_color": "#c2c3c5",
+        "warning_color": "#FDDEB4",
+        "warning_bg_color": "#bda687",
+        "warning_fg_color": "#c2c3c5",
+        "error_color": "#DDB587",
+        "error_bg_color": "#a58765",
+        "error_fg_color": "#c2c3c5",
+        "window_bg_color": "#0b0f19",
+        "window_fg_color": "#c2c3c5",
+        "view_bg_color": "#0d111b",
+        "view_fg_color": "#c2c3c5",
+        "headerbar_bg_color": "#0b0f19",
+        "headerbar_fg_color": "#c2c3c5",
+        "headerbar_border_color": "#12161f",
+        "headerbar_backdrop_color": "#8a9084",
+        "headerbar_shade_color": "#0f131d",
+        "card_bg_color": "#0f131d",
+        "card_fg_color": "#c2c3c5",
+        "card_shade_color": "#0d111b",
+        "dialog_bg_color": "#0b0f19",
+        "dialog_fg_color": "#c2c3c5",
+        "popover_bg_color": "#0b0f19",
+        "popover_fg_color": "#c2c3c5",
+        "shade_color": "#5a616e",
+        "scrollbar_outline_color": "#B8C1B1",
+        "sidebar_bg_color": "#0b0f19",
+        "sidebar_fg_color": "#c2c3c5",
+        "sidebar_backdrop_color": "#0d111b",
+        "sidebar_shade_color": "#0f131d"
     },
     "palette": {
         "blue_": {
@@ -99,20 +99,14 @@
         "dark_": {
             "1": "#77767b",
             "2": "#5e5c64",
-            "3": "#33d17a",
+            "3": "#3d3846",
             "4": "#241f31",
             "5": "#000000"
         }
     },
     "custom_css": {
-        "gtk4": "/* Sidebar hover gets a 15% transparent shade of your accent color */ .navigation-sidebar row:hover { background-color: alpha(#89b4fa, 0.15); } /* Main panel items get full accent background and dark text on hover */ listview row:hover, gridview child:hover, listview row:hover label, gridview child:hover label { background-color: #89b4fa; color: #1e1e2e; } /* Thicker 2px accent border for GTK4 popovers */ popover contents { border: 2px solid #89b4fa; box-shadow: none; } /* Color context menu items on hover */ popover contents modelbutton:hover { background-color: #89b4fa; color: #1e1e2e; } /* Libadwaita Tab Bar Overrides */ tabbar { background-color: #1e1e2e; } tabbar tab { padding: 4px 12px; color: alpha(#a6adc8, 0.5); background-color: transparent; } tabbar tab:checked { color: #1e1e2e; background-color: #89b4fa; } tabbar tab:hover:not(:checked) { background-color: alpha(#89b4fa, 0.12); color: #a6adc8; } /* Window Frame Accent Line */ window.main-window, window.dialog { border: 1.5px solid #89b4fa; border-radius: 0px; } /* Clean Path-bar Breadcrumbs Buttons */ .path-bar button { background-color: alpha(#a6adc8, 0.04); border-radius: 0px; margin: 0 2px; padding: 4px 8px; transition: all 0.15s ease; } .path-bar button:hover { background-color: #89b4fa; color: #1e1e2e; } /* Input Fields & Focus Glows */ entry, textview text { border: 1px solid alpha(#a6adc8, 0.1); border-radius: 0px; } entry:focus, textview text:focus { border-color: #89b4fa; box-shadow: 0 0 0 2px alpha(#89b4fa, 0.2); } /* Text Selection Highlights */ selection { background-color: #89b4fa; color: #1e1e2e; } /* Notification Styling */ .background .app-notification, .app-notification, .osd .app-notification { background-color: #89b4fa !important; color: #1e1e2e !important; } .background .app-notification button, .app-notification button, .osd .app-notification button { background-color: alpha(#1e1e2e, 0.2) !important; color: #1e1e2e !important; border: none !important; } .background .app-notification button:hover, .app-notification button:hover, .osd .app-notification button:hover { background-color: alpha(#89b4fa, 0.6) !important; }",
-        "gtk3": "button:hover, combo button:hover, stackswitcher button:hover { background-color: #89b4fa; color: #a6adc8; } row:hover, cell:hover, row:hover label, cell:hover label { background-color: #89b4fa; color: #1e1e2e; } row:selected, cell:selected { background-color: alpha(#89b4fa, 0.30); color: #a6adc8; } entry:hover { border-color: #89b4fa; } /* Thicker 2px accent border for GTK3 menus */ menu, .menu, context-menu { border: 2px solid #89b4fa; } /* Color GTK3 menu items on hover */ menu menuitem:hover, .menu menuitem:hover { background-color: #89b4fa; color: #1e1e2e; } /* Text Selection Highlights */ selection { background-color: #89b4fa; color: #1e1e2e; }"
+        "gtk4": "/* Use pywal colors for GTK4 selections and interactive states. */ .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover, listview row:hover, gridview child:hover { background-color: alpha(#B8C1B1, 0.15); color: #c2c3c5; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected, listview row:selected, gridview child:selected { background-color: #B8C1B1; color: #0b0f19; } selection { background-color: #B8C1B1; color: #0b0f19; } popover.menu, popover.menu > contents, popover.menu contents, popover.menu contents > list, popover.menu modelbutton { background-color: #0b0f19 !important; } popover.menu modelbutton:hover, popover.menu modelbutton:hover > box, popover.menu contents modelbutton:hover, popover.menu contents modelbutton:hover > box, popover.menu modelbutton:hover label, popover.menu contents modelbutton:hover label { background-color: #B8C1B1 !important; color: #0b0f19 !important; }",
+        "gtk3": "/* Use pywal colors for GTK3 selections and interactive states. */ .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover, row:hover, cell:hover { background-color: alpha(#B8C1B1, 0.15); color: #c2c3c5; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected, row:selected, cell:selected { background-color: #B8C1B1; color: #0b0f19; } selection { background-color: #B8C1B1; color: #0b0f19; } menu, .menu, context-menu, menu menuitem, .menu menuitem { background-color: #0b0f19 !important; } menu menuitem:hover, menu menuitem:hover label, .menu menuitem:hover, .menu menuitem:hover label { background-color: #B8C1B1 !important; color: #0b0f19 !important; }"
     },
-    "plugins": {
-        "flatpak": {
-            "enabled": true,
-            "manage_permissions": true,
-            "use_portal": true
-        }
-    }
+    "plugins": {}
 }

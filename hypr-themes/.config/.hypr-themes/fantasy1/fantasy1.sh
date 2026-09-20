@@ -16,8 +16,8 @@ WALL="$THEME_DIR/thumbnail.png"
 PYWAL="$HOME/.config/pywal/themes/active.json"
 
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="Fantasy1-Icons"
-CURSOR_THEME="Fantasy1-Cursors"
+ICON_THEME="vimix_fantasy_1"
+CURSOR_THEME="bibata_fantasy_1_modern"
 
 KVANTUM_DIR="$HOME/.config/Kvantum/pywal"
 

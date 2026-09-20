@@ -1,6 +1,6 @@
-{
+{{
     "name": "pywal",
-    "variables": {
+    "variables": {{
         "accent_color": "{color12}",
         "accent_bg_color": "{color12}",
         "accent_fg_color": "{color12.lighten(70%)}",
@@ -32,87 +32,81 @@
         "dialog_fg_color": "{color15}",
         "popover_bg_color": "{color0}",
         "popover_fg_color": "{color15}",
-        "shade_color": "{color0}",
+        "shade_color": "{color8}",
         "scrollbar_outline_color": "{color12}",
         "sidebar_bg_color": "{color0}",
         "sidebar_fg_color": "{color15}",
         "sidebar_backdrop_color": "{color0.lighten(1%)}",
         "sidebar_shade_color": "{color0.lighten(2%)}"
-    },
-    "palette": {
-        "blue_": {
+    }},
+    "palette": {{
+        "blue_": {{
             "1": "#99c1f1",
             "2": "#62a0ea",
             "3": "#3584e4",
             "4": "#1c71d8",
             "5": "#1a5fb4"
-        },
-        "green_": {
+        }},
+        "green_": {{
             "1": "#8ff0a4",
             "2": "#57e389",
             "3": "#33d17a",
             "4": "#2ec27e",
             "5": "#26a269"
-        },
-        "yellow_": {
+        }},
+        "yellow_": {{
             "1": "#f9f06b",
             "2": "#f8e45c",
             "3": "#f6d32d",
             "4": "#f5c211",
             "5": "#e5a50a"
-        },
-        "orange_": {
+        }},
+        "orange_": {{
             "1": "#ffbe6f",
             "2": "#ffa348",
             "3": "#ff7800",
             "4": "#e66100",
             "5": "#c64600"
-        },
-        "red_": {
+        }},
+        "red_": {{
             "1": "#f66151",
             "2": "#ed333b",
             "3": "#e01b24",
             "4": "#c01c28",
             "5": "#a51d2d"
-        },
-        "purple_": {
+        }},
+        "purple_": {{
             "1": "#dc8add",
             "2": "#c061cb",
             "3": "#9141ac",
             "4": "#813d9c",
             "5": "#613583"
-        },
-        "brown_": {
+        }},
+        "brown_": {{
             "1": "#cdab8f",
             "2": "#b5835a",
             "3": "#986a44",
             "4": "#865e3c",
             "5": "#63452c"
-        },
-        "light_": {
+        }},
+        "light_": {{
             "1": "#ffffff",
             "2": "#f6f5f4",
             "3": "#deddda",
             "4": "#c0bfbc",
             "5": "#9a9996"
-        },
-        "dark_": {
+        }},
+        "dark_": {{
             "1": "#77767b",
             "2": "#5e5c64",
-            "3": "#33d17a",
+            "3": "#3d3846",
             "4": "#241f31",
             "5": "#000000"
-        }
-    },
-    "custom_css": {
-        "gtk4": "/* Sidebar hover gets a 15% transparent shade of your accent color */ .navigation-sidebar row:hover { background-color: alpha({color12}, 0.15); } /* Main panel items get full accent background and dark text on hover */ listview row:hover, gridview child:hover, listview row:hover label, gridview child:hover label { background-color: {color12}; color: {color0}; } /* Thicker 2px accent border for GTK4 popovers */ popover contents { border: 2px solid {color12}; box-shadow: none; } /* Color context menu items on hover */ popover contents modelbutton:hover { background-color: {color12}; color: {color0}; } /* Libadwaita Tab Bar Overrides */ tabbar { background-color: {color0}; } tabbar tab { padding: 4px 12px; color: alpha({color15}, 0.5); background-color: transparent; } tabbar tab:checked { color: {color0}; background-color: {color12}; } tabbar tab:hover:not(:checked) { background-color: alpha({color12}, 0.12); color: {color15}; } /* Window Frame Accent Line */ window.main-window, window.dialog { border: 1.5px solid {color12}; border-radius: 0px; } /* Clean Path-bar Breadcrumbs Buttons */ .path-bar button { background-color: alpha({color15}, 0.04); border-radius: 0px; margin: 0 2px; padding: 4px 8px; transition: all 0.15s ease; } .path-bar button:hover { background-color: {color12}; color: {color0}; } /* Input Fields & Focus Glows */ entry, textview text { border: 1px solid alpha({color15}, 0.1); border-radius: 0px; } entry:focus, textview text:focus { border-color: {color12}; box-shadow: 0 0 0 2px alpha({color12}, 0.2); } /* Text Selection Highlights */ selection { background-color: {color12}; color: {color0}; } /* Notification Styling */ .background .app-notification, .app-notification, .osd .app-notification { background-color: {color12} !important; color: {color0} !important; } .background .app-notification button, .app-notification button, .osd .app-notification button { background-color: alpha({color0}, 0.2) !important; color: {color0} !important; border: none !important; } .background .app-notification button:hover, .app-notification button:hover, .osd .app-notification button:hover { background-color: alpha({color12}, 0.6) !important; }",
-        "gtk3": "button:hover, combo button:hover, stackswitcher button:hover { background-color: {color12}; color: {color15}; } row:hover, cell:hover, row:hover label, cell:hover label { background-color: {color12}; color: {color0}; } row:selected, cell:selected { background-color: alpha({color12}, 0.30); color: {color15}; } entry:hover { border-color: {color12}; } /* Thicker 2px accent border for GTK3 menus */ menu, .menu, context-menu { border: 2px solid {color12}; } /* Color GTK3 menu items on hover */ menu menuitem:hover, .menu menuitem:hover { background-color: {color12}; color: {color0}; } /* Text Selection Highlights */ selection { background-color: {color12}; color: {color0}; }"
-    },
-    "plugins": {
-        "flatpak": {
-            "enabled": true,
-            "manage_permissions": true,
-            "use_portal": true
-        }
-    }
-}
+        }}
+    }},
+    "custom_css": {{
+        "gtk4": "/* Use pywal colors for GTK4 selections and interactive states. */ .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover, listview row:hover, gridview child:hover { background-color: alpha({color12}, 0.15); color: {color15}; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected, listview row:selected, gridview child:selected { background-color: {color12}; color: {color0}; } selection { background-color: {color12}; color: {color0}; } popover.menu, popover.menu > contents, popover.menu contents, popover.menu contents > list, popover.menu modelbutton { background-color: {color0} !important; } popover.menu modelbutton:hover, popover.menu modelbutton:hover > box, popover.menu contents modelbutton:hover, popover.menu contents modelbutton:hover > box, popover.menu modelbutton:hover label, popover.menu contents modelbutton:hover label { background-color: {color12} !important; color: {color0} !important; }",
+        "gtk3": "/* Use pywal colors for GTK3 selections and interactive states. */ .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover, row:hover, cell:hover { background-color: alpha({color12}, 0.15); color: {color15}; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected, row:selected, cell:selected { background-color: {color12}; color: {color0}; } selection { background-color: {color12}; color: {color0}; } menu, .menu, context-menu, menu menuitem, .menu menuitem { background-color: {color0} !important; } menu menuitem:hover, menu menuitem:hover label, .menu menuitem:hover, .menu menuitem:hover label { background-color: {color12} !important; color: {color0} !important; }"
+    }},
+    "plugins": {{}}
+}}

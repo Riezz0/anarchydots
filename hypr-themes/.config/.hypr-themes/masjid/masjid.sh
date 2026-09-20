@@ -16,8 +16,8 @@ WALL="$THEME_DIR/thumbnail.png"
 PYWAL="$HOME/.config/pywal/themes/active.json"
 
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="Masjid-Icons"
-CURSOR_THEME="Masjid-Cursors"
+ICON_THEME="vimix_masjid"
+CURSOR_THEME="bibata_masjid_modern"
 
 KVANTUM_DIR="$HOME/.config/Kvantum/pywal"
 

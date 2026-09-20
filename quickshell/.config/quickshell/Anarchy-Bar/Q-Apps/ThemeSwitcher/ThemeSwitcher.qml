@@ -33,7 +33,6 @@ PanelWindow {
 
     property var themes: []
     property var carouselThemes: []
-    property bool cacheReady: false
     property int cardRadius: 8
     property int cardBorderThickness: 1
     property color background: "#1e1e2e"
@@ -69,8 +68,12 @@ PanelWindow {
     }
     property string themeRoot: StandardPaths.writableLocation(StandardPaths.HomeLocation)
         .toString().replace(/^file:\/\//, "") + "/.config/.hypr-themes"
-    property string cacheDir: StandardPaths.writableLocation(StandardPaths.HomeLocation)
-        .toString().replace(/^file:\/\//, "") + "/.cache/anarchy-theme-switcher/thumbnails"
+
+    function thumbnailSource(themeData) {
+        var path = themeData && themeData.thumbnail ? themeData.thumbnail : ""
+        if (path === "") return ""
+        return path.indexOf("://") !== -1 ? path : "file://" + path
+    }
 
     function reloadSettings() {
         try {
@@ -113,7 +116,6 @@ PanelWindow {
                 }
                 switcher.themes = found
                 switcher.carouselThemes = found.concat(found, found, found, found, found)
-                cacheProcess.running = true
                 Qt.callLater(function() {
                     if (found.length > 0) {
                         themeList.currentIndex = found.length * 2
@@ -122,13 +124,6 @@ PanelWindow {
                 })
             }
         }
-    }
-
-    Process {
-        id: cacheProcess
-        command: ["bash", "-c", "cache=\"$HOME/.cache/anarchy-theme-switcher/thumbnails\"; mkdir -p \"$cache\"; for d in \"$HOME/.config/.hypr-themes\"/*/; do [ -d \"$d\" ] || continue; name=$(basename \"$d\"); for f in thumbnail.png thumbnail.jpg thumbnail.jpeg thumbnail.webp; do if [ -f \"$d$f\" ]; then cp -f \"$d$f\" \"$cache/$name.png\"; break; fi; done; done"]
-        running: false
-        onExited: switcher.cacheReady = true
     }
 
     Process {
@@ -213,10 +208,10 @@ PanelWindow {
                         id: thumbnail
                         anchors.fill: parent
                         anchors.margins: 7
-                        source: switcher.cacheReady
-                            ? "file://" + switcher.cacheDir + "/" + cardWrapper.modelData.name + ".png"
-                            : ""
+                        source: switcher.thumbnailSource(cardWrapper.modelData)
                         cache: true
+                        sourceSize.width: width
+                        sourceSize.height: height
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                         visible: false

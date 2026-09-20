@@ -20,8 +20,8 @@ PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="Mars-Icons"
-CURSOR_THEME="Mars-Cursors"
+ICON_THEME="vimix_mars"
+CURSOR_THEME="bibata_mars_modern"
 
 
 # Kvantum

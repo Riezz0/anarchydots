@@ -16,8 +16,8 @@ WALL="$THEME_DIR/thumbnail.png"
 PYWAL="$HOME/.config/pywal/themes/active.json"
 
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="AnimeRoom-Icons"
-CURSOR_THEME="AnimeRoom-Cursors"
+ICON_THEME="vimix_anime_room"
+CURSOR_THEME="bibata_anime_room_modern"
 
 KVANTUM_DIR="$HOME/.config/Kvantum/pywal"
 
@@ -134,6 +134,7 @@ killall -q thunar 2>/dev/null || true
 killall -q gnome-text-editor 2>/dev/null || true
 killall -q gnome-calculator 2>/dev/null || true
 killall -q gnome-calendar 2>/dev/null || true
+killall -q gnome-clocks 2>/dev/null || true
 killall -q evince 2>/dev/null || true
 killall -q eog 2>/dev/null || true
 killall -q file-roller 2>/dev/null || true

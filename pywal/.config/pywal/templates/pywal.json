@@ -23,7 +23,7 @@
         "headerbar_bg_color": "{color0}",
         "headerbar_fg_color": "{color15}",
         "headerbar_border_color": "#{color0.lighten(3%)}",
-        "headerbar_backdrop_color": "{color4}",
+        "headerbar_backdrop_color": "{color0}",
         "headerbar_shade_color": "#{color0.lighten(2%)}",
         "card_bg_color": "#{color0.lighten(2%)}",
         "card_fg_color": "{color15}",
@@ -36,8 +36,12 @@
         "scrollbar_outline_color": "{color12}",
         "sidebar_bg_color": "{color0}",
         "sidebar_fg_color": "{color15}",
-        "sidebar_backdrop_color": "#{color0.lighten(1%)}",
-        "sidebar_shade_color": "#{color0.lighten(2%)}"
+        "sidebar_backdrop_color": "{color0}",
+        "sidebar_shade_color": "#{color0.lighten(2%)}",
+        "secondary_sidebar_bg_color": "{color0}",
+        "secondary_sidebar_fg_color": "{color15}",
+        "secondary_sidebar_backdrop_color": "{color0}",
+        "secondary_sidebar_shade_color": "#{color0.lighten(2%)}"
     }},
     "palette": {{
         "blue_": {{
@@ -105,8 +109,8 @@
         }}
     }},
     "custom_css": {{
-        "gtk4": "",
-        "gtk3": ""
+        "gtk4": "/* Use the pywal background for every surface. */ window, .background, .view, .sidebar, .sidebar-pane, placessidebar, filechooser placessidebar, .navigation-sidebar, popover, popover.menu, popover > contents, popover.menu > contents, popover contents, popover contents > list, menu { background-color: {color0}; color: {color15}; } .sidebar row, .navigation-sidebar row, placessidebar row { background-color: {color0}; color: {color15}; } .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover { background-color: alpha({color12}, 0.15); color: {color15}; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected { background-color: {color12}; color: {color0}; } popover.menu modelbutton, popover contents modelbutton, menu menuitem, .menu menuitem { background-color: {color0}; color: {color15}; } popover.menu modelbutton:hover, popover contents modelbutton:hover, menu menuitem:hover, .menu menuitem:hover { background-color: {color12}; color: {color0}; } popover, popover.menu, popover > contents, popover.menu > contents, menu, .menu, context-menu { border: 2px solid {color12}; box-shadow: none; opacity: 1; }",
+        "gtk3": "/* Use the pywal background for every surface. */ window, .background, .view, .sidebar, .sidebar-pane, placessidebar, menu, .menu, context-menu { background-color: {color0}; color: {color15}; } .sidebar row, placessidebar row { background-color: {color0}; color: {color15}; } .sidebar row:hover, placessidebar row:hover { background-color: alpha({color12}, 0.15); color: {color15}; } .sidebar row:selected, placessidebar row:selected { background-color: {color12}; color: {color0}; } menu menuitem, .menu menuitem { background-color: {color0}; color: {color15}; } menu menuitem:hover, .menu menuitem:hover { background-color: {color12}; color: {color0}; } menu, .menu, context-menu { border: 2px solid {color12}; box-shadow: none; opacity: 1; }"
     }},
     "plugins": {{}}
 }}

@@ -20,8 +20,8 @@ PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
 GTK_THEME="graphite-anarchy-gruvbox-dark"
-ICON_THEME="GruvboxDark-Icons"
-CURSOR_THEME="GruvboxDark-Cursors"
+ICON_THEME="vimix_gruvbox_dark"
+CURSOR_THEME="bibata_gruvbox_dark_modern"
 
 # Kvantum
 KVANTUM_DIR="$USER_HOME/.config/Kvantum/pywal"

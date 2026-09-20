@@ -16,8 +16,8 @@ WALL="$THEME_DIR/thumbnail.png"
 PYWAL="$HOME/.config/pywal/themes/active.json"
 
 GTK_THEME="adw-gtk3-dark"
-ICON_THEME="CatppuccinMocha-Icons"
-CURSOR_THEME="CatppuccinMocha-Cursors"
+ICON_THEME="vimix_catppuccin_mocha"
+CURSOR_THEME="bibata_catppuccin_mocha_modern"
 
 KVANTUM_DIR="$HOME/.config/Kvantum/pywal"
 

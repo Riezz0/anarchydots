@@ -6,43 +6,43 @@ Issues caused by theming should be reported to Gradience repository, and not to 
 https://github.com/GradienceTeam/Gradience
 */
 
-@define-color accent_color #89b4fa;
-@define-color accent_bg_color #89b4fa;
-@define-color accent_fg_color #dbe8fd;
-@define-color destructive_color #f9e2af;
-@define-color destructive_bg_color #f9e2af;
-@define-color destructive_fg_color #fdf6e7;
-@define-color success_color #f5c2e7;
-@define-color success_bg_color #f5c2e7;
-@define-color success_fg_color #a6adc8;
-@define-color warning_color #94e2d5;
-@define-color warning_bg_color #94e2d5;
-@define-color warning_fg_color #a6adc8;
-@define-color error_color #f9e2af;
-@define-color error_bg_color #f9e2af;
-@define-color error_fg_color #a6adc8;
-@define-color window_bg_color #1e1e2e;
-@define-color window_fg_color #a6adc8;
-@define-color view_bg_color #202030;
-@define-color view_fg_color #a6adc8;
-@define-color headerbar_bg_color #1e1e2e;
-@define-color headerbar_fg_color #a6adc8;
-@define-color headerbar_border_color #242434;
-@define-color headerbar_backdrop_color #89b4fa;
-@define-color headerbar_shade_color #222232;
-@define-color card_bg_color #222232;
-@define-color card_fg_color #a6adc8;
-@define-color card_shade_color #202030;
-@define-color dialog_bg_color #1e1e2e;
-@define-color dialog_fg_color #a6adc8;
-@define-color popover_bg_color #1e1e2e;
-@define-color popover_fg_color #a6adc8;
-@define-color shade_color #1e1e2e;
-@define-color scrollbar_outline_color #89b4fa;
-@define-color sidebar_bg_color #1e1e2e;
-@define-color sidebar_fg_color #a6adc8;
-@define-color sidebar_backdrop_color #202030;
-@define-color sidebar_shade_color #222232;
+@define-color accent_color #B8C1B1;
+@define-color accent_bg_color #B8C1B1;
+@define-color accent_fg_color #e9ece7;
+@define-color destructive_color #DDB587;
+@define-color destructive_bg_color #a58765;
+@define-color destructive_fg_color #f4e8db;
+@define-color success_color #E5C58F;
+@define-color success_bg_color #E5C58F;
+@define-color success_fg_color #c2c3c5;
+@define-color warning_color #FDDEB4;
+@define-color warning_bg_color #bda687;
+@define-color warning_fg_color #c2c3c5;
+@define-color error_color #DDB587;
+@define-color error_bg_color #a58765;
+@define-color error_fg_color #c2c3c5;
+@define-color window_bg_color #0b0f19;
+@define-color window_fg_color #c2c3c5;
+@define-color view_bg_color #0d111b;
+@define-color view_fg_color #c2c3c5;
+@define-color headerbar_bg_color #0b0f19;
+@define-color headerbar_fg_color #c2c3c5;
+@define-color headerbar_border_color #12161f;
+@define-color headerbar_backdrop_color #8a9084;
+@define-color headerbar_shade_color #0f131d;
+@define-color card_bg_color #0f131d;
+@define-color card_fg_color #c2c3c5;
+@define-color card_shade_color #0d111b;
+@define-color dialog_bg_color #0b0f19;
+@define-color dialog_fg_color #c2c3c5;
+@define-color popover_bg_color #0b0f19;
+@define-color popover_fg_color #c2c3c5;
+@define-color shade_color #5a616e;
+@define-color scrollbar_outline_color #B8C1B1;
+@define-color sidebar_bg_color #0b0f19;
+@define-color sidebar_fg_color #c2c3c5;
+@define-color sidebar_backdrop_color #0d111b;
+@define-color sidebar_shade_color #0f131d;
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
 @define-color blue_3 #3584e4;
@@ -85,10 +85,10 @@ https://github.com/GradienceTeam/Gradience
 @define-color light_5 #9a9996;
 @define-color dark_1 #77767b;
 @define-color dark_2 #5e5c64;
-@define-color dark_3 #33d17a;
+@define-color dark_3 #3d3846;
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
-button:hover, combo button:hover, stackswitcher button:hover { background-color: #89b4fa; color: #a6adc8; } row:hover, cell:hover, row:hover label, cell:hover label { background-color: #89b4fa; color: #1e1e2e; } row:selected, cell:selected { background-color: alpha(#89b4fa, 0.30); color: #a6adc8; } entry:hover { border-color: #89b4fa; } /* Thicker 2px accent border for GTK3 menus */ menu, .menu, context-menu { border: 2px solid #89b4fa; } /* Color GTK3 menu items on hover */ menu menuitem:hover, .menu menuitem:hover { background-color: #89b4fa; color: #1e1e2e; } /* Text Selection Highlights */ selection { background-color: #89b4fa; color: #1e1e2e; }
+/* Use pywal colors for GTK3 selections and interactive states. */ .sidebar row:hover, .navigation-sidebar row:hover, placessidebar row:hover, row:hover, cell:hover { background-color: alpha(#B8C1B1, 0.15); color: #c2c3c5; } .sidebar row:selected, .navigation-sidebar row:selected, placessidebar row:selected, row:selected, cell:selected { background-color: #B8C1B1; color: #0b0f19; } selection { background-color: #B8C1B1; color: #0b0f19; } menu, .menu, context-menu, menu menuitem, .menu menuitem { background-color: #0b0f19 !important; } menu menuitem:hover, menu menuitem:hover label, .menu menuitem:hover, .menu menuitem:hover label { background-color: #B8C1B1 !important; color: #0b0f19 !important; }
 .navigation-sidebar {
-background-color: #1e1e2e;
+background-color: #0b0f19;
 }

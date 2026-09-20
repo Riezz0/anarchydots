@@ -20,8 +20,8 @@ PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
 GTK_THEME="graphite-anarchy-everforest-dark"
-ICON_THEME="EverforestDark-Icons"
-CURSOR_THEME="EverforestDark-Cursors"
+ICON_THEME="vimix_everforest_dark"
+CURSOR_THEME="bibata_everforest_dark_hard_modern"
 
 # Kvantum
 KVANTUM_DIR="$USER_HOME/.config/Kvantum/pywal"

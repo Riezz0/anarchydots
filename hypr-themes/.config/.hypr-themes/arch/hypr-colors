@@ -1,0 +1,29 @@
+-- Define the helper function locally
+local function rgba(r, g, b, a)
+    return string.format("0x%02x%02x%02x%02x", r, g, b, math.floor(a * 255))
+end
+
+local M = {}
+
+M.background = "0xff2d1a2e"
+M.foreground = "0xffcac5ca"
+M.cursor     = "0xffcac5ca"
+
+M.color0  = "0xff2d1a2e"
+M.color1  = "0xffae153d"
+M.color2  = "0xffb11b33"
+M.color3  = "0xff9d1848"
+M.color4  = "0xffba6c24"
+M.color5  = "0xffbd8324"
+M.color6  = "0xff2e226b"
+M.color7  = "0xffa096a0"
+M.color8  = "0xff7a657b"
+M.color9  = "0xffe81d52"
+M.color10 = "0xffed2445"
+M.color11 = "0xffd22061"
+M.color12 = "0xfff89130"
+M.color13 = "0xfffcaf30"
+M.color14 = "0xff3e2e8f"
+M.color15 = "0xffcac5ca"
+
+return M

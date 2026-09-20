@@ -97,12 +97,16 @@ Item {
                 }
 
                 Text {
-                    anchors.centerIn: parent
+                    anchors.fill: parent
                     text: root.workspaceIndicatorStyle === "pacman" ? (parent.isActive ? "\u{F0BAF}" : "\u{F02A0}") : (root.workspaceIndicatorStyle === "arabic" ? workspaceContainer.arabicNum(parent.workspaceId) : parent.workspaceId.toString())
                     visible: root.workspaceIndicatorStyle !== "dots"
                     font.pixelSize: root.workspaceIndicatorStyle === "pacman" ? 18 : 13
                     font.family: root.workspaceIndicatorStyle === "pacman" ? "JetBrainsMono Nerd Font" : ""
                     font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    topPadding: 2
+                    bottomPadding: 0
                     color: root.workspaceIndicatorStyle === "pacman" ? (parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted) : (parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted)))
 
                     Behavior on color { ColorAnimation { duration: 150 } }
@@ -169,12 +173,16 @@ Item {
                 }
 
                 Text {
-                    anchors.centerIn: parent
+                    anchors.fill: parent
                     text: root.workspaceIndicatorStyle === "pacman" ? (parent.isActive ? "\u{F0BAF}" : "\u{F02A0}") : (root.workspaceIndicatorStyle === "arabic" ? workspaceContainer.arabicNum(parent.workspaceId) : parent.workspaceId.toString())
                     visible: root.workspaceIndicatorStyle !== "dots"
                     font.pixelSize: root.workspaceIndicatorStyle === "pacman" ? 18 : 13
                     font.family: root.workspaceIndicatorStyle === "pacman" ? "JetBrainsMono Nerd Font" : ""
                     font.weight: Font.DemiBold
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    topPadding: 2
+                    bottomPadding: 0
                     color: root.workspaceIndicatorStyle === "pacman" ? (parent.isActive ? (parent.hovered ? Qt.lighter(theme.color2, 1.2) : theme.color2) : theme.muted) : (parent.isActive ? theme.background : (parent.hovered ? theme.foreground : (parent.hasWindows ? theme.color4 : theme.muted)))
 
                     Behavior on color { ColorAnimation { duration: 150 } }
