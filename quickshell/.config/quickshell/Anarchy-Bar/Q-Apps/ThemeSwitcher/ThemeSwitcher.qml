@@ -34,7 +34,14 @@ PanelWindow {
     property var themes: []
     property var carouselThemes: []
     property int cardRadius: 8
-    property int cardBorderThickness: 1
+    property int thumbnailBorderThickness: 0
+    property string thumbnailShape: "portrait"
+    readonly property bool compactThumbnails: thumbnailShape === "square" || thumbnailShape === "circle"
+    readonly property bool circularThumbnails: thumbnailShape === "circle"
+    readonly property int cardWidth: thumbnailShape === "landscape" ? 360 : 230
+    readonly property int cardHeight: thumbnailShape === "landscape" ? 230 : 360
+    readonly property string statePath: StandardPaths.writableLocation(StandardPaths.HomeLocation)
+        + "/.cache/anarchy-theme-switcher.state"
     property color background: "#1e1e2e"
     property color foreground: "#cdd6f4"
     property color muted: "#7f849c"
@@ -78,8 +85,17 @@ PanelWindow {
     function reloadSettings() {
         try {
             var data = JSON.parse(settingsFile.text())
-            if (data.themeCardRadius !== undefined) cardRadius = data.themeCardRadius
-            if (data.themeCardBorderThickness !== undefined) cardBorderThickness = data.themeCardBorderThickness
+            if (data.barRadius !== undefined) cardRadius = data.barRadius
+            if (data.barBorderThickness !== undefined) thumbnailBorderThickness = data.barBorderThickness
+            if (data.themeSwitcherThumbnailShape !== undefined)
+                thumbnailShape = data.themeSwitcherThumbnailShape === "rounded-square"
+                    ? "square"
+                    : (data.themeSwitcherThumbnailShape === "rounded"
+                            || data.themeSwitcherThumbnailShape === "vertical"
+                        ? "portrait"
+                        : data.themeSwitcherThumbnailShape)
+            else if (data.themeThumbnailsCircular === true)
+                thumbnailShape = "circle"
         } catch (e) {}
     }
 
@@ -90,6 +106,14 @@ PanelWindow {
         onLoaded: switcher.reloadSettings()
         onFileChanged: switcher.reloadSettings()
     }
+
+    FileView {
+        id: switcherStateFile
+        path: switcher.statePath
+    }
+
+    Component.onCompleted: switcherStateFile.setText("open")
+    Component.onDestruction: switcherStateFile.setText("closed")
 
     Process {
         id: cursorProcess
@@ -174,8 +198,8 @@ PanelWindow {
             boundsBehavior: Flickable.StopAtBounds
             snapMode: ListView.SnapToItem
             highlightRangeMode: ListView.StrictlyEnforceRange
-            preferredHighlightBegin: width / 2 - 115
-            preferredHighlightEnd: width / 2 + 115
+            preferredHighlightBegin: width / 2 - switcher.cardWidth / 2
+            preferredHighlightEnd: width / 2 + switcher.cardWidth / 2
             currentIndex: switcher.themes.length
 
             onMovementEnded: {
@@ -189,25 +213,38 @@ PanelWindow {
                 id: cardWrapper
                 required property var modelData
                 required property int index
-                width: 230
-                height: 360
+                readonly property int thumbnailBorderWidth:
+                    switcher.compactThumbnails || index === themeList.currentIndex
+                    ? switcher.thumbnailBorderThickness
+                    : 0
+                width: switcher.cardWidth
+                height: switcher.cardHeight
 
                 Rectangle {
                     id: card
-                    anchors.fill: parent
-                    radius: switcher.cardRadius
-                    color: themeCardMouse.containsMouse
-                        ? Qt.rgba(switcher.accent.r, switcher.accent.g, switcher.accent.b, 0.75)
-                        : Qt.rgba(switcher.background.r, switcher.background.g, switcher.background.b, 0.88)
-                    border.color: cardWrapper.index === themeList.currentIndex ? switcher.accent : "transparent"
-                    border.width: cardWrapper.index === themeList.currentIndex ? switcher.cardBorderThickness + 2 : 0
+                    width: parent.width
+                    height: parent.height
+                    anchors.centerIn: parent
+                    radius: switcher.compactThumbnails ? 0 : switcher.cardRadius
+                    color: switcher.compactThumbnails
+                        ? "transparent"
+                        : (themeCardMouse.containsMouse && cardWrapper.index === themeList.currentIndex
+                            ? Qt.rgba(switcher.secondary.r, switcher.secondary.g, switcher.secondary.b, 0.75)
+                            : Qt.rgba(switcher.background.r, switcher.background.g, switcher.background.b, 0.88))
+                    border.color: "transparent"
+                    border.width: 0
                     scale: cardWrapper.index === themeList.currentIndex ? 1.0 : 0.86
                     Behavior on scale { NumberAnimation { duration: 180 } }
 
                     Image {
                         id: thumbnail
-                        anchors.fill: parent
-                        anchors.margins: 7
+                        width: switcher.compactThumbnails
+                            ? Math.max(0, Math.min(parent.width - 14, parent.height - 14) - 2 * cardWrapper.thumbnailBorderWidth)
+                            : Math.max(0, parent.width - 2 * cardWrapper.thumbnailBorderWidth)
+                        height: switcher.compactThumbnails
+                            ? width
+                            : Math.max(0, parent.height - 2 * cardWrapper.thumbnailBorderWidth)
+                        anchors.centerIn: parent
                         source: switcher.thumbnailSource(cardWrapper.modelData)
                         cache: true
                         sourceSize.width: width
@@ -220,7 +257,12 @@ PanelWindow {
                     Rectangle {
                         id: maskRect
                         anchors.fill: thumbnail
-                        radius: switcher.cardRadius
+                        radius: switcher.circularThumbnails
+                            ? width / 2
+                            : Math.min(
+                                Math.max(0, switcher.cardRadius - cardWrapper.thumbnailBorderWidth),
+                                width / 2
+                            )
                         color: "white"
                         visible: false
                     }
@@ -231,13 +273,31 @@ PanelWindow {
                         maskSource: maskRect
                     }
 
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: switcher.compactThumbnails
+                            ? Math.min(parent.width - 14, parent.height - 14)
+                            : parent.width
+                        height: switcher.compactThumbnails ? width : parent.height
+                        radius: switcher.circularThumbnails
+                            ? width / 2
+                            : Math.min(switcher.cardRadius, width / 2)
+                        color: "transparent"
+                        border.color: cardWrapper.index === themeList.currentIndex
+                            ? switcher.secondary
+                            : Qt.rgba(switcher.muted.r, switcher.muted.g, switcher.muted.b, 0.65)
+                        border.width: cardWrapper.thumbnailBorderWidth
+                    }
+
                     Text {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 18
                         text: cardWrapper.modelData.name
-                        color: themeCardMouse.containsMouse ? switcher.background : switcher.foreground
+                        color: themeCardMouse.containsMouse && cardWrapper.index === themeList.currentIndex
+                            ? switcher.background
+                            : switcher.foreground
                         font.pixelSize: 15
                         font.bold: true
                         font.family: "JetBrainsMono Nerd Font"
@@ -249,10 +309,12 @@ PanelWindow {
                         id: themeCardMouse
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
+                        cursorShape: cardWrapper.index === themeList.currentIndex
+                            ? Qt.PointingHandCursor
+                            : Qt.ArrowCursor
                         onClicked: {
-                            themeList.currentIndex = cardWrapper.index
-                            switcher.applyTheme(cardWrapper.modelData)
+                            if (cardWrapper.index === themeList.currentIndex)
+                                switcher.applyTheme(cardWrapper.modelData)
                         }
                     }
                 }
@@ -261,7 +323,7 @@ PanelWindow {
 
         Text {
             width: parent.width
-            text: "Scroll or Left/Right to browse  •  Enter to apply  •  Escape to close"
+            text: "Scroll or Left/Right to browse  •  Enter/click highlighted theme to apply  •  Escape to close"
             color: switcher.muted
             font.pixelSize: 12
             font.family: "JetBrainsMono Nerd Font"

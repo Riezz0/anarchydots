@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtCore
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.SystemTray
@@ -14,6 +15,9 @@ Item {
     property real menuX: 0
     property var activeMenu: null
     property bool expanded: false
+    property string iconThemeName: "Adwaita"
+    readonly property string iconThemePath:
+        StandardPaths.writableLocation(StandardPaths.GenericDataLocation) + "/icons/" + iconThemeName
 
     implicitWidth: trayToggle.width + (expanded ? trayRow.implicitWidth + 2 : 0)
 
@@ -24,6 +28,39 @@ Item {
 
     function closeMenu() {
         activeMenu = null
+    }
+
+    function loadIconTheme() {
+        var selected = iconThemeFile.text().trim()
+        if (selected.length > 0 && selected !== iconThemeName)
+            iconThemeName = selected
+    }
+
+    function iconNeedsThemeLookup(icon) {
+        if (typeof icon !== "string") return false
+        return icon !== "" && icon.indexOf("://") === -1 && icon.indexOf("/") === -1
+    }
+
+    function fallbackIconSource(icon) {
+        var value = String(icon || "")
+        if (value === "" || value.indexOf("://") !== -1 || value.indexOf("/") !== -1)
+            return value
+        return Quickshell.iconPath(value, true)
+    }
+
+    FileView {
+        id: iconThemeFile
+        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/current_icon_theme.txt"
+        watchChanges: true
+        onLoaded: tray.loadIconTheme()
+        onFileChanged: reload()
+    }
+
+    Timer {
+        interval: 2000
+        running: true
+        repeat: true
+        onTriggered: iconThemeFile.reload()
     }
 
     function resolveMenuIcon(icon) {
@@ -89,17 +126,47 @@ Item {
                 height: 42
                 radius: root.barRadius
                 color: "transparent"
+                property string resolvedIcon: ""
 
                 Image {
                     id: trayIcon
                     anchors.centerIn: parent
                     width: 20
                     height: 20
-                    source: modelData.icon
+                    source: trayItem.resolvedIcon !== ""
+                        ? trayItem.resolvedIcon
+                        : tray.fallbackIconSource(modelData.icon)
                     sourceSize.width: width
                     sourceSize.height: height
                     smooth: true
                     fillMode: Image.PreserveAspectFit
+                }
+
+                Process {
+                    id: trayIconLookup
+                    running: tray.iconNeedsThemeLookup(modelData.icon)
+                    command: ["bash", "-c",
+                        "themeRoot=\"$1\"; icon=\"$2\"; themeName=\"$3\"; " +
+                        "case \"$icon\" in *://*|/*) exit 0;; esac; " +
+                        "for root in \"$themeRoot\" \"$HOME/.icons/$themeName\" \"/usr/local/share/icons/$themeName\" \"/usr/share/icons/$themeName\" \"$HOME/.icons/default\" /usr/share/icons/hicolor /usr/share/icons/Adwaita /usr/share/icons/breeze /usr/share/icons/breeze-dark; do " +
+                        "[ -d \"$root\" ] || continue; " +
+                        "for ext in svg png xpm; do " +
+                        "file=$(find -L \"$root\" -type f -iname \"$icon.$ext\" -print -quit 2>/dev/null); " +
+                        "if [ -n \"$file\" ]; then printf 'file://%s' \"$file\"; exit 0; fi; " +
+                        "done; done",
+                        "tray-icon-resolver", tray.iconThemePath, modelData.icon, tray.iconThemeName]
+                    stdout: StdioCollector {
+                        onStreamFinished: trayItem.resolvedIcon = text.trim()
+                    }
+                }
+
+                Connections {
+                    target: tray
+                    function onIconThemeNameChanged() {
+                        trayItem.resolvedIcon = ""
+                        trayIconLookup.running = false
+                        trayIconLookup.running = tray.iconNeedsThemeLookup(modelData.icon)
+                    }
                 }
 
                 Text {
@@ -231,17 +298,26 @@ Item {
                                     id: menuIconLookup
                                     running: modelData.icon !== ""
                                     command: ["bash", "-c",
-                                        "icon=\"$1\"; case \"$icon\" in *://*|/*) exit 0;; esac; " +
-                                        "for root in \"$HOME/.local/share/icons\" \"$HOME/.icons\" /usr/local/share/icons /usr/share/icons; do " +
+                                        "themeRoot=\"$1\"; themeName=\"$2\"; icon=\"$3\"; case \"$icon\" in *://*|/*) exit 0;; esac; " +
+                                        "for root in \"$themeRoot\" \"$HOME/.icons/$themeName\" \"/usr/local/share/icons/$themeName\" \"/usr/share/icons/$themeName\" \"$HOME/.local/share/icons\" \"$HOME/.icons\" /usr/local/share/icons /usr/share/icons; do " +
                                         "[ -d \"$root\" ] || continue; " +
                                         "file=$(find -L \"$root\" -type f \\\( -iname \"$icon.svg\" -o -iname \"$icon.png\" -o -iname \"$icon.xpm\" \\\) -print -quit 2>/dev/null); " +
                                         "[ -n \"$file\" ] && printf 'file://%s' \"$file\" && exit 0; done",
-                                        "icon", modelData.icon]
+                                        "icon", tray.iconThemePath, tray.iconThemeName, modelData.icon]
                                     stdout: StdioCollector {
                                         onStreamFinished: {
                                             var fallback = this.text.trim()
                                             if (fallback !== "") menuEntry.resolvedIcon = fallback
                                         }
+                                    }
+                                }
+
+                                Connections {
+                                    target: tray
+                                    function onIconThemeNameChanged() {
+                                        menuEntry.resolvedIcon = tray.resolveMenuIcon(modelData.icon)
+                                        menuIconLookup.running = false
+                                        menuIconLookup.running = modelData.icon !== ""
                                     }
                                 }
 

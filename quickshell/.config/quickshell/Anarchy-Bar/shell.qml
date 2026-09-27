@@ -27,8 +27,8 @@ ShellRoot {
     property real widgetOpacity: 1.0
     property int widgetRadius: 6
     property int widgetBorderThickness: 0
-    property int themeCardRadius: 8
-    property int themeCardBorderThickness: 1
+    property string themeSwitcherThumbnailShape: "portrait"
+    property bool themeSwitcherOpen: false
     property string themeThumbnailStyle: "cover"
     property string workspaceIndicatorStyle: "numbers"
     property int hyprlandBorderThickness: 2
@@ -54,6 +54,8 @@ ShellRoot {
 
     readonly property string settingsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/Anarchy-Bar/Settings/bar.json"
+    readonly property string themeSwitcherStatePath:
+        StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/anarchy-theme-switcher.state"
     readonly property string hyprlandPatchPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/.hypr-themes/patch-look.sh"
 
@@ -82,8 +84,7 @@ ShellRoot {
             "widgetOpacity": widgetOpacity,
             "widgetRadius": widgetRadius,
             "widgetBorderThickness": widgetBorderThickness,
-            "themeCardRadius": themeCardRadius,
-            "themeCardBorderThickness": themeCardBorderThickness,
+            "themeSwitcherThumbnailShape": themeSwitcherThumbnailShape,
             "themeThumbnailStyle": themeThumbnailStyle,
             "workspaceIndicatorStyle": workspaceIndicatorStyle,
             "hyprlandBorderThickness": hyprlandBorderThickness,
@@ -136,8 +137,17 @@ ShellRoot {
                     if (data.widgetOpacity !== undefined) root.widgetOpacity = data.widgetOpacity
                     if (data.widgetRadius !== undefined) root.widgetRadius = data.widgetRadius
                     if (data.widgetBorderThickness !== undefined) root.widgetBorderThickness = data.widgetBorderThickness
-                    if (data.themeCardRadius !== undefined) root.themeCardRadius = data.themeCardRadius
-                    if (data.themeCardBorderThickness !== undefined) root.themeCardBorderThickness = data.themeCardBorderThickness
+                    if (data.themeSwitcherThumbnailShape !== undefined) {
+                        if (data.themeSwitcherThumbnailShape === "rounded-square")
+                            root.themeSwitcherThumbnailShape = "square"
+                        else if (data.themeSwitcherThumbnailShape === "rounded"
+                                || data.themeSwitcherThumbnailShape === "vertical")
+                            root.themeSwitcherThumbnailShape = "portrait"
+                        else
+                            root.themeSwitcherThumbnailShape = data.themeSwitcherThumbnailShape
+                    } else if (data.themeThumbnailsCircular === true) {
+                        root.themeSwitcherThumbnailShape = "circle"
+                    }
                     if (data.themeThumbnailStyle !== undefined) root.themeThumbnailStyle = data.themeThumbnailStyle
                     if (data.workspaceIndicatorStyle !== undefined) root.workspaceIndicatorStyle = data.workspaceIndicatorStyle
                     if (data.hyprlandBorderThickness !== undefined) root.hyprlandBorderThickness = data.hyprlandBorderThickness
@@ -193,6 +203,20 @@ ShellRoot {
         }
     }
 
+    FileView {
+        id: themeSwitcherStateFile
+        path: root.themeSwitcherStatePath
+        watchChanges: true
+        onLoaded: root.themeSwitcherOpen = text().trim() === "open"
+        onFileChanged: reload()
+    }
+
+    Process {
+        command: ["bash", "-c", "mkdir -p ~/.cache; [ -e ~/.cache/anarchy-theme-switcher.state ] || printf 'closed\\n' > ~/.cache/anarchy-theme-switcher.state"]
+        running: true
+        onExited: themeSwitcherStateFile.reload()
+    }
+
     onBarRadiusChanged: saveSettings()
     onBarOpacityChanged: saveSettings()
     onBarBorderThicknessChanged: saveSettings()
@@ -209,8 +233,7 @@ ShellRoot {
     onWidgetOpacityChanged: saveSettings()
     onWidgetRadiusChanged: saveSettings()
     onWidgetBorderThicknessChanged: saveSettings()
-    onThemeCardRadiusChanged: saveSettings()
-    onThemeCardBorderThicknessChanged: saveSettings()
+    onThemeSwitcherThumbnailShapeChanged: saveSettings()
     onThemeThumbnailStyleChanged: saveSettings()
     onWorkspaceIndicatorStyleChanged: saveSettings()
     onHyprlandBorderThicknessChanged: {

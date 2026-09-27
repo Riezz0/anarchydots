@@ -642,27 +642,56 @@ PanelWindow {
                             width: parent.width
                             spacing: 20
 
-                            SettingSlider {
-                                label: "Theme Card Radius"
-                                valueText: root.themeCardRadius + "px"
-                                minimumText: "0"
-                                maximumText: "50"
-                                from: 0
-                                to: 50
-                                value: root.themeCardRadius
-                                onMoved: root.themeCardRadius = Math.round(value)
+                            Text {
+                                Layout.fillWidth: true
+                                text: "Theme Thumbnail Shape"
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: theme.foreground
                             }
 
-                            SettingSlider {
-                                label: "Theme Card Border"
-                                valueText: root.themeCardBorderThickness + "px"
-                                minimumText: "0"
-                                maximumText: "6"
-                                from: 0
-                                to: 6
-                                value: root.themeCardBorderThickness
-                                onMoved: root.themeCardBorderThickness = Math.round(value)
+                            GridLayout {
+                                Layout.fillWidth: true
+                                columns: 2
+                                rowSpacing: 8
+                                columnSpacing: 8
+
+                                Repeater {
+                                    model: [
+                                        { label: "Portrait", value: "portrait" },
+                                        { label: "Landscape", value: "landscape" },
+                                        { label: "Square", value: "square" },
+                                        { label: "Circle", value: "circle" }
+                                    ]
+
+                                    Rectangle {
+                                        required property var modelData
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 38
+                                        radius: 8
+                                        property bool selected: root.themeSwitcherThumbnailShape === modelData.value
+                                        color: selected ? theme.color5 : (shapeHover.containsMouse ? Qt.darker(theme.background, 1.2) : "transparent")
+                                        border.color: selected ? theme.color5 : theme.muted
+                                        border.width: root.moduleBorderThickness
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: modelData.label
+                                            font.pixelSize: 12
+                                            color: parent.selected ? theme.background : theme.foreground
+                                        }
+
+                                        MouseArea {
+                                            id: shapeHover
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: root.themeSwitcherThumbnailShape = modelData.value
+                                        }
+                                    }
+                                }
                             }
+
                         }
                     }
 

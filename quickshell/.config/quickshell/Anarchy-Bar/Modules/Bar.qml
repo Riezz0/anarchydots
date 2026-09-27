@@ -14,7 +14,7 @@ Variants {
         screen: modelData
         required property var modelData
         property bool qAppsOpen: false
-        visible: !powerMenu.isOpen && !keybindsPopup.isOpen && root.isMonitorEnabled(modelData)
+        visible: !powerMenu.isOpen && !keybindsPopup.isOpen && !root.themeSwitcherOpen && root.isMonitorEnabled(modelData)
 
         anchors {
             top: root.barPosition === "top"

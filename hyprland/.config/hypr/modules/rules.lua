@@ -122,6 +122,10 @@ border_color = theme.color2 .. " " .. theme.color15 })
 hl.window_rule({ match = { class = "Audacity4",}, opaque = true, no_shadow = true,
 no_blur = true })
 
+-- Force Opaque - Portals
+hl.window_rule({ match = { class = "Xdg-desktop-portal-gtk",}, opaque = true, no_shadow = true,
+no_blur = true })
+
 -- Q-Player-Portal
 hl.window_rule({ name = "qprules", match = { class = "qs" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
