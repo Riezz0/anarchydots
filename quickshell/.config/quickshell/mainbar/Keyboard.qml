@@ -2,7 +2,7 @@
 // Keyboard Module - Active Layout Detection
 // ═══════════════════════════════════════════════════════════════════════════════
 // Detects the current keyboard layout using hyprctl devices.
-// Layouts configured: us, my_ar (Alt+Shift to toggle)
+// Layouts configured: us, ar (Alt+Shift to toggle)
 //
 // Usage in shell.qml:
 //   Keyboard { id: kbd }
@@ -24,7 +24,7 @@ Item {
 
     property var layoutMap: ({
         "us":      { label: "EN", color: "color6" },
-        "my_ar":   { label: "AR", color: "color1" },
+        "ar":   { label: "AR", color: "color1" },
         "gb":      { label: "EN", color: "color6" },
         "de":      { label: "DE", color: "color4" },
         "fr":      { label: "FR", color: "color4" },

@@ -63,12 +63,12 @@ Variants {
                      anchorX: rightModules.x + x + width / 2
                  }
 
-                 Workspaces {
-                     hostWindow: bar
-                     anchorX: rightModules.x + x + width / 2
-                 }
+                  Workspaces {
+                      hostWindow: bar
+                      anchorX: rightModules.x + x + width / 2
+                  }
 
-                 Volume {
+                  Volume {
                      hostWindow: bar
                      anchorX: rightModules.x + x + width / 2
                  }
@@ -199,17 +199,22 @@ Variants {
                 anchors.rightMargin: 10
                 spacing: 10
 
+                  KeyboardLayout {
+                      hostWindow: bar
+                      anchorX: statusModules.x + x + width / 2
+                  }
+
                   InfoWidget {
                       id: infoWidget
                       hostWindow: bar
                       anchorX: statusModules.x + x + width / 2
                        onQAppsRequested: {
-                           infoPopup.close()
-                           bar.qAppsOpen = true
-                       }
-                 }
+                            infoPopup.close()
+                            bar.qAppsOpen = true
+                        }
+                  }
 
-                 SystemTray {
+                  SystemTray {
                      id: systemTray
                      trayWindow: bar
                      hostWindow: bar

@@ -771,7 +771,7 @@ Variants {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.runCommand("python3 ~/.config/xkb/symbols/my_ar.py")
+                                     onClicked: root.runCommand("python3 ~/.config/xkb/symbols/ar.py")
                                 }
                             }
                         }

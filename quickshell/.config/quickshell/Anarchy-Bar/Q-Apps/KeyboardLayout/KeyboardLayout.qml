@@ -33,7 +33,7 @@ Window {
 
     FileView {
         id: layoutFile
-        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/xkb/symbols/my_ar"
+        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/xkb/symbols/ar"
         watchChanges: true
         onLoaded: keyboardWindow.parseLayout(text())
         onFileChanged: keyboardWindow.parseLayout(text())
@@ -214,7 +214,7 @@ Window {
                         font.bold: true
                     }
                     Text {
-                        text: "my_ar  /  normal and shift symbols"
+                        text: "ar  /  normal and shift symbols"
                         color: keyboardWindow.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11

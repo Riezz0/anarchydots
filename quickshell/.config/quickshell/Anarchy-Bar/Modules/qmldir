@@ -2,6 +2,7 @@ Theme 1.0 Theme.qml
 ArchLogo 1.0 ArchLogo.qml
 Workspaces 1.0 Workspaces.qml
 Volume 1.0 Volume.qml
+KeyboardLayout 1.0 KeyboardLayout.qml
 MouseBattery 1.0 MouseBattery.qml
 Bluetooth 1.0 Bluetooth.qml
 VolumeOSD 1.0 VolumeOSD.qml
