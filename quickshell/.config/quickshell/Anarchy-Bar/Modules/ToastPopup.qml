@@ -14,6 +14,38 @@ PanelWindow {
     property var toastList: []
     property int maxToasts: 3
 
+    function addToast(appName, summary, body, persistent, taskId) {
+        var toast = {
+            id: Date.now() + Math.random(),
+            appName: appName,
+            summary: summary,
+            body: body,
+            persistent: persistent === true,
+            taskId: taskId || ""
+        }
+        var list = toastList.slice()
+        list.push(toast)
+
+        var transientCount = list.filter(function(item) { return !item.persistent }).length
+        while (transientCount > maxToasts) {
+            var transientIndex = list.findIndex(function(item) { return !item.persistent })
+            if (transientIndex < 0) break
+            list.splice(transientIndex, 1)
+            transientCount--
+        }
+
+        toastList = list
+        if (!toast.persistent)
+            dismissTimerComponent.createObject(toastWindow, { toastId: toast.id })
+    }
+
+    function dismissToast(toastId) {
+        var toast = toastList.find(function(item) { return item.id === toastId })
+        if (toast && toast.taskId)
+            calendarTasks.acknowledgeReminder(toast.taskId)
+        toastList = toastList.filter(function(toast) { return toast.id !== toastId })
+    }
+
     anchors { top: true; left: true; right: true }
 
     implicitHeight: toastColumn.implicitHeight + 40
@@ -29,17 +61,19 @@ PanelWindow {
     Connections {
         target: notifs
         function onNotificationReceived(appName, summary, body, urgency, timeout, actions) {
-            var toast = {
-                id: Date.now() + Math.random(),
-                appName: appName,
-                summary: summary,
-                body: body
-            }
-            var list = toastList.slice()
-            list.push(toast)
-            if (list.length > maxToasts) list.shift()
-            toastList = list
-            dismissTimerComponent.createObject(toastWindow, { toastId: toast.id })
+            toastWindow.addToast(appName, summary, body, false, "")
+        }
+    }
+
+    Connections {
+        target: calendarTasks
+        function onReminderTriggered(taskId, title, dueLabel) {
+            toastWindow.addToast("Task reminder", title, "Due " + dueLabel, true, taskId)
+        }
+        function onReminderCancelled(taskId) {
+            toastWindow.toastList = toastWindow.toastList.filter(function(toast) {
+                return toast.taskId !== taskId
+            })
         }
     }
 
@@ -130,6 +164,36 @@ PanelWindow {
                         maximumLineCount: 2
                         elide: Text.ElideRight
                         Layout.fillWidth: true
+                    }
+
+                    RowLayout {
+                        visible: modelData.persistent
+                        Layout.fillWidth: true
+
+                        Item { Layout.fillWidth: true }
+
+                        Rectangle {
+                            width: 72
+                            height: 24
+                            radius: root.popupRadius
+                            color: dismissHover.containsMouse ? theme.color5 : theme.color4
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Dismiss"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: theme.background
+                            }
+
+                            MouseArea {
+                                id: dismissHover
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: toastWindow.dismissToast(modelData.id)
+                            }
+                        }
                     }
                 }
             }

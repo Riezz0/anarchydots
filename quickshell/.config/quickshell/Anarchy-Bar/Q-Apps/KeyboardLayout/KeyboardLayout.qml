@@ -19,24 +19,58 @@ Window {
     property var keyMap: ({})
     property var legendRows: []
     property var modifierItems: []
+    property string activeLayout: "ar"
     property real keyboardHeight: 74
     property real keyboardUnit: Math.max(42, Math.min(84, (contentArea.width - 90) / 17))
+
+    onActiveLayoutChanged: {
+        layoutFile.reload()
+        rebuildLegend()
+    }
 
     visible: true
     width: targetScreen ? Math.min(1450, Math.max(1100, targetScreen.width - 80)) : 1300
     height: targetScreen ? Math.min(820, Math.max(680, targetScreen.height - 100)) : 760
     x: targetScreen ? targetScreen.x + Math.round((targetScreen.width - width) / 2) : 0
     y: targetScreen ? targetScreen.y + Math.round((targetScreen.height - height) / 2) : 0
-    title: "Arabic Keyboard Layout"
+    title: keyboardWindow.activeLayout === "warsh" ? "Warsh Keyboard Layout" : "Arabic Keyboard Layout"
     color: "transparent"
     flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
     FileView {
         id: layoutFile
-        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/xkb/symbols/ar"
+        path: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/xkb/symbols/" + (keyboardWindow.activeLayout === "warsh" ? "warsh" : "ar")
         watchChanges: true
         onLoaded: keyboardWindow.parseLayout(text())
-        onFileChanged: keyboardWindow.parseLayout(text())
+        // Editors commonly save by replacing the file, so reload before parsing.
+        onFileChanged: layoutFile.reload()
+    }
+
+    // Also catch atomic saves that are not reported by the file watcher.
+    Timer {
+        interval: 500
+        running: true
+        repeat: true
+        onTriggered: layoutFile.reload()
+    }
+
+    Process {
+        id: layoutProcess
+        command: ["bash", "-c", "hyprctl devices -j 2>/dev/null | python3 -c 'import json, sys; d=json.load(sys.stdin); k=next((x for x in d.get(\"keyboards\", []) if x.get(\"main\")), d.get(\"keyboards\", [{}])[0]); layouts=k.get(\"layout\", \"ar\").split(\",\"); i=k.get(\"active_layout_index\", 0); print(layouts[i] if i < len(layouts) else layouts[0])' 2>/dev/null || echo ar"]
+        running: false
+        stdout: SplitParser {
+            onRead: line => {
+                var value = line.trim().toLowerCase()
+                keyboardWindow.activeLayout = (value === "warsh" || value === "my_ar") ? "warsh" : "ar"
+            }
+        }
+    }
+
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: if (!layoutProcess.running) layoutProcess.running = true
     }
 
     FileView {
@@ -75,7 +109,7 @@ Window {
         if (unicode) {
             var codePoint = parseInt(unicode[1], 16)
             var character = String.fromCodePoint(codePoint)
-            if ((codePoint >= 0x064B && codePoint <= 0x065F) || codePoint === 0x0670)
+            if ((codePoint >= 0x064B && codePoint <= 0x065F) || codePoint === 0x0670 || codePoint === 0x08CF)
                 return "◌" + character
             return character
         }
@@ -83,7 +117,32 @@ Window {
     }
 
     function isHaraka(value) {
-        return /[\u064B-\u065F\u0670]/.test(value)
+        return /[\u064B-\u065F\u0670\u08CF]/.test(value)
+    }
+
+    function hasArabicExtendedCharacter(value) {
+        for (var index = 0; index < value.length; index++) {
+            var codePoint = value.codePointAt(index)
+            if (codePoint >= 0x0870 && codePoint <= 0x08FF)
+                return true
+            if (codePoint > 0xFFFF)
+                index++
+        }
+        return false
+    }
+
+    function hasLargeRoundDotBelow(value) {
+        return value.indexOf(String.fromCodePoint(0x08CF)) !== -1
+    }
+
+    function arabicFont(value) {
+        // The KFGQPC Warsh font does not contain Arabic Extended-B glyphs
+        // such as U08CF, so use Scheherazade New for those characters.
+        if (hasArabicExtendedCharacter(value))
+            return "Scheherazade New"
+        if (isHaraka(value))
+            return "Noto Naskh Arabic UI"
+        return activeLayout === "warsh" ? "KFGQPC Warsh Uthmanic Script" : "Noto Naskh Arabic UI"
     }
 
     function rowWidth(row) {
@@ -95,15 +154,16 @@ Window {
 
     function parseLayout(source) {
         var parsed = {}
-        var expression = /key\s+<([A-Z0-9]+)>\s*\{\s*\[\s*([^,]+),\s*([^\]]+)\]/g
+        var expression = /key\s+<([A-Z0-9]+)>\s*\{\s*\[\s*([^,\]\n]+)(?:,\s*([^\]\n]+))?\s*\]/g
         var match
         while ((match = expression.exec(source)) !== null) {
-            parsed[match[1]] = {
-                normal: symbolValue(match[2]),
-                shift: symbolValue(match[3])
-            }
+            var entry = { normal: symbolValue(match[2]) }
+            if (match[3] !== undefined)
+                entry.shift = symbolValue(match[3])
+            parsed[match[1]] = entry
         }
         keyMap = parsed
+        layoutProcess.running = true
         rebuildLegend()
     }
 
@@ -121,7 +181,7 @@ Window {
                 }
                 var values = keyMap[item.id] || {}
                 var normal = values.normal !== undefined ? values.normal : item.normal
-                var shift = values.shift !== undefined && !/^[0-9]$/.test(values.shift) ? values.shift : item.shift
+                var shift = values.shift !== undefined ? values.shift : (values.normal !== undefined ? "" : item.shift)
                 entries.push({ label: item.label, normal: normal, shift: shift })
             }
             if (entries.length > 0)
@@ -133,9 +193,7 @@ Window {
 
     function key(id, label, fallbackNormal, fallbackShift, width, fnLabel) {
         var values = keyMap[id] || {}
-        var parsedShift = values.shift
-        if (parsedShift !== undefined && /^[0-9]$/.test(parsedShift))
-            parsedShift = fallbackShift
+        var parsedShift = values.shift !== undefined ? values.shift : (values.normal !== undefined ? "" : fallbackShift)
         return {
             id: id,
             label: label,
@@ -207,14 +265,14 @@ Window {
                 Column {
                     spacing: 2
                     Text {
-                        text: "ARABIC PHONETIC LAYOUT"
+                        text: keyboardWindow.activeLayout === "warsh" ? "WARSH PHONETIC LAYOUT" : "ARABIC PHONETIC LAYOUT"
                         color: keyboardWindow.foreground
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 16
                         font.bold: true
                     }
                     Text {
-                        text: "ar  /  normal and shift symbols"
+                        text: keyboardWindow.activeLayout === "warsh" ? "warsh  /  normal and shift symbols" : "ar  /  normal and shift symbols"
                         color: keyboardWindow.muted
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
@@ -313,14 +371,25 @@ Window {
                                     anchors.rightMargin: 6
                                     anchors.bottomMargin: 4
                                     height: 44
-                                    text: modelData.normal
+                                    text: keyboardWindow.hasLargeRoundDotBelow(modelData.normal) ? "◌" : modelData.normal
                                     color: keyboardWindow.foreground
-                                    font.family: "Noto Naskh Arabic UI"
+                                    font.family: keyboardWindow.arabicFont(modelData.normal)
                                     font.pixelSize: keyboardWindow.isHaraka(modelData.normal) ? 42 : 25
                                     font.weight: Font.Normal
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     elide: Text.ElideRight
+                                }
+
+                                Rectangle {
+                                    visible: !modelData.special && keyboardWindow.hasLargeRoundDotBelow(modelData.normal)
+                                    width: 7
+                                    height: 7
+                                    radius: 3.5
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.bottom: parent.bottom
+                                    anchors.bottomMargin: 7
+                                    color: keyboardWindow.foreground
                                 }
 
                                 Text {
@@ -331,14 +400,25 @@ Window {
                                     anchors.right: parent.right
                                     anchors.topMargin: 4
                                     anchors.rightMargin: 5
-                                    text: modelData.shift
+                                    text: keyboardWindow.hasLargeRoundDotBelow(modelData.shift) ? "◌" : modelData.shift
                                     color: keyboardWindow.accent
-                                    font.family: "Noto Naskh Arabic UI"
+                                    font.family: keyboardWindow.arabicFont(modelData.shift)
                                     font.pixelSize: keyboardWindow.isHaraka(modelData.shift) ? 36 : 25
                                     font.weight: Font.Normal
                                     horizontalAlignment: Text.AlignRight
                                     verticalAlignment: Text.AlignVCenter
                                     elide: Text.ElideRight
+                                }
+
+                                Rectangle {
+                                    visible: !modelData.special && keyboardWindow.hasLargeRoundDotBelow(modelData.shift)
+                                    width: 7
+                                    height: 7
+                                    radius: 3.5
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.top: parent.top
+                                    anchors.topMargin: 25
+                                    color: keyboardWindow.accent
                                 }
 
                                 MouseArea {

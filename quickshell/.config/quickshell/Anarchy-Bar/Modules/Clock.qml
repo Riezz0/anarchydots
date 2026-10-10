@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 
 Rectangle {
     id: clockContainer
@@ -11,7 +12,7 @@ Rectangle {
     radius: root.widgetRadius
     border.color: theme.muted
     border.width: 0
-    color: clockHover.containsMouse ? theme.color1 : "transparent"
+    color: "transparent"
 
     property string currentTime: Qt.formatDateTime(new Date(), "hh:mm")
     property string currentHours: Qt.formatDateTime(new Date(), "hh")
@@ -71,7 +72,7 @@ Rectangle {
         anchors.centerIn: parent
         width: parent.width
         text: clockContainer.currentTime
-        color: clockHover.containsMouse ? theme.background : theme.muted
+        color: theme.muted
         font.pixelSize: 13
         font.family: "JetBrainsMono Nerd Font"
         horizontalAlignment: Text.AlignHCenter
@@ -81,15 +82,7 @@ Rectangle {
         id: clockHover
         anchors.fill: parent
         hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: mouse => {
-            if (mouse.button === Qt.RightButton) {
-                clockPopupOpen = !clockPopupOpen
-            } else {
-                calendarPopup.isOpen ? calendarPopup.close() : calendarPopup.open()
-            }
-        }
+        acceptedButtons: Qt.NoButton
     }
 
     Loader {
@@ -99,38 +92,52 @@ Rectangle {
         property real tooltipAnchorX: clockContainer.anchorX
         onLoaded: {
             item.hostWindow = clockContainer.hostWindow
-            item.title = "Clock and Calendar"
-            item.details = "LEFT CLICK  Calendar\nRIGHT CLICK  Clock details"
+            item.title = "Clock"
+            item.details = "Calendar and clock details are in the Widgets drawer."
         }
         Binding { target: clockTooltip.item; property: "shown"; value: clockTooltip.tooltipShown; when: clockTooltip.item !== null }
         Binding { target: clockTooltip.item; property: "anchorX"; value: clockTooltip.tooltipAnchorX; when: clockTooltip.item !== null }
     }
 
-    property bool clockPopupOpen: false
-
-    PopupWindow {
+    PanelWindow {
         id: clockPopup
-        visible: clockContainer.clockPopupOpen
+        screen: clockContainer.hostWindow ? clockContainer.hostWindow.screen : null
+        visible: clockDetailsPopup.isOpen
+            && clockDetailsPopup.targetScreen === (clockContainer.hostWindow ? clockContainer.hostWindow.screen : null)
         color: "transparent"
-        implicitWidth: 360 + Math.max(root.widgetShadowX, 0) + 2
-        implicitHeight: 122 + Math.max(root.widgetShadowY, 0) + 2
+        focusable: false
 
-        anchor.window: clockContainer.hostWindow
-        anchor.rect.x: 0
-        anchor.rect.y: root.barPosition === "top" ? clockContainer.hostWindow.height + 10 : 0
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
+
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+        mask: Region { item: clockPanel }
 
         Rectangle {
-            x: root.widgetShadowX
-            y: root.widgetShadowY
+            x: clockPanel.x + root.widgetShadowX
+            y: clockPanel.y + root.widgetShadowY
             width: 360
-            height: 122
+            height: clockPanel.height
             radius: root.widgetShadowRadius
             color: Qt.rgba(0, 0, 0, root.widgetShadowEnabled ? root.widgetShadowOpacity : 0)
         }
 
         Rectangle {
+            id: clockPanel
+            x: Math.max(0, Math.min(root.clockPopupX >= 0 ? root.clockPopupX : 0, Math.max(0, parent.width - width)))
+            y: Math.max(0, Math.min(
+                root.clockPopupY >= 0
+                    ? root.clockPopupY
+                    : (root.barPosition === "top" ? 70 : Math.max(0, parent.height - height - 70)),
+                Math.max(0, parent.height - height)
+            ))
             width: 360
-            height: 122
+            height: 170
             radius: root.widgetRadius
             color: theme.background
             opacity: root.widgetOpacity
@@ -139,7 +146,8 @@ Rectangle {
 
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 42
                 spacing: 0
 
                 Item {
@@ -219,6 +227,63 @@ Rectangle {
                 }
             }
 
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                drag.target: clockPanel
+                drag.axis: Drag.XAndYAxis
+                drag.minimumX: 0
+                drag.maximumX: Math.max(0, clockPopup.width - clockPanel.width)
+                drag.minimumY: 0
+                drag.maximumY: Math.max(0, clockPopup.height - clockPanel.height)
+                onReleased: {
+                    root.clockPopupX = clockPanel.x
+                    root.clockPopupY = clockPanel.y
+                    root.saveSettings()
+                }
+            }
+
+            RowLayout {
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.topMargin: 7
+                anchors.leftMargin: 12
+                anchors.rightMargin: 9
+                z: 2
+
+                Text {
+                    text: "Clock Details"
+                    color: theme.foreground
+                    font.pixelSize: 12
+                    font.bold: true
+                    font.family: "JetBrainsMono Nerd Font"
+                    Layout.fillWidth: true
+                }
+
+                Rectangle {
+                    Layout.preferredWidth: 24
+                    Layout.preferredHeight: 24
+                    radius: root.widgetRadius
+                    color: clockCloseHover.containsMouse
+                        ? theme.color1
+                        : Qt.rgba(theme.foreground.r, theme.foreground.g, theme.foreground.b, 0.08)
+                    Text {
+                        anchors.centerIn: parent
+                        text: "×"
+                        color: clockCloseHover.containsMouse ? theme.background : theme.muted
+                        font.pixelSize: 15
+                    }
+
+                    MouseArea {
+                        id: clockCloseHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: clockDetailsPopup.close()
+                    }
+                }
+            }
         }
     }
 }

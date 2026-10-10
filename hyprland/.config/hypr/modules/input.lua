@@ -1,7 +1,7 @@
 -- Input settings
 hl.config({
     input = {
-        kb_layout  = "us,ar",
+        kb_layout  = "us,ar,warsh",
         kb_variant = "",
         kb_model   = "",
         kb_options = "grp:alt_shift_toggle",

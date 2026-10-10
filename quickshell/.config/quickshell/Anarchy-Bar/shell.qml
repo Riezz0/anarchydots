@@ -45,17 +45,25 @@ ShellRoot {
     property var barMonitors: []
     property int rofiBorderRadius: 5
     property int rofiBorderThickness: 2
-    property int qPlayerButtonRadius: 2
+    property int calendarX: 10
+    property int calendarY: 210
+    property int clockPopupX: -1
+    property int clockPopupY: -1
+    property int systemWidgetsX: -1
+    property int systemWidgetsY: -1
     property string lockscreenWallpaper: ""
     property int lockscreenRadius: 10
     property int lockscreenBorderThickness: 2
     property bool lockscreenShowPassword: false
     property bool isLoadingSettings: true
+    property bool popupStateReady: false
 
     readonly property string settingsPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/Anarchy-Bar/Settings/bar.json"
     readonly property string themeSwitcherStatePath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/anarchy-theme-switcher.state"
+    readonly property string popupStatePath:
+        StandardPaths.writableLocation(StandardPaths.CacheLocation) + "/anarchy-bar-widgets-state.json"
     readonly property string hyprlandPatchPath:
         StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/.hypr-themes/patch-look.sh"
 
@@ -101,13 +109,61 @@ ShellRoot {
             "barMonitors": barMonitors.length > 0 ? barMonitors : undefined,
             "rofiBorderRadius": rofiBorderRadius,
             "rofiBorderThickness": rofiBorderThickness,
-            "qPlayerButtonRadius": qPlayerButtonRadius,
+            "calendarX": calendarX,
+            "calendarY": calendarY,
+            "clockPopupX": clockPopupX,
+            "clockPopupY": clockPopupY,
+            "systemWidgetsX": systemWidgetsX,
+            "systemWidgetsY": systemWidgetsY,
             "lockscreenWallpaper": lockscreenWallpaper,
                 "lockscreenRadius": lockscreenRadius,
                 "lockscreenBorderThickness": lockscreenBorderThickness,
                 "lockscreenShowPassword": lockscreenShowPassword
         }
         settingsFile.setText(JSON.stringify(data, null, 2))
+    }
+
+    function saveSystemWidgetsPosition(x, y) {
+        systemWidgetsX = Math.round(x)
+        systemWidgetsY = Math.round(y)
+        saveSettings()
+    }
+
+    function screenForName(name) {
+        for (var i = 0; i < Quickshell.screens.length; i++) {
+            if (Quickshell.screens[i].name === name) return Quickshell.screens[i]
+        }
+        return Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
+    }
+
+    function savePopupState() {
+        if (!popupStateReady) return
+        popupStateFile.setText(JSON.stringify({
+            calendarOpen: calendarPopup.isOpen,
+            calendarScreen: calendarPopup.targetScreen && calendarPopup.targetScreen.name
+                ? calendarPopup.targetScreen.name : "",
+            clockOpen: clockDetailsPopup.isOpen,
+            clockScreen: clockDetailsPopup.targetScreen && clockDetailsPopup.targetScreen.name
+                ? clockDetailsPopup.targetScreen.name : "",
+            systemWidgetsOpen: systemWidgetsPopup.isOpen,
+            systemWidgetsScreen: systemWidgetsPopup.targetScreen && systemWidgetsPopup.targetScreen.name
+                ? systemWidgetsPopup.targetScreen.name : ""
+        }, null, 2))
+    }
+
+    function restorePopupState(text) {
+        try {
+            var data = JSON.parse(text)
+            calendarPopup.targetScreen = screenForName(data.calendarScreen || "")
+            clockDetailsPopup.targetScreen = screenForName(data.clockScreen || "")
+            systemWidgetsPopup.targetScreen = screenForName(data.systemWidgetsScreen || "")
+            calendarPopup.isOpen = data.calendarOpen === true
+            clockDetailsPopup.isOpen = data.clockOpen === true
+            systemWidgetsPopup.isOpen = data.systemWidgetsOpen === true
+        } catch (error) {
+            console.warn("Anarchy-Bar: failed to restore widget state:", error)
+        }
+        popupStateReady = true
     }
 
     FileView {
@@ -189,7 +245,12 @@ ShellRoot {
                     }
                     if (data.rofiBorderRadius !== undefined) root.rofiBorderRadius = data.rofiBorderRadius
                     if (data.rofiBorderThickness !== undefined) root.rofiBorderThickness = data.rofiBorderThickness
-                    if (data.qPlayerButtonRadius !== undefined) root.qPlayerButtonRadius = data.qPlayerButtonRadius
+                    if (data.calendarX !== undefined) root.calendarX = data.calendarX
+                    if (data.calendarY !== undefined) root.calendarY = data.calendarY
+                    if (data.clockPopupX !== undefined) root.clockPopupX = data.clockPopupX
+                    if (data.clockPopupY !== undefined) root.clockPopupY = data.clockPopupY
+                    if (data.systemWidgetsX !== undefined) root.systemWidgetsX = data.systemWidgetsX
+                    if (data.systemWidgetsY !== undefined) root.systemWidgetsY = data.systemWidgetsY
                     if (data.lockscreenWallpaper !== undefined) root.lockscreenWallpaper = data.lockscreenWallpaper
                     if (data.lockscreenRadius !== undefined) root.lockscreenRadius = data.lockscreenRadius
                     if (data.lockscreenBorderThickness !== undefined) root.lockscreenBorderThickness = data.lockscreenBorderThickness
@@ -200,6 +261,18 @@ ShellRoot {
             }
             hyprlandPatchTimer.restart()
             isLoadingSettings = false
+        }
+    }
+
+    FileView {
+        id: popupStateFile
+        path: root.popupStatePath
+        watchChanges: false
+        onLoaded: root.restorePopupState(text())
+        onLoadFailed: error => {
+            root.popupStateReady = true
+            if (error !== FileViewError.FileNotFound)
+                console.warn("Anarchy-Bar: failed to load widget state:", error)
         }
     }
 
@@ -289,7 +362,6 @@ ShellRoot {
         saveSettings()
         rofiPatchTimer.restart()
     }
-    onQPlayerButtonRadiusChanged: saveSettings()
     onLockscreenWallpaperChanged: saveSettings()
     onLockscreenRadiusChanged: saveSettings()
     onLockscreenBorderThicknessChanged: saveSettings()
@@ -352,19 +424,70 @@ ShellRoot {
     Item {
         id: calendarPopup
         property bool isOpen: false
-        function open() { isOpen = true }
-        function close() { isOpen = false }
+        property var targetScreen: null
+        function open(screen) {
+            if (screen) targetScreen = screen
+            else if (!targetScreen) targetScreen = root.screenForName("")
+            isOpen = true
+            root.savePopupState()
+        }
+        function close() {
+            isOpen = false
+            targetScreen = null
+            root.savePopupState()
+        }
+    }
+
+    Item {
+        id: widgetsDrawer
+        property bool isOpen: false
+        property var targetScreen: null
+        function open(screen) {
+            if (screen) targetScreen = screen
+            isOpen = true
+        }
+        function close() {
+            isOpen = false
+            targetScreen = null
+        }
+    }
+
+    Item {
+        id: clockDetailsPopup
+        property bool isOpen: false
+        property var targetScreen: null
+        function open(screen) {
+            if (screen) targetScreen = screen
+            else if (!targetScreen) targetScreen = root.screenForName("")
+            isOpen = true
+            root.savePopupState()
+        }
+        function close() {
+            isOpen = false
+            targetScreen = null
+            root.savePopupState()
+        }
+    }
+
+    Item {
+        id: systemWidgetsPopup
+        property bool isOpen: false
+        property var targetScreen: null
+        function open(screen) {
+            if (screen) targetScreen = screen
+            else if (!targetScreen) targetScreen = root.screenForName("")
+            isOpen = true
+            root.savePopupState()
+        }
+        function close() {
+            isOpen = false
+            targetScreen = null
+            root.savePopupState()
+        }
     }
 
     Item {
         id: updatesPopup
-        property bool isOpen: false
-        function open() { isOpen = true }
-        function close() { isOpen = false }
-    }
-
-    Item {
-        id: infoPopup
         property bool isOpen: false
         function open() { isOpen = true }
         function close() { isOpen = false }
@@ -478,14 +601,15 @@ ShellRoot {
 
     Bar {}
     Updates { id: updates }
-    InfoWidget { id: infoWidget }
     Salaat { id: salaat }
     Notifications { id: notifs }
     PowerMenu {}
     SettingsPopup {}
+    CalendarTasks { id: calendarTasks }
     CalendarPopup {}
+    SystemWidgetsPopup {}
+    WidgetsDrawer {}
     UpdatesPopup {}
-    InfoWidgetPopup {}
     SalaatPopup {}
     NotificationsPopup {}
     KeybindsPopup {}

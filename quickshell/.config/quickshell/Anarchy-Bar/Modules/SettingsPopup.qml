@@ -405,39 +405,12 @@ PanelWindow {
                     }
 
                     Rectangle {
-                        id: qAppsTab
-                        Layout.preferredHeight: 42
-                        Layout.topMargin: 10
-                        Layout.fillWidth: true
-                        radius: root.barRadius
-                        color: settingsWindow.currentTab === 7 ? theme.color4 : (qAppsTabHover.containsMouse ? Qt.darker(theme.color4, 1.25) : "transparent")
-
-                        Text {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 12
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: "Q-Apps"
-                            font.pixelSize: 13
-                            font.bold: settingsWindow.currentTab === 7
-                            color: settingsWindow.currentTab === 7 ? theme.background : theme.foreground
-                        }
-
-                        MouseArea {
-                            id: qAppsTabHover
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: settingsWindow.currentTab = 7
-                        }
-                    }
-
-                    Rectangle {
                         id: lockscreenTab
                         Layout.preferredHeight: 42
                         Layout.topMargin: 10
                         Layout.fillWidth: true
                         radius: root.barRadius
-                        color: settingsWindow.currentTab === 8 ? theme.color6 : (lockscreenTabHover.containsMouse ? Qt.darker(theme.color6, 1.25) : "transparent")
+                        color: settingsWindow.currentTab === 7 ? theme.color6 : (lockscreenTabHover.containsMouse ? Qt.darker(theme.color6, 1.25) : "transparent")
 
                         Text {
                             anchors.left: parent.left
@@ -445,7 +418,7 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Lockscreen"
                             font.pixelSize: 13
-                            color: settingsWindow.currentTab === 8 ? theme.background : theme.foreground
+                            color: settingsWindow.currentTab === 7 ? theme.background : theme.foreground
                         }
 
                         MouseArea {
@@ -453,7 +426,7 @@ PanelWindow {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: settingsWindow.currentTab = 8
+                            onClicked: settingsWindow.currentTab = 7
                         }
                     }
 
@@ -484,14 +457,14 @@ PanelWindow {
                             spacing: 3
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : (settingsWindow.currentTab === 5 ? "Widget Settings" : (settingsWindow.currentTab === 6 ? "Theme Switcher" : (settingsWindow.currentTab === 7 ? "Q-Apps" : "Lockscreen")))))))
+                                text: settingsWindow.currentTab === 0 ? "Bar Settings" : (settingsWindow.currentTab === 1 ? "Hyprland Settings" : (settingsWindow.currentTab === 2 ? "Popup Settings" : (settingsWindow.currentTab === 3 ? "Screen Settings" : (settingsWindow.currentTab === 4 ? "Rofi Settings" : (settingsWindow.currentTab === 5 ? "Widget Settings" : (settingsWindow.currentTab === 6 ? "Theme Switcher" : "Lockscreen"))))))
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: theme.foreground
                             }
 
                             Text {
-                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : (settingsWindow.currentTab === 5 ? "Customize widget appearance." : (settingsWindow.currentTab === 6 ? "Configure the fullscreen theme switcher." : (settingsWindow.currentTab === 7 ? "Configure Q-Apps." : "Customize lockscreen appearance.")))))))
+                                text: settingsWindow.currentTab === 0 ? "Customize the shape and placement of your bar." : (settingsWindow.currentTab === 1 ? "More customization options are coming soon." : (settingsWindow.currentTab === 2 ? "Customize popup menus." : (settingsWindow.currentTab === 3 ? "Night light and display options." : (settingsWindow.currentTab === 4 ? "Adjust rofi launcher border and radius settings." : (settingsWindow.currentTab === 5 ? "Customize widget appearance." : (settingsWindow.currentTab === 6 ? "Configure the fullscreen theme switcher." : "Customize lockscreen appearance."))))))
                                 font.pixelSize: 12
                                 color: theme.muted
                             }
@@ -700,41 +673,6 @@ PanelWindow {
                         Layout.fillHeight: settingsWindow.currentTab === 7
                         Layout.preferredHeight: settingsWindow.currentTab === 7 ? -1 : 0
                         visible: settingsWindow.currentTab === 7
-                        clip: true
-                        contentWidth: width
-                        contentHeight: qAppsSettingsContent.implicitHeight
-
-                        ColumnLayout {
-                            id: qAppsSettingsContent
-                            width: parent.width
-                            spacing: 20
-
-                            Text {
-                                Layout.fillWidth: true
-                                text: "Q-Player Buttons"
-                                font.pixelSize: 15
-                                font.bold: true
-                                color: theme.color4
-                            }
-
-                            SettingSlider {
-                                label: "Button Radius"
-                                valueText: root.qPlayerButtonRadius + "px"
-                                minimumText: "0"
-                                maximumText: "20"
-                                from: 0
-                                to: 20
-                                value: root.qPlayerButtonRadius
-                                onMoved: root.qPlayerButtonRadius = Math.round(value)
-                            }
-                        }
-                    }
-
-                    Flickable {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: settingsWindow.currentTab === 8
-                        Layout.preferredHeight: settingsWindow.currentTab === 8 ? -1 : 0
-                        visible: settingsWindow.currentTab === 8
                         clip: true
                         contentWidth: width
                         contentHeight: lockscreenSettingsContent.implicitHeight

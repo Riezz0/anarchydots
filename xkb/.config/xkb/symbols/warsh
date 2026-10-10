@@ -1,0 +1,58 @@
+default partial alphanumeric_keys
+xkb_symbols "basic" {
+
+    name[Group1]= "Arabic (Phonetic Custom)";
+
+    // Number Row (0-9)
+    key <AE01> { [ U0661, U064F ] };                                  // 1 -> ١, Shift: Dammah ٌ
+    key <AE02> { [ U0662, U064E ] };                                  // 2 -> ٢, Shift: Fathah َ
+    key <AE03> { [ U0663, U0650 ] };                                  // 3 -> ٣, Shift: Kasrah ِ
+    key <AE04> { [ U0664, U064C ] };                                  // 4 -> ٤, Shift: Dammatayn ٌ
+    key <AE05> { [ U0665, U064B ] };                                  // 5 -> ٥, Shift: Fathatayn ً
+    key <AE06> { [ U0666, U064D ] };                                  // 6 -> ٦, Shift: Kasratayn ٍ
+    key <AE07> { [ U0667, U0651 ] };                                  // 7 -> ٧, Shift: Shaddah ّ
+    key <AE08> { [ U0668, U0652 ] };                                  // 8 -> ٨, Shift: Sukoon ْ 
+    key <AE09> { [ U0669, U06E5 ] };                                  // 9 -> ٩, Shift: Small Waw ۥ
+    key <AE10> { [ U0660, U06E6 ] };                                  // 0 -> ٠, Shift, Small Yaa
+    key <AE11> { [ U0649, U0670 ] };                                  // - -> Alif Maksurah ى Shift: Dagger Alif  ٰ
+    key <AE12> { [ U08CF ] };                                         // = -> Centre Low Stop - Down  ۪
+  
+    // Top Left & Backslash
+    key <TLDE> { [ U06E9, U0653 ] };                                  // ~ -> Sajdah ۩, Shift: Maddah ٓ
+    key <BKSL> { [ ] };                              //  
+
+    // Row D (Top: Q-P)
+    key <AD01> { [ U0642 ] };                                         // Q -> Qaf ق
+    key <AD02> { [ U0648 ] };                                         // W -> Waw و
+    key <AD03> { [ U0634 ] };                                         // E -> Sheen ش
+    key <AD04> { [ U0631 ] };                                         // R -> Reh ر
+    key <AD05> { [ U062a, U0637 ] };                                  // T -> Teh ت, Shift: Tah ط
+    key <AD06> { [ U064A, U0649 ] };                                  // Y -> Yeh ي, Shift: Alef Maksura ى
+    key <AD07> { [ U0621, U08ED ] };                                  // U -> Hamza ء, Shift: Dot Below ̣ 
+    key <AD08> { [ U0671, U0872 ] };                                  // I -> Hamzatul Wasl ٱ, Shift: Hamzatul Wasl 4 ࡼ
+    key <AD09> { [ U0629 ] };                                         // O -> Teh Marbuta ة,
+    key <AD10> { [ U087B, U087D] };                                   // P -> Hamzatul Wasl 2 ࡻ, Shift: Hamzatul Wasl 3 ࡽ
+
+    // Row C (Home: A-L)
+    key <AC01> { [ U0627, U0639 ] };                                  // A -> Alef ا, Shift: Ayn ع
+    key <AC02> { [ U0633, U0635 ] };                                  // S -> Seen س, Shift: Sad ص
+    key <AC03> { [ U062f, U0636 ] };                                  // D -> Dal د, Shift: Dad ض
+    key <AC04> { [ U0641 ] };                                         // F -> Feh ف,
+    key <AC05> { [ U063a ] };                                         // G -> Ghain غ
+    key <AC06> { [ U0647, U062d ] };                                  // H -> Heh ه, Shift: Hah ح
+    key <AC07> { [ U062c ] };                                         // J -> Jeem ج,
+    key <AC08> { [ U0643, U062e ] };                                  // K -> Kaf ك, Shift: Khah خ
+    key <AC09> { [ U0644 ] };                                         // L -> Lam ل 
+    key <AC10> { [ U0654 ] };                                         // ; -> Hamza Top ٔ,
+    key <AC11> { [ U0655 ] };                                         // ' -> Hamza Bottom ٕ
+
+    // Row B (Bottom: Z-M)
+    key <AB01> { [ U0632, U0630 ] };                              // Z -> Zain ز, Shift: Thal ذ
+    key <AB02> { [ U0638 ] };                              // X -> Zah ظ, 
+    key <AB03> { [ U062b ] };                              // C -> Theh ث, 
+    key <AB04> { [ UFDFF ] };                              // V -> Azzawajal 
+    key <AB05> { [ U0628 ] };                              // B -> Beh ب, 
+    key <AB06> { [ U0646 ] };                              // N -> Noon ن,
+    key <AB07> { [ U0645 ] };                              // M -> Meem م
+    key <AB10> { [ U061F ] };                                         // / -> Arabic Question Mark ؟ 
+};
