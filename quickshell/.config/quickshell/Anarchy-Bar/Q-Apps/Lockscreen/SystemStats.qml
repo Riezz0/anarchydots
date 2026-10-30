@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import Quickshell
 import Quickshell.Io
 
@@ -15,6 +16,9 @@ Scope {
     property bool hasGpu: false
     property string gpuName: ""
     property real temperature: 0
+    readonly property string cpuTempScriptPath:
+        StandardPaths.writableLocation(StandardPaths.HomeLocation).toString().replace(/^file:\/\//, "")
+        + "/.config/quickshell/Anarchy-Bar/Scripts/read-cpu-temp.sh"
     property string diskUsage: ""
     property string netRx: ""
     property string netTx: ""
@@ -104,7 +108,7 @@ Scope {
     Process {
         id: cpuTempProc
         running: false
-        command: ["sh", "-c", "sensors 2>/dev/null | grep -m1 '°C' | grep -oP '[+-][0-9]+\\.[0-9]+(?=°)' | head -1"]
+        command: ["bash", statsRoot.cpuTempScriptPath]
         stdout: SplitParser {
             onRead: line => {
                 var val = parseFloat(line.trim())

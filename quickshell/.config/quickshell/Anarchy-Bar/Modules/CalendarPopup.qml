@@ -26,7 +26,7 @@ PanelWindow {
         ? WlrKeyboardFocus.OnDemand
         : WlrKeyboardFocus.None
 
-    mask: Region { item: calendarPanel }
+    mask: Region { item: calendarDragHandle.drag.active ? calendarOutsideArea : calendarPanel }
 
     property var currentMonth: new Date()
     property string selectedDateKey: ""
@@ -37,6 +37,28 @@ PanelWindow {
     property bool reminderMenuOpen: false
     property int reminderChoiceIndex: 2
     readonly property var reminderLabels: ["At due time", "5 min before", "10 min before", "15 min before", "30 min before", "60 min before"]
+
+    function transferToPointerScreen(mouse) {
+        var pointer = calendarDragHandle.mapToGlobal(mouse.x, mouse.y)
+        var sourceScreen = calendarWindow.screen
+        if (!sourceScreen) return
+
+        var globalX = root.screenX(sourceScreen) + calendarPanel.x
+        var globalY = root.screenY(sourceScreen) + calendarPanel.y
+        var destination = root.screenForWidgetDrag(
+            pointer.x, pointer.y, globalX, globalY, calendarPanel.width, calendarPanel.height, sourceScreen
+        )
+        if (!destination || destination.name === sourceScreen.name) return
+
+        var localX = Math.max(0, Math.min(globalX - root.screenX(destination), destination.width - calendarPanel.width))
+        var localY = Math.max(0, Math.min(globalY - root.screenY(destination), destination.height - calendarPanel.height))
+
+        calendarPopup.targetScreen = destination
+        calendarPanel.x = localX
+        calendarPanel.y = localY
+        root.calendarX = localX
+        root.calendarY = localY
+    }
 
     function defaultTaskTime() {
         var now = new Date()
@@ -157,6 +179,7 @@ PanelWindow {
     }
 
     MouseArea {
+        id: calendarOutsideArea
         anchors.fill: parent
         onClicked: mouse => mouse.accepted = true
     }
@@ -226,18 +249,33 @@ PanelWindow {
                     horizontalAlignment: Text.AlignHCenter
 
                     MouseArea {
+                        id: calendarDragHandle
                         anchors.fill: parent
                         cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
                         drag.target: calendarPanel
                         drag.axis: Drag.XAndYAxis
-                        drag.minimumX: 0
-                        drag.maximumX: Math.max(0, calendarWindow.width - calendarPanel.width)
-                        drag.minimumY: 0
-                        drag.maximumY: Math.max(0, calendarWindow.height - calendarPanel.height)
-                        onReleased: {
-                            root.calendarX = calendarPanel.x
-                            root.calendarY = calendarPanel.y
+                        onPositionChanged: mouse => {
+                            if (drag.active) calendarWindow.transferToPointerScreen(mouse)
+                        }
+                        onReleased: mouse => {
+                            calendarWindow.transferToPointerScreen(mouse)
+                            var sourceScreen = calendarWindow.screen
+                            var globalX = root.screenX(sourceScreen) + calendarPanel.x
+                            var globalY = root.screenY(sourceScreen) + calendarPanel.y
+                            var pointer = calendarDragHandle.mapToGlobal(mouse.x, mouse.y)
+                            var destination = root.screenForWidgetDrag(
+                                pointer.x, pointer.y, globalX, globalY, calendarPanel.width, calendarPanel.height, sourceScreen
+                            )
+                            var localX = Math.max(0, Math.min(globalX - root.screenX(destination), destination.width - calendarPanel.width))
+                            var localY = Math.max(0, Math.min(globalY - root.screenY(destination), destination.height - calendarPanel.height))
+
+                            calendarPopup.targetScreen = destination
+                            calendarPanel.x = localX
+                            calendarPanel.y = localY
+                            root.calendarX = localX
+                            root.calendarY = localY
                             root.saveSettings()
+                            root.savePopupState()
                         }
                     }
                 }

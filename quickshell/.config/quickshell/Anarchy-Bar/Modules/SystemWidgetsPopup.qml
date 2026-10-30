@@ -20,7 +20,12 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-    mask: Region { item: widgetPanel }
+    mask: Region { item: widgetDragArea.drag.active ? widgetInputRegion : widgetPanel }
+
+    Item {
+        id: widgetInputRegion
+        anchors.fill: parent
+    }
 
     SystemTemperatureStats { id: stats }
 
@@ -29,6 +34,27 @@ PanelWindow {
         if (value >= 80) return theme.color1
         if (value >= 65) return theme.color3
         return baseColor
+    }
+
+    function transferToPointerScreen(mouse) {
+        var pointer = widgetDragArea.mapToGlobal(mouse.x, mouse.y)
+        var sourceScreen = widgetsWindow.screen
+        if (!sourceScreen) return
+
+        var globalX = root.screenX(sourceScreen) + widgetPanel.x
+        var globalY = root.screenY(sourceScreen) + widgetPanel.y
+        var destination = root.screenForWidgetDrag(
+            pointer.x, pointer.y, globalX, globalY, widgetPanel.width, widgetPanel.height, sourceScreen
+        )
+        if (!destination || destination.name === sourceScreen.name) return
+
+        var localX = Math.max(0, Math.min(globalX - root.screenX(destination), destination.width - widgetPanel.width))
+        var localY = Math.max(0, Math.min(globalY - root.screenY(destination), destination.height - widgetPanel.height))
+        systemWidgetsPopup.targetScreen = destination
+        widgetPanel.x = localX
+        widgetPanel.y = localY
+        root.systemWidgetsX = localX
+        root.systemWidgetsY = localY
     }
 
     Rectangle {
@@ -59,17 +85,21 @@ PanelWindow {
         z: 1
 
         MouseArea {
+            id: widgetDragArea
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
             drag.target: widgetPanel
             drag.axis: Drag.XAndYAxis
-            drag.minimumX: 0
-            drag.maximumX: Math.max(0, widgetsWindow.width - widgetPanel.width)
-            drag.minimumY: 0
-            drag.maximumY: Math.max(0, widgetsWindow.height - widgetPanel.height)
             drag.filterChildren: true
-            onReleased: root.saveSystemWidgetsPosition(widgetPanel.x, widgetPanel.y)
+            onPositionChanged: mouse => {
+                if (drag.active) widgetsWindow.transferToPointerScreen(mouse)
+            }
+            onReleased: mouse => {
+                widgetsWindow.transferToPointerScreen(mouse)
+                root.saveSystemWidgetsPosition(widgetPanel.x, widgetPanel.y)
+                root.savePopupState()
+            }
         }
 
         ColumnLayout {

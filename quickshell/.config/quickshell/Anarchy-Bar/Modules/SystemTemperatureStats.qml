@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import Quickshell
 import Quickshell.Io
 
@@ -7,6 +8,9 @@ Scope {
 
     property real cpuTemp: 0
     property real gpuTemp: 0
+    readonly property string cpuTempScriptPath:
+        StandardPaths.writableLocation(StandardPaths.HomeLocation).toString().replace(/^file:\/\//, "")
+        + "/.config/quickshell/Anarchy-Bar/Scripts/read-cpu-temp.sh"
 
     function poll() {
         cpuTempProcess.running = false
@@ -32,7 +36,7 @@ Scope {
 
     Process {
         id: cpuTempProcess
-        command: ["sh", "-c", "sensors 2>/dev/null | grep -m1 '°C' | grep -oP '[+-]?[0-9]+\\.[0-9]+(?=°)' | head -1"]
+        command: ["bash", temperatures.cpuTempScriptPath]
         running: false
 
         stdout: StdioCollector {

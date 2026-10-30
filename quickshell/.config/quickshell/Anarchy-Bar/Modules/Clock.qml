@@ -21,6 +21,27 @@ Rectangle {
     property var hostWindow: null
     property real anchorX: 0
 
+    function transferToPointerScreen(mouse) {
+        var pointer = clockDragArea.mapToGlobal(mouse.x, mouse.y)
+        var sourceScreen = clockPopup.screen
+        if (!sourceScreen) return
+
+        var globalX = root.screenX(sourceScreen) + clockPanel.x
+        var globalY = root.screenY(sourceScreen) + clockPanel.y
+        var destination = root.screenForWidgetDrag(
+            pointer.x, pointer.y, globalX, globalY, clockPanel.width, clockPanel.height, sourceScreen
+        )
+        if (!destination || destination.name === sourceScreen.name) return
+
+        var localX = Math.max(0, Math.min(globalX - root.screenX(destination), destination.width - clockPanel.width))
+        var localY = Math.max(0, Math.min(globalY - root.screenY(destination), destination.height - clockPanel.height))
+        clockDetailsPopup.targetScreen = destination
+        clockPanel.x = localX
+        clockPanel.y = localY
+        root.clockPopupX = localX
+        root.clockPopupY = localY
+    }
+
     Timer {
         interval: 1000
         running: true
@@ -101,9 +122,12 @@ Rectangle {
 
     PanelWindow {
         id: clockPopup
-        screen: clockContainer.hostWindow ? clockContainer.hostWindow.screen : null
+        screen: clockDetailsPopup.targetScreen
+            || (clockContainer.hostWindow ? clockContainer.hostWindow.screen : null)
         visible: clockDetailsPopup.isOpen
-            && clockDetailsPopup.targetScreen === (clockContainer.hostWindow ? clockContainer.hostWindow.screen : null)
+            && (clockDetailsPopup.isDragging
+                ? clockDetailsPopup.dragSourceScreen === (clockContainer.hostWindow ? clockContainer.hostWindow.screen : null)
+                : clockDetailsPopup.targetScreen === (clockContainer.hostWindow ? clockContainer.hostWindow.screen : null))
         color: "transparent"
         focusable: false
 
@@ -116,7 +140,12 @@ Rectangle {
 
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-        mask: Region { item: clockPanel }
+        mask: Region { item: clockDragArea.drag.active ? clockInputRegion : clockPanel }
+
+        Item {
+            id: clockInputRegion
+            anchors.fill: parent
+        }
 
         Rectangle {
             x: clockPanel.x + root.widgetShadowX
@@ -228,18 +257,29 @@ Rectangle {
             }
 
             MouseArea {
+                id: clockDragArea
                 anchors.fill: parent
                 cursorShape: drag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
                 drag.target: clockPanel
                 drag.axis: Drag.XAndYAxis
-                drag.minimumX: 0
-                drag.maximumX: Math.max(0, clockPopup.width - clockPanel.width)
-                drag.minimumY: 0
-                drag.maximumY: Math.max(0, clockPopup.height - clockPanel.height)
-                onReleased: {
-                    root.clockPopupX = clockPanel.x
-                    root.clockPopupY = clockPanel.y
+                onPressed: {
+                    clockDetailsPopup.isDragging = true
+                    clockDetailsPopup.dragSourceScreen = clockContainer.hostWindow
+                        ? clockContainer.hostWindow.screen : clockPopup.screen
+                }
+                onPositionChanged: mouse => {
+                    if (drag.active) clockContainer.transferToPointerScreen(mouse)
+                }
+                onReleased: mouse => {
+                    clockContainer.transferToPointerScreen(mouse)
+                    clockDetailsPopup.isDragging = false
+                    clockDetailsPopup.dragSourceScreen = null
                     root.saveSettings()
+                    root.savePopupState()
+                }
+                onCanceled: {
+                    clockDetailsPopup.isDragging = false
+                    clockDetailsPopup.dragSourceScreen = null
                 }
             }
 

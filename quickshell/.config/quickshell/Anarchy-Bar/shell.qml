@@ -3,6 +3,7 @@ import QtQuick
 import QtCore
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import "Modules"
 import "Q-Apps/Lockscreen"
 
@@ -134,6 +135,66 @@ ShellRoot {
             if (Quickshell.screens[i].name === name) return Quickshell.screens[i]
         }
         return Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
+    }
+
+    function screenX(screen) {
+        var monitor = Hyprland.monitorFor(screen)
+        return monitor ? monitor.x : screen.x
+    }
+
+    function screenY(screen) {
+        var monitor = Hyprland.monitorFor(screen)
+        return monitor ? monitor.y : screen.y
+    }
+
+    function screenAtPoint(x, y, sourceScreen) {
+        var nearest = null
+        var nearestDistance = Infinity
+        for (var i = 0; i < Quickshell.screens.length; i++) {
+            var screen = Quickshell.screens[i]
+            var left = screenX(screen)
+            var top = screenY(screen)
+            var right = left + screen.width
+            var bottom = top + screen.height
+            if (x >= left && x < right && y >= top && y < bottom)
+                return screen
+
+            var nearestX = Math.max(left, Math.min(x, right))
+            var nearestY = Math.max(top, Math.min(y, bottom))
+            var dx = x - nearestX
+            var dy = y - nearestY
+            var distance = dx * dx + dy * dy
+            if (distance < nearestDistance) {
+                nearest = screen
+                nearestDistance = distance
+            }
+        }
+
+        if (sourceScreen) {
+            var sourceLeft = screenX(sourceScreen)
+            var sourceTop = screenY(sourceScreen)
+            var outsideSource = x < sourceLeft || x >= sourceLeft + sourceScreen.width
+                || y < sourceTop || y >= sourceTop + sourceScreen.height
+            var focusedMonitor = Hyprland.focusedMonitor
+            if (outsideSource && focusedMonitor && focusedMonitor.name !== sourceScreen.name) {
+                var focusedScreen = screenForName(focusedMonitor.name)
+                if (focusedScreen) return focusedScreen
+            }
+        }
+        return nearest
+    }
+
+    function screenForWidgetDrag(pointerX, pointerY, widgetX, widgetY, widgetWidth, widgetHeight, sourceScreen) {
+        var pointerScreen = screenAtPoint(pointerX, pointerY, sourceScreen)
+        if (pointerScreen && pointerScreen.name !== sourceScreen.name) return pointerScreen
+
+        var centerScreen = screenAtPoint(
+            widgetX + widgetWidth / 2,
+            widgetY + widgetHeight / 2,
+            sourceScreen
+        )
+        if (centerScreen && centerScreen.name !== sourceScreen.name) return centerScreen
+        return pointerScreen || centerScreen || sourceScreen
     }
 
     function savePopupState() {
@@ -456,15 +517,21 @@ ShellRoot {
         id: clockDetailsPopup
         property bool isOpen: false
         property var targetScreen: null
+        property bool isDragging: false
+        property var dragSourceScreen: null
         function open(screen) {
             if (screen) targetScreen = screen
             else if (!targetScreen) targetScreen = root.screenForName("")
+            isDragging = false
+            dragSourceScreen = null
             isOpen = true
             root.savePopupState()
         }
         function close() {
             isOpen = false
             targetScreen = null
+            isDragging = false
+            dragSourceScreen = null
             root.savePopupState()
         }
     }

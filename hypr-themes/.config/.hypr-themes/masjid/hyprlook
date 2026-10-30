@@ -9,7 +9,7 @@ hl.config({
 rounding_power = 10,
 active_opacity = 1,
 inactive_opacity = 1,
-    shadow = {enabled = false, range = 0, render_power = 0, color = 0xee1a1a1a },
+    shadow = {enabled = false, range = 0, render_power = 1, color = 0xee1a1a1a },
 
     blur = {enabled = true,
              size = 10,
