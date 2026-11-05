@@ -1,7 +1,6 @@
 -- Autostart
 
 hl.on("hyprland.start", function () 
-hl.exec_cmd("hyprscratch init")
 hl.exec_cmd("awww-daemon")
 hl.exec_cmd("coolercontrol")
 hl.exec_cmd("/usr/local/bin/awww.sh")

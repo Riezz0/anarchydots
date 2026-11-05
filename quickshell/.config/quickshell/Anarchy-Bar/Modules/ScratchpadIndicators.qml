@@ -218,7 +218,7 @@ Item {
                         scratchpadContainer.hoveredScratchpad = null
                     }
                     onClicked: {
-                        scratchpadToggleProc.command = ["hyprscratch", "toggle", modelData.name]
+                        scratchpadToggleProc.command = ["hyprctl", "eval", "AnarchyToggleScratchpad('" + modelData.name + "')"]
                         scratchpadToggleProc.running = true
                     }
                 }
