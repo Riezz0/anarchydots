@@ -1,6 +1,7 @@
 Theme 1.0 Theme.qml
 ArchLogo 1.0 ArchLogo.qml
 Workspaces 1.0 Workspaces.qml
+ActiveAppIcon 1.0 ActiveAppIcon.qml
 Volume 1.0 Volume.qml
 KeyboardLayout 1.0 KeyboardLayout.qml
 WidgetsButton 1.0 WidgetsButton.qml

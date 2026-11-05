@@ -191,6 +191,16 @@ Variants {
                 }
             }
 
+            ActiveAppIcon {
+                id: activeAppIcon
+                anchors.left: salaatMarquee.right
+                anchors.leftMargin: 12
+                anchors.verticalCenter: salaatMarquee.verticalCenter
+                hostWindow: bar
+                anchorX: activeAppIcon.x + activeAppIcon.width / 2
+                cornerRadius: root.barRadius
+            }
+
             Row {
                 id: statusModules
                 anchors.verticalCenter: parent.verticalCenter
