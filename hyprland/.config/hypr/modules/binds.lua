@@ -165,3 +165,6 @@ hl.bind("SUPER + BACKSLASH", hl.dsp.exec_cmd("/usr/local/bin/volume.sh mute"),  
 
 -- Testing
 hl.bind("ALT + W", hl.dsp.exec_cmd("~/git/islamiyyah/tester.sh"),                                                                                           { description = "Islamiyyah App Testing" })
+
+hl.bind("SUPER + U", hl.dsp.global("caelestia:launcher"))
+hl.bind("SUPER + C", hl.dsp.global("caelestia:showall"))

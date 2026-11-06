@@ -1,2 +1,10 @@
 # OpenCode local files
 .opencode
+
+# Generated files from the vendored Anarchy-Shell source
+/quickshell/.config/quickshell/Anarchy-Shell/.direnv/
+/quickshell/.config/quickshell/Anarchy-Shell/.qmlls.ini
+/quickshell/.config/quickshell/Anarchy-Shell/.cache/
+/quickshell/.config/quickshell/Anarchy-Shell/build/
+/quickshell/.config/quickshell/Anarchy-Shell/logs
+/quickshell/.config/quickshell/Anarchy-Shell/result

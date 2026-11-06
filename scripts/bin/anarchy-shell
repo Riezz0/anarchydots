@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Anarchy-Shell launcher (caelestia QML sources + user-local C++ QML modules)
+export QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export LD_LIBRARY_PATH="$HOME/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CAELESTIA_LIB_DIR="$HOME/.local/lib"
+# MangoHud's ANV/FFmpeg vkCreateDevice path segfaults inside Qt Multimedia; disable for the shell
+export MANGOHUD=0
+
+# Re-derive the shell scheme from pywal (~/.cache/wal/colors.json) on every
+# start, so the shell always matches the active theme even if `wal` ran
+# before Quickshell. Theme name comes from the active theme script.
+theme="$(sed -n 's/^THEME_NAME="\(.*\)"/\1/p' "$HOME/.local/share/themes/hypr-theme-active.sh" 2>/dev/null)"
+if [ -f "$HOME/.cache/wal/colors.json" ] && [ -x "$HOME/.local/bin/wal-to-caelestia" ]; then
+    "$HOME/.local/bin/wal-to-caelestia" "${theme:-pywal}" >/dev/null 2>&1 &
+fi
+
+exec quickshell -c Anarchy-Shell "$@"

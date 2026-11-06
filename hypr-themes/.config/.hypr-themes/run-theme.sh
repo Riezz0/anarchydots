@@ -18,3 +18,10 @@ bash "$THEME_SCRIPT" >> "$LOG" 2>&1
 bash "$(dirname "$0")/patch-look.sh" --sync-all >> "$LOG" 2>&1
 
 echo "[$(date)] Script finished" >> "$LOG"
+
+#------------------------#
+# CAELESTIA SHELL COLORS #
+#------------------------#
+theme_dir="$(dirname "$THEME_SCRIPT")"
+theme_name="$(basename "$theme_dir")"
+python3 "$HOME/anarchydots/scripts/bin/wal-to-caelestia.py" "$theme_name" >> "$LOG" 2>&1
