@@ -1,0 +1,121 @@
+{
+    "appearance": {
+        "font": {
+            "body": {
+                "family": "JetBrains Mono"
+            },
+            "clock": "JetBrains Mono",
+            "headline": {
+                "family": "JetBrains Mono"
+            },
+            "icon": {
+                "family": "Material Symbols Rounded"
+            },
+            "label": {
+                "family": "JetBrains Mono"
+            },
+            "mono": {
+                "family": "JetBrains Mono"
+            },
+            "title": {
+                "family": "JetBrains Mono"
+            },
+            "workspaces": "JetBrains Mono"
+        },
+        "transparency": {
+            "enabled": true
+        }
+    },
+    "bar": {
+        "entries": [
+            {
+                "enabled": true,
+                "id": "logo"
+            },
+            {
+                "enabled": true,
+                "id": "workspaces"
+            },
+            {
+                "enabled": true,
+                "id": "spacer"
+            },
+            {
+                "enabled": true,
+                "id": "activeWindow"
+            },
+            {
+                "enabled": true,
+                "id": "spacer"
+            },
+            {
+                "enabled": false,
+                "id": "tray"
+            },
+            {
+                "enabled": true,
+                "id": "clock"
+            },
+            {
+                "enabled": true,
+                "id": "statusIcons"
+            },
+            {
+                "enabled": true,
+                "id": "power"
+            }
+        ]
+    },
+    "dashboard": {
+        "showClockSeconds": false,
+        "showDashboard": true,
+        "showMedia": false
+    },
+    "general": {
+        "apps": {
+            "explorer": [
+                "nautilus",
+                "--new-window"
+            ]
+        }
+    },
+    "services": {
+        "clockFormat": "TwentyFourHour"
+    },
+    "utilities": {
+        "quickToggles": [
+            {
+                "enabled": true,
+                "id": "wifi"
+            },
+            {
+                "enabled": true,
+                "id": "bluetooth"
+            },
+            {
+                "enabled": true,
+                "id": "mic"
+            },
+            {
+                "enabled": true,
+                "id": "settings"
+            },
+            {
+                "enabled": true,
+                "id": "gameMode"
+            },
+            {
+                "enabled": true,
+                "id": "wallpaperPlaying"
+            },
+            {
+                "enabled": true,
+                "id": "dnd"
+            },
+            {
+                "enabled": true,
+                "id": "vpn"
+            }
+        ]
+    }
+}

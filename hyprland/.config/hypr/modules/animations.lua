@@ -28,11 +28,3 @@ local animations = {
     "zoomFactor, 1, 7, quick"
 }
 
--- Special workspaces animate independently of window-rule slide directions.
-hl.animation({
-    leaf = "specialWorkspace",
-    enabled = true,
-    speed = 0.1,
-    bezier = "default",
-    style = "slidefadevert -50%",
-})

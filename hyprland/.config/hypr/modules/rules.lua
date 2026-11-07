@@ -38,11 +38,6 @@ hl.window_rule({ name = "vssrules", match = { class = "code-oss" },float = true,
 center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
--- Piper GUI
-hl.window_rule({ name = "pyprrules", match = { title = "pypr-gui" },float = true, size = "1200 700", 
-center = true, opacity = "1", animation = "slide top", 
-border_color = theme.color2 .. " " .. theme.color15 })
-
 -- Quran
 hl.window_rule({ name = "quranrules", match = { class = "chrome-www.quranwbw.com__-Default" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
