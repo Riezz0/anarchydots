@@ -19,6 +19,22 @@ Singleton {
     function resolveIcon(name: string, fallback: string): url {
         const wanted = String(name ?? "");
         const fb = fallback || "application-x-executable";
+        // SystemTray items carry already-resolved image:// URLs (image://icon
+        // for themed names, image://qspixmap for ARGB pixmaps). Pixmaps only
+        // load through the provider, so pass those through untouched. For
+        // image://icon/<name>, unwrap the scheme and hit the map — the bare
+        // name often only exists in Adwaita/hicolor (blueman etc.) where the
+        // provider's broken-tile behaviour was the original bug. Anything
+        // else image://-shaped is returned as-is; never double-wrap, or the
+        // url becomes image://icon/image://icon/... (checkerboard).
+        if (wanted.startsWith("image://icon/")) {
+            const bare = decodeURIComponent(wanted.slice("image://icon/".length).replace(/[?#].*$/, ""));
+            if (bare)
+                return root.resolveIcon(bare, fallback);
+            return wanted;
+        }
+        if (wanted.startsWith("image://"))
+            return wanted;
         if (wanted.startsWith("/"))
             return encodeURI(`file://${wanted}`);
         const hit = root.iconMap[wanted.toLowerCase()];
@@ -263,18 +279,25 @@ Singleton {
         return !isMuted && volume > 0 ? "mic" : "mic_off";
     }
 
-    function getTrayIcon(id: string, icon: string): string {
+    // SystemTrayItem.icon is already a resolved image:// URL — image://qspixmap
+    // for ARGB pixmaps or image://icon/<name> for themed icons. resolveIcon
+    // unwraps image://icon/<name> and lands it in the iconMap (like the app
+    // launcher), which fixes names the provider can't find (blueman etc.).
+    function getTrayIcon(id: string, icon: string): url {
         for (const sub of GlobalConfig.bar.tray.iconSubs.values)
             if (sub.id === id)
-                return sub.image ? Qt.resolvedUrl(sub.image) : Quickshell.iconPath(sub.icon);
+                return sub.image ? Qt.resolvedUrl(sub.image) : root.resolveIcon(sub.icon, "image-missing");
+
+        if (icon.startsWith("image://"))
+            return root.resolveIcon(icon, "image-missing");
 
         if (icon.includes("?path=")) {
             const [name, path] = icon.split("?path=");
             const file = name.slice(name.lastIndexOf("/") + 1);
-            const themed = Quickshell.iconPath(file, true);
-            icon = themed ? themed : Qt.resolvedUrl(`${path}/${file}`);
+            const hit = root.iconMap[file.toLowerCase().replace(/\.[^.]+$/, "")];
+            return hit !== undefined ? encodeURI(`file://${hit}`) : Qt.resolvedUrl(`${path}/${file}`);
         }
-        return icon;
+        return root.resolveIcon(icon, "image-missing");
     }
 
     function getBatteryIcon(percentage: real, charging = false): string {

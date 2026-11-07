@@ -1,2 +1,2 @@
 #!/bin/bash
-exec kitty --class arch-update -e arch-update
+exec kitty --class arch-update --title arch-update -- arch-update

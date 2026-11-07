@@ -8,6 +8,7 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.components
 import qs.services
+import qs.utils
 
 StackView {
     id: root
@@ -134,7 +135,13 @@ StackView {
                                 asynchronous: true
                                 implicitSize: label.implicitHeight
 
-                                source: item.modelData.icon
+                                // Named icons (e.g. Adwaita bluetooth-symbolic)
+                                // need the iconMap resolver like TrayItem,
+                                // not the bare provider name.
+                                source: {
+                                    const _ = Icons.iconMap;
+                                    return Icons.resolveIcon(item.modelData.icon, "image-missing");
+                                }
                             }
                         }
 

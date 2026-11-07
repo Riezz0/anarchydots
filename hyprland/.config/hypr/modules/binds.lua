@@ -2,7 +2,7 @@ local mainMod = "SUPER"
 
 -- Session Management
 hl.bind("SUPER + M", hl.dsp.exec_cmd("uwsm stop"),                                                                                                          { description = "Exit Session" })
-hl.bind("SUPER + L", hl.dsp.exec_cmd("qs -p ~/.config/quickshell/Anarchy-Bar/Q-Apps/Lockscreen"),                                                           { description = "Lock Screen" })
+hl.bind("SUPER + L", hl.dsp.global("anarchy:lock"), { description = "Lock Screen" })
 
 -- Scratchpads
 

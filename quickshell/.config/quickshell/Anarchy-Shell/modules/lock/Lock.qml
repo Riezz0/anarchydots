@@ -43,6 +43,7 @@ Scope {
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
+        appid: "anarchy"
         name: "lock"
         description: "Lock the current session"
         onPressed: lock.locked = true
@@ -51,6 +52,7 @@ Scope {
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
+        appid: "anarchy"
         name: "unlock"
         description: "Unlock the current session"
         onPressed: lock.unlock()

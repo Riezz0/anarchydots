@@ -52,14 +52,14 @@ Singleton {
             const running = code === 0;
 
             if (running && root.needsStop) {
-                commandProc.exec(["caelestia", "record"]);
+                root.runRecorder([]);
                 props.running = false;
                 props.paused = false;
             } else if (running && root.needsPause) {
-                commandProc.exec(["caelestia", "record", "-p"]);
+                root.runRecorder(["-p"]);
                 props.paused = !props.paused;
             } else if (!running && root.needsStart) {
-                commandProc.exec(["caelestia", "record", ...root.startArgs]);
+                root.runRecorder(root.startArgs);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;
@@ -77,13 +77,25 @@ Singleton {
         }
     }
 
+    // The command owns the transition: `caelestia record` blocks on slurp for
+    // region captures, and waits for the recorder to finalise the file when
+    // stopping. Reconcile once it has actually finished.
+    // Run it through a shell wrapper with output detached: the CLI spawns
+    // gpu-screen-recorder detached but inheriting its stdio. Under a QML
+    // Process the inherited fds are pipes that Quickshell closes when the
+    // Process exits, so the recorder dies with SIGPIPE on its next log line
+    // seconds later (CLI exits 0, card rolls back to "Ready"). Redirecting to
+    // /dev/null here keeps the recorders fds valid. Early failures are still
+    // notified by the CLI itself ("Recording failed").
     Process {
         id: commandProc
 
-        // The command owns the transition: `caelestia record` blocks on slurp for
-        // region captures, and waits for the recorder to finalise the file when
-        // stopping. Reconcile once it has actually finished.
         onExited: checkProc.running = true
+    }
+
+    function runRecorder(args: list<string>): void {
+        let escaped = args.map(a => "'" + a.replace(/'/g, "'\\''") + "'").join(" ");
+        commandProc.exec(["sh", "-c", `exec caelestia record ${escaped} >/dev/null 2>&1`]);
     }
 
     // Only poll while something is showing the state, i.e. the utilities drawer is open

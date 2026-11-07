@@ -54,7 +54,7 @@ StyledRect {
 
             MonoText {
                 Layout.fillWidth: true
-                text: "caelestiafetch.sh"
+                text: "anarchy-fetch.sh"
                 elide: Text.ElideRight
             }
 
@@ -64,7 +64,7 @@ StyledRect {
                 Layout.preferredHeight: 0
                 active: !iconLoader.active
 
-                sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+                sourceComponent: SysInfo.isDefaultLogo ? archLogo : distroIcon
             }
         }
 
@@ -79,7 +79,7 @@ StyledRect {
                 Layout.fillHeight: true
                 active: root.width > Tokens.sizes.lock.largeLogoWidth
 
-                sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+                sourceComponent: SysInfo.isDefaultLogo ? archLogo : distroIcon
             }
 
             ColumnLayout {
@@ -159,7 +159,7 @@ StyledRect {
     }
 
     Component {
-        id: caelestiaLogo
+        id: archLogo
 
         Logo {
             width: height

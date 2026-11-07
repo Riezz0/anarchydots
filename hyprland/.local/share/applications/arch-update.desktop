@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Arch-Update
+Comment=An interactive update notifier & applier for Arch Linux
+Icon=arch-update-blue
+Type=Application
+Terminal=false
+Exec=kitty --class arch-update --title arch-update -- arch-update
+Categories=Utility
+StartupWMClass=arch-update
+StartupNotify=true

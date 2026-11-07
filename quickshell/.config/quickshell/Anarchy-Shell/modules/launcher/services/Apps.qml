@@ -11,11 +11,20 @@ Searcher {
     function launch(entry: DesktopEntry): void {
         appDb.incrementFrequency(entry.id);
 
-        if (entry.runInTerminal)
+        if (entry.runInTerminal) {
+            const term = GlobalConfig.general.apps.terminal;
+            const appBase = entry.id.replace(/\.desktop$/i, "");
+            let termArgs = [];
+            if (term[0] === "kitty")
+                termArgs = ["--class", appBase, "--title", appBase];
+            else if (term[0] === "foot")
+                termArgs = ["-a", appBase, "-T", appBase];
+
             Quickshell.execDetached({
-                command: [...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/assets/wrap_term_launch.sh`, ...entry.command],
+                command: [...term, ...termArgs, `${Quickshell.shellDir}/assets/wrap_term_launch.sh`, ...entry.command],
                 workingDirectory: entry.workingDirectory
             });
+        }
         else
             entry.execute();
     }

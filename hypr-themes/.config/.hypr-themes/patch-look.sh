@@ -6,10 +6,24 @@
 #   patch-look.sh --sync-all [value] Update every theme and the active config
 
 ANARCHY_BAR_JSON="$HOME/.config/quickshell/Anarchy-Bar/Settings/bar.json"
+ANARCHY_SHELL_JSON="$HOME/.config/anarchy-shell/hyprland.json"
 LOOK_LUA="$HOME/.config/hypr/modules/look.lua"
 
 read_border_value() {
     sed -nE 's/.*"hyprlandBorderThickness"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON"
+}
+
+# Anarchy-Shell is migrating off Anarchy-Bar: when its shell.json has a
+# "hyprland" section key, those values win over bar.json (which then acts
+# as the fallback default). Usage: read_shell_value <shell.json key> <default>
+read_shell_value() {
+    local shell_value
+    shell_value=$(jq -r --arg k "$1" '.hyprland[$k] // empty' "$ANARCHY_SHELL_JSON" 2>/dev/null)
+    if [ -n "$shell_value" ] && [ "$shell_value" != "null" ]; then
+        printf '%s' "$shell_value"
+    else
+        printf '%s' "$2"
+    fi
 }
 
 patch_file() {
@@ -34,17 +48,17 @@ patch_file() {
 }
 
 if [ "$1" = "--sync-all" ]; then
-    VALUE="${2:-$(read_border_value)}"
-    ACTIVE="${3:-$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    INACTIVE="${4:-$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    ROUNDING="${5:-$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    POWER="${6:-$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    BLUR_ENABLED="${7:-$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    BLUR_PASSES="${8:-$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    BLUR_SIZE="${9:-$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    BLUR_VIBRANCY="${10:-$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    GAP_IN="${11:-$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
-    GAP_OUT="${12:-$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")}"
+    VALUE="${2:-$(read_shell_value borderSize "$(read_border_value)")}"
+    ACTIVE="${3:-$(read_shell_value activeOpacity "$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    INACTIVE="${4:-$(read_shell_value inactiveOpacity "$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    ROUNDING="${5:-$(read_shell_value rounding "$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    POWER="${6:-$(read_shell_value roundingPower "$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    BLUR_ENABLED="${7:-$(read_shell_value blurEnabled "$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    BLUR_PASSES="${8:-$(read_shell_value blurPasses "$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    BLUR_SIZE="${9:-$(read_shell_value blurSize "$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    BLUR_VIBRANCY="${10:-$(read_shell_value blurVibrancy "$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    GAP_IN="${11:-$(read_shell_value gapsIn "$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
+    GAP_OUT="${12:-$(read_shell_value gapsOut "$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")}"
     case "$VALUE" in
         ''|*[!0-9]*) exit 2 ;;
     esac
@@ -77,17 +91,17 @@ if [ "$1" = "--sync-all" ]; then
     exit 0
 fi
 
-VALUE=$(read_border_value)
-ACTIVE=$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
-INACTIVE=$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
-ROUNDING=$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
-POWER=$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
-BLUR_ENABLED=$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")
-BLUR_PASSES=$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
-BLUR_SIZE=$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
-BLUR_VIBRANCY=$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")
-GAP_IN=$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
-GAP_OUT=$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")
+VALUE=$(read_shell_value borderSize "$(read_border_value)")
+ACTIVE=$(read_shell_value activeOpacity "$(sed -nE 's/.*"hyprlandActiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+INACTIVE=$(read_shell_value inactiveOpacity "$(sed -nE 's/.*"hyprlandInactiveOpacity"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+ROUNDING=$(read_shell_value rounding "$(sed -nE 's/.*"hyprlandRounding"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+POWER=$(read_shell_value roundingPower "$(sed -nE 's/.*"hyprlandRoundingPower"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+BLUR_ENABLED=$(read_shell_value blurEnabled "$(sed -nE 's/.*"hyprlandBlurEnabled"[[:space:]]*:[[:space:]]*(true|false).*/\1/p' "$ANARCHY_BAR_JSON")")
+BLUR_PASSES=$(read_shell_value blurPasses "$(sed -nE 's/.*"hyprlandBlurPasses"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+BLUR_SIZE=$(read_shell_value blurSize "$(sed -nE 's/.*"hyprlandBlurSize"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+BLUR_VIBRANCY=$(read_shell_value blurVibrancy "$(sed -nE 's/.*"hyprlandBlurVibrancy"[[:space:]]*:[[:space:]]*([0-9.]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+GAP_IN=$(read_shell_value gapsIn "$(sed -nE 's/.*"hyprlandGapIn"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
+GAP_OUT=$(read_shell_value gapsOut "$(sed -nE 's/.*"hyprlandGapOut"[[:space:]]*:[[:space:]]*([0-9]+).*/\1/p' "$ANARCHY_BAR_JSON")")
 [ -n "$VALUE" ] || exit 0
 [ -n "$ACTIVE" ] || exit 0
 [ -n "$INACTIVE" ] || exit 0

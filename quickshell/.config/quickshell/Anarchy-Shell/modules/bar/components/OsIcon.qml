@@ -8,8 +8,8 @@ import qs.utils
 Item {
     id: root
 
-    implicitWidth: Math.round(Tokens.font.body.large.pointSize * 1.2)
-    implicitHeight: Math.round(Tokens.font.body.large.pointSize * 1.2)
+    implicitWidth: Math.round(Tokens.font.body.large.pointSize * 2.2)
+    implicitHeight: Math.round(Tokens.font.body.large.pointSize * 2.2)
 
     MouseArea {
         anchors.fill: parent
@@ -23,15 +23,15 @@ Item {
     Loader {
         asynchronous: true
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        sourceComponent: SysInfo.isDefaultLogo ? archLogo : distroIcon
     }
 
     Component {
-        id: caelestiaLogo
+        id: archLogo
 
         Logo {
-            implicitWidth: Math.round(Tokens.font.body.large.pointSize * 1.6)
-            implicitHeight: Math.round(Tokens.font.body.large.pointSize * 1.6)
+            implicitWidth: Math.round(Tokens.font.body.large.pointSize * 2.2)
+            implicitHeight: Math.round(Tokens.font.body.large.pointSize * 2.2)
         }
     }
 
@@ -40,7 +40,7 @@ Item {
 
         ColouredIcon {
             source: SysInfo.osLogo
-            implicitSize: Math.round(Tokens.font.body.large.pointSize * 1.2)
+            implicitSize: Math.round(Tokens.font.body.large.pointSize * 2.2)
             colour: Colours.palette.m3tertiary
         }
     }
