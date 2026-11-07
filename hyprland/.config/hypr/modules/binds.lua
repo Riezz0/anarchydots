@@ -14,7 +14,7 @@ hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprs
 
 
 -- App Launch
-hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("qs ipc -p ~/.config/quickshell/Anarchy-Shell call anarchy-launcher toggle"),                                   { description = "App Launcher" })
+hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("qs -c Anarchy-Shell ipc call drawers toggle launcher"),                                   { description = "App Launcher" })
 hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("qs ipc -p ~/.config/quickshell/Anarchy-Shell call anarchy-dashboard toggle"),                              { description = "Dashboard" })
 hl.bind("SUPER + SHIFT + T", hl.dsp.exec_cmd("~/.config/quickshell/Anarchy-Bar/Scripts/toggle-theme-switcher.sh"),                                          { description = "Theme Switcher" })
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("kitty"),                                                                                                         { description = "Terminal" })
