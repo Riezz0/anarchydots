@@ -14,7 +14,7 @@ Scope {
 
     ExclusionZone {
         anchors.left: true
-        exclusiveZone: root.bar.exclusiveZone
+        leftBarZone: root.bar.exclusiveZone
     }
 
     ExclusionZone {
@@ -30,9 +30,10 @@ Scope {
     }
 
     component ExclusionZone: StyledWindow {
+        property int leftBarZone: -1
         screen: root.screen
         name: "border-exclusion"
-        exclusiveZone: contentItem.Config.border.thickness
+        exclusiveZone: leftBarZone >= 0 ? (leftBarZone > contentItem.Config.border.thickness ? leftBarZone + contentItem.Config.border.thickness : contentItem.Config.border.thickness) : contentItem.Config.border.thickness
         mask: Region {}
         implicitWidth: 1
         implicitHeight: 1
