@@ -121,6 +121,7 @@ no_blur = true })
 hl.window_rule({ match = { class = "Xdg-desktop-portal-gtk" }, opaque = true, no_shadow = true,
 no_blur = true })
 
+-- Nexus
 hl.window_rule({ name = "nexusrules", match = { class = "anarchy-nexus" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })

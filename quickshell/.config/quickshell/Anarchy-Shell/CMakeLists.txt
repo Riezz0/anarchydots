@@ -8,7 +8,8 @@ if(NOT DEFINED VERSION)
     )
 
     if("${VERSION}" STREQUAL "")
-        message(FATAL_ERROR "VERSION is not set and failed to get from git")
+        set(VERSION "0.0.0")
+        message(STATUS "VERSION not found in git, falling back to ${VERSION}")
     endif()
 endif()
 
@@ -20,7 +21,8 @@ if(NOT DEFINED GIT_REVISION)
     )
 
     if("${GIT_REVISION}" STREQUAL "")
-        message(FATAL_ERROR "GIT_REVISION is not set and failed to get from git")
+        set(GIT_REVISION "unknown")
+        message(STATUS "GIT_REVISION not found, falling back to ${GIT_REVISION}")
     endif()
 endif()
 
