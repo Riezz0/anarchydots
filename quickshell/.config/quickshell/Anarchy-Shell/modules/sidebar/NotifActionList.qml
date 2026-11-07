@@ -172,7 +172,10 @@ Item {
 
                         IconImage {
                             asynchronous: true
-                            source: Quickshell.iconPath(action.modelData.identifier)
+                            source: {
+                                const _ = Icons.iconMap;
+                                return Icons.resolveIcon(action.modelData.identifier);
+                            }
                         }
                     }
 

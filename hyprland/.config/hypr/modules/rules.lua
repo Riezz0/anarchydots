@@ -114,10 +114,13 @@ float = true, size = "1200 700", center = true, opacity = "1", animation = "slid
 border_color = theme.color2 .. " " .. theme.color15 })
 
 -- Force Opaque - Audacity
-hl.window_rule({ match = { class = "Audacity4",}, opaque = true, no_shadow = true,
+hl.window_rule({ match = { class = "Audacity4" }, opaque = true, no_shadow = true,
 no_blur = true })
 
 -- Force Opaque - Portals
-hl.window_rule({ match = { class = "Xdg-desktop-portal-gtk",}, opaque = true, no_shadow = true,
+hl.window_rule({ match = { class = "Xdg-desktop-portal-gtk" }, opaque = true, no_shadow = true,
 no_blur = true })
 
+hl.window_rule({ name = "nexusrules", match = { class = "anarchy-nexus" },
+float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
+border_color = theme.color2 .. " " .. theme.color15 })

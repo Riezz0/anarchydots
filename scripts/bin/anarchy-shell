@@ -14,4 +14,5 @@ if [ -f "$HOME/.cache/wal/colors.json" ] && [ -x "/usr/local/bin/wal-to-caelesti
     "/usr/local/bin/wal-to-caelestia" "${theme:-pywal}" >/dev/null 2>&1 &
 fi
 
-exec quickshell -c Anarchy-Shell "$@"
+quickshell kill -c Anarchy-Shell 2>/dev/null || true
+exec quickshell -c Anarchy-Shell --daemonize

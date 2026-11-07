@@ -14,15 +14,14 @@ QtObject {
             description: Tr.tr("Wallpaper, fonts, colours"),
             category: "appearance"
         },
+        {
+            label: Tr.tr("Display"),
+            icon: "monitor",
+            description: Tr.tr("Output configuration"),
+            category: "appearance"
+        },
 
         // Connectivity
-        // TODO
-        // {
-        //     label: Tr.tr("Display"),
-        //     icon: "monitor",
-        //     description: Tr.tr("Output configuration"),
-        //     category: "connectivity"
-        // },
         {
             label: Tr.tr("Network"),
             icon: "wifi",
