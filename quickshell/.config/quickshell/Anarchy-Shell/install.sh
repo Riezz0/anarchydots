@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 #
-# Builds Anarchy-Shell (caelestia QML sources + C++ plugin) in place from
-# ~/.config/quickshell/Anarchy-Shell.
+# Builds Anarchy-Shell (caelestia QML sources + C++ plugin) and installs it
+# system-wide.
 #
-# Layout: ~/.config/quickshell/Anarchy-Shell *is* the anarchydots working
-# tree (symlink), and quickshell runs the QML in place via
-# `quickshell -c Anarchy-Shell`. The build therefore only needs to:
-#   1. compile plugin/ -> Caelestia.* QML modules in ~/.local/lib/qt6/qml
-#   2. compile extras/ -> version binary in ~/.local/lib/caelestia
-#   3. stow the pywal bridge helpers into ~/.local/bin
-# The "shell" module (QML sources copied to INSTALL_QSCONFDIR) stays
-# disabled: with source == destination it would copy assets/components/...
-# and the transformed shell.qml back onto the source tree, overwriting it.
+# Layout: ~/.config/quickshell/Anarchy-Shell is the Quickshell config
+# directory, and quickshell runs it via `quickshell -c Anarchy-Shell`.
+# The build installs:
+#   1. plugin/         -> system QML modules (/usr/lib/qt6/qml)
+#   2. extras/         -> system version binary (/usr/lib/caelestia)
+#   3. shell QML files -> ~/.config/quickshell/Anarchy-Shell
+#   4. pywal bridge    -> ~/.local/bin
+#
+# NOTE: if ~/.config/quickshell/Anarchy-Shell is a stow symlink into the
+# repo, the shell-module install writes the QML sources back over the
+# checkout (including the transformed shell.qml).
 #
 # Build dependencies (plugin/CMakeLists.txt requires them via find_package
 # and pkg_check_modules; sensors via cmake/sensorslib.cmake):
@@ -37,7 +39,7 @@ fi
 # directory containing per-file symlinks (stow without folding).
 SELF="$(readlink -f -- "${BASH_SOURCE[0]}")"
 SRC_DIR="$(cd -- "$(dirname -- "$SELF")" && pwd -P)"
-PREFIX="${HOME}/.local"
+PREFIX="/usr"
 
 command -v cmake >/dev/null || { echo "error: cmake not found" >&2; exit 1; }
 command -v ninja >/dev/null || { echo "error: ninja not found" >&2; exit 1; }
@@ -85,36 +87,18 @@ echo "All build dependencies found."
 
 cd -- "$SRC_DIR"
 
-configure() {
-    cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX="$PREFIX" \
-        -DINSTALL_LIBDIR=lib/caelestia \
-        -DINSTALL_QMLDIR=lib/qt6/qml \
-        -DENABLE_MODULES="extras;plugin" \
-        -DVERSION=0.0.0 -DGIT_REVISION=unknown
-}
+# Start from a clean cache so the new install prefix/module list always apply.
+rm -rf -- build
 
-# VERSION/GIT_REVISION: this checkout lives inside anarchydots (no tags),
-# so pass upstream fallbacks instead of `git describe` on the parent repo.
-# (CMakeLists.txt already falls back, but be explicit.)
+cmake -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/ \
+    -DINSTALL_QSCONFDIR="$HOME/.config/quickshell/Anarchy-Shell"
 
-if ! configure; then
-    echo "Configure failed, cleaning build/ and retrying..." >&2
-    rm -rf build
-    configure
-fi
+cmake --build build
 
-if ! cmake --build build; then
-    echo "Build failed, cleaning build/ and retrying..." >&2
-    rm -rf build
-    configure
-    cmake --build build
-fi
-
-# Install the compiled QML modules + version binary. QML sources are
-# already in place under ~/.config/quickshell/Anarchy-Shell and are not
-# copied anywhere.
-cmake --install build
+sudo cmake --install build
+sudo chown -R "$(id -un)" "$HOME/.config/quickshell/Anarchy-Shell"
 
 rm -rf -- "$SRC_DIR/build"
 

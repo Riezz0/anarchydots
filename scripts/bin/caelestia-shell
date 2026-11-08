@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Anarchy-Shell launcher (caelestia QML sources + user-local C++ QML modules)
-export QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
-export LD_LIBRARY_PATH="$HOME/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-export CAELESTIA_LIB_DIR="$HOME/.local/lib"
+# Anarchy-Shell launcher (caelestia QML sources + system C++ QML modules)
+export QML_IMPORT_PATH="/usr/lib/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export LD_LIBRARY_PATH="/usr/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CAELESTIA_LIB_DIR="/usr/lib/caelestia"
 # MangoHud's ANV/FFmpeg vkCreateDevice path segfaults inside Qt Multimedia; disable for the shell
 export MANGOHUD=0
 
