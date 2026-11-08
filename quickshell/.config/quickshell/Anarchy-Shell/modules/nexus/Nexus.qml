@@ -34,7 +34,7 @@ Item {
     BlobGroup {
         id: blobGroup
 
-        smoothing: root.Tokens.rounding.medium
+        smoothing: Config.border.smoothing
         color: root.blobColour
     }
 
@@ -42,7 +42,7 @@ Item {
         anchors.fill: parent
         group: blobGroup
         opacity: root.blobColour.a
-        radius: Tokens.rounding.large
+        radius: Config.border.rounding
 
         borderLeft: navPane.width + navPane.anchors.margins * 2
         borderRight: Tokens.padding.medium
@@ -59,7 +59,7 @@ Item {
 
         group: blobGroup
         opacity: root.blobColour.a
-        radius: Tokens.rounding.medium
+        radius: Config.border.rounding
 
         implicitWidth: windowBtn.implicitWidth + (root.nState.isWindow ? Tokens.padding.extraSmall : Tokens.padding.small) * 2
         implicitHeight: windowBtn.implicitHeight + (root.nState.isWindow ? Tokens.padding.extraSmall : Tokens.padding.small)

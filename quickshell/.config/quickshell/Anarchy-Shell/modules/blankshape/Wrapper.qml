@@ -11,10 +11,6 @@ import qs.components
 Item {
     id: root
 
-    // TMP DIAG
-    onOffsetScaleChanged: console.warn(`[BLANKDIAG] offsetScale=${offsetScale} visible=${visible}`)
-    onVisibleChanged: console.warn(`[BLANKDIAG] visible=${visible} offsetScale=${offsetScale}`)
-
     required property ScreenState screenState
 
     readonly property bool shouldBeActive: screenState.blankShell && Config.launcher.enabled
@@ -23,7 +19,6 @@ Item {
     readonly property real designHeight: 160
 
     onShouldBeActiveChanged: {
-        console.warn(`[BLANKDIAG] shouldBeActive=${shouldBeActive} visible=${visible} offsetScale=${offsetScale} implicitH=${implicitHeight}`)
         if (shouldBeActive)
             implicitHeight = Qt.binding(() => content.implicitHeight);
         else
@@ -53,6 +48,8 @@ Item {
             implicitHeight: Tokens.sizes.launcher.itemHeight * 2 + Tokens.padding.large * 2
             radius: Tokens.rounding.extraLarge
             color: Colours.tPalette.m3surfaceContainer
+            border.width: 2
+            border.color: Colours.palette.m3outlineVariant
         }
     }
 }

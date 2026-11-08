@@ -344,7 +344,7 @@ StyledWindow {
         y: panel.y + root.borderThickness
         implicitWidth: panel.width
         implicitHeight: panel.height
-        radius: Tokens.rounding.extraLarge
+        radius: root.borderRounding
         deformScale: (deformAmount * Config.appearance.deformScale) / 10000
     }
 }
