@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Anarchy-Shell launcher (caelestia QML sources + user-local C++ QML modules)
+export QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml${QML_IMPORT_PATH:+:$QML_IMPORT_PATH}"
+export LD_LIBRARY_PATH="$HOME/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CAELESTIA_LIB_DIR="$HOME/.local/lib"
+# MangoHud's ANV/FFmpeg vkCreateDevice path segfaults inside Qt Multimedia; disable for the shell
+export MANGOHUD=0
+
+# Re-derive the shell scheme from pywal (~/.cache/wal/colors.json) on every
+# start, so the shell always matches the active theme even if `wal` ran
+# before Quickshell. Theme name comes from the active theme script.
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+REPO_ROOT="$(cd "$(dirname "$SELF")/../.." && pwd -P)"
+
+# Expose the theme helpers on PATH. The scripts package is normally stowed to
+# /usr/local, but a fresh checkout may not have that step; self-heal here so
+# the running shell and the QML side always find the same bridge.
+mkdir -p "$HOME/.local/bin"
+ln -sf "$REPO_ROOT/scripts/bin/wal-to-caelestia.py" "$HOME/.local/bin/wal-to-caelestia"
+ln -sf "$REPO_ROOT/scripts/bin/shell-theme-sync.sh" "$HOME/.local/bin/shell-theme-sync"
+
+BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
+[ -x "$BRIDGE" ] || BRIDGE="$HOME/.local/bin/wal-to-caelestia"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+
+theme="$(sed -n 's/^THEME_NAME="\(.*\)"/\1/p' "$HOME/.local/share/themes/hypr-theme-active.sh" 2>/dev/null)"
+if [ -f "$HOME/.cache/wal/colors.json" ] && [ -f "$BRIDGE" ]; then
+    python3 "$BRIDGE" "${theme:-pywal}" >/dev/null 2>&1 &
+fi
+
+quickshell kill -c caelestia 2>/dev/null || true
+exec quickshell -c caelestia --daemonize

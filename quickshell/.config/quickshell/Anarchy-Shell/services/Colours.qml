@@ -135,7 +135,11 @@ Singleton {
     Process {
         id: sync
 
-        command: ["bash", Quickshell.env("HOME") + "/anarchydots/scripts/bin/shell-theme-sync.sh"]
+        // Resolve the sync helper at runtime instead of hardcoding the
+        // checkout directory. The launcher (anarchy-shell) links it into
+        // ~/.local/bin; /usr/local/bin covers `stow -t /usr/local scripts`,
+        // and PATH covers a manual install.
+        command: ["bash", "-c", "for c in \"$HOME/.local/bin/shell-theme-sync\" /usr/local/bin/shell-theme-sync; do [ -x \"$c\" ] && exec \"$c\"; done; command -v shell-theme-sync >/dev/null 2>&1 && exec shell-theme-sync"]
         stdout: StdioCollector {
             onStreamFinished: if (text.includes("resynced colours=1")) schemeFile.reload()
         }

@@ -27,3 +27,5 @@ map ctrl+3 goto_tab 3
 map ctrl+4 goto_tab 4
 map ctrl+5 goto_tab 5
 
+# Allow pywal to refresh colours when it is run from inside kitty.
+allow_remote_control yes

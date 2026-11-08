@@ -6,11 +6,11 @@ hl.bind("SUPER + L", hl.dsp.global("anarchy:lock"), { description = "Lock Screen
 
 -- Scratchpads
 
-hl.bind("SUPER + E", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprscratch toggle nautipad"),                                   { description = "App Launcher" })
-hl.bind("SUPER + T", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprscratch toggle codepad"),                                   { description = "App Launcher" })
-hl.bind("SUPER + K", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprscratch toggle osdpad"),                                   { description = "App Launcher" })
-hl.bind("SUPER + V", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprscratch toggle vimpad"),                                   { description = "App Launcher" })
-hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("/home/riezzo/.local/bin/hyprscratch toggle termpad"),                                   { description = "App Launcher" })
+hl.bind("SUPER + E", hl.dsp.exec_cmd("~/.local/bin/hyprscratch toggle nautipad"),                                   { description = "App Launcher" })
+hl.bind("SUPER + T", hl.dsp.exec_cmd("~/.local/bin/hyprscratch toggle codepad"),                                   { description = "App Launcher" })
+hl.bind("SUPER + K", hl.dsp.exec_cmd("~/.local/bin/hyprscratch toggle osdpad"),                                   { description = "App Launcher" })
+hl.bind("SUPER + V", hl.dsp.exec_cmd("~/.local/bin/hyprscratch toggle vimpad"),                                   { description = "App Launcher" })
+hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("~/.local/bin/hyprscratch toggle termpad"),                                   { description = "App Launcher" })
 
 
 -- App Launch

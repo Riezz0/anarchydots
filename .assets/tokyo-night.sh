@@ -94,6 +94,15 @@ hyprctl reload
 kill -SIGUSR1 $(pidof kitty)
 
 #------------------------#
+# CAELESTIA SHELL COLORS #
+#------------------------#
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
+[ -x "$BRIDGE" ] || BRIDGE="$HOME/.local/bin/wal-to-caelestia"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+[ -f "$BRIDGE" ] && python3 "$BRIDGE" "$THEME_NAME" >/dev/null 2>&1 || true
+
+#------------------------#
 # NOTIFICATION
 #------------------------#
 notify-send "$THEME_DISPLAY Loaded" & disown

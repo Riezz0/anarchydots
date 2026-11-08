@@ -7,11 +7,18 @@
 set -u
 
 HOME_DIR="${HOME:-/home/$USER}"
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+REPO_ROOT="$(cd "$(dirname "$SELF")/../.." && pwd -P)"
 ACTIVE="$HOME_DIR/.local/share/themes/hypr-theme-active.sh"
 WAL_COLORS="$HOME_DIR/.cache/wal/colors.json"
 SCHEME="$HOME_DIR/.local/state/caelestia/scheme.json"
 PATH_TXT="$HOME_DIR/.local/state/caelestia/wallpaper/path.txt"
+
+# Prefer the installed bridge, then the checkout this script came from.
 BRIDGE="$HOME_DIR/.local/bin/wal-to-caelestia"
+[ -x "$BRIDGE" ] || BRIDGE="/usr/local/bin/wal-to-caelestia"
+[ -x "$BRIDGE" ] || BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
 
 [ -f "$WAL_COLORS" ] || exit 0
 [ -x "$BRIDGE" ] || exit 0
