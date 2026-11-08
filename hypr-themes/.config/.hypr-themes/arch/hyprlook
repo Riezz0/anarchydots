@@ -7,7 +7,7 @@ hl.config({
     resize_on_border = true, allow_tearing = false, },
     decoration = {rounding = 10,
 rounding_power = 10,
-active_opacity = 0.95,
+active_opacity = 1,
 inactive_opacity = 1,
     shadow = {enabled = false, range = 0, render_power = 1, color = 0xee1a1a1a },
 

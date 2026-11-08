@@ -34,14 +34,6 @@ Region {
     }
 
     R {
-        panel: root.panels.blankShell
-        y: root.win.height - 24
-        x: root.win.width / 2 - 300
-        width: 600
-        height: 24
-    }
-
-    R {
         id: sessionRegion
 
         panel: root.panels.sessionWrapper

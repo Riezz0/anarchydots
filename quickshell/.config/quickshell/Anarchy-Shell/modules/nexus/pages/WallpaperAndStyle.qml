@@ -184,7 +184,6 @@ PageBase {
         }
 
         StepperRow {
-            last: true
             label: Tr.tr("Smoothing")
             subtext: Tr.tr("Corner smoothing of the shell frame")
             value: Config.border.smoothing
@@ -192,6 +191,27 @@ PageBase {
             to: 80
             stepSize: 1
             onMoved: v => GlobalConfig.border.smoothing = Math.round(v)
+        }
+
+        StepperRow {
+            label: Tr.tr("Shadow blur")
+            subtext: Tr.tr("Spread of the shell shadow")
+            value: Config.border.shadowBlur ?? 60
+            from: 0
+            to: 80
+            stepSize: 1
+            onMoved: v => GlobalConfig.border.shadowBlur = Math.round(v)
+        }
+
+        StepperRow {
+            last: true
+            label: Tr.tr("Shadow opacity")
+            subtext: Tr.tr("Opacity of the shell shadow (%)")
+            value: Math.round((Config.border.shadowOpacity ?? 0.7) * 100)
+            from: 0
+            to: 100
+            stepSize: 5
+            onMoved: v => GlobalConfig.border.shadowOpacity = v / 100
         }
 
         // Hyprland — live dispatch, persisted to Anarchy-Shell's own

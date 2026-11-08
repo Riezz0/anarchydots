@@ -11,6 +11,8 @@ class BorderConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(int, thickness, 10)
     CONFIG_PROPERTY(int, rounding, 25)
     CONFIG_PROPERTY(int, smoothing, 20)
+    CONFIG_PROPERTY(int, shadowBlur, 60)
+    CONFIG_PROPERTY(qreal, shadowOpacity, 0.7)
 
     Q_PROPERTY(int minThickness READ minThickness CONSTANT)
     Q_PROPERTY(int clampedThickness READ clampedThickness NOTIFY thicknessChanged)

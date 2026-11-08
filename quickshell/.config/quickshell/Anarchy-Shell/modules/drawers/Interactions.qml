@@ -110,13 +110,6 @@ CustomMouseArea {
         if (!screenState.bar && Config.bar.showOnHover && x < bar.clampedWidth)
             bar.isHovered = true;
 
-        // Bottom of the shell bar (bottom-left, where the bar sits) opens
-        // the blank shape — the trigger is over the shell, not the windows.
-        // NB: not clampedWidth — that property is just Config.border.thickness
-        // (~10px); the painted bar is the wider contentWidth (~60px).
-        const inBarBottomBand = x < Math.max(bar.clampedWidth, bar.contentWidth) && y > height - 240;
-        if (inBarBottomBand !== screenState.blankShell)
-            screenState.blankShell = inBarBottomBand;
 
         // Show/hide bar on drag
         if (pressed && dragStart.x < bar.clampedWidth) {
