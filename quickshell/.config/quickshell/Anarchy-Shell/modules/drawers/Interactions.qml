@@ -110,6 +110,14 @@ CustomMouseArea {
         if (!screenState.bar && Config.bar.showOnHover && x < bar.clampedWidth)
             bar.isHovered = true;
 
+        // Bottom of the shell bar (bottom-left, where the bar sits) opens
+        // the blank shape — the trigger is over the shell, not the windows.
+        const inBarBottomBand = x < bar.clampedWidth && y > height - 240;
+        if (inBarBottomBand !== screenState.blankShell) {
+            screenState.blankShell = inBarBottomBand;
+            console.warn(`[BLANKDIAG] x=${x} y=${y} inBand=${inBarBottomBand}`);
+        }
+
         // Show/hide bar on drag
         if (pressed && dragStart.x < bar.clampedWidth) {
             if (dragX > Config.bar.dragThreshold)

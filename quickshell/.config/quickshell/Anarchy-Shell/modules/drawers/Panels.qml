@@ -10,6 +10,7 @@ import qs.modules.osd as Osd
 import qs.modules.session as Session
 import qs.modules.sidebar as Sidebar
 import qs.modules.utilities as Utilities
+import qs.modules.blankshape as BlankShape
 import qs.modules.bar.popouts as BarPopouts
 import qs.modules.utilities.toasts as Toasts
 
@@ -33,6 +34,7 @@ Item {
     readonly property alias utilities: utilities
     readonly property alias toasts: toasts
     readonly property alias sidebar: sidebar
+    readonly property alias blankShell: blankShell
 
     anchors.fill: parent
     anchors.margins: borderThickness
@@ -102,6 +104,15 @@ Item {
         screen: root.screen
         screenState: root.screenState
         panels: root
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+    }
+
+    BlankShape.Wrapper {
+        id: blankShell
+
+        screenState: root.screenState
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
