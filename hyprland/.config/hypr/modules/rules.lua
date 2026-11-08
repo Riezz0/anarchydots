@@ -84,7 +84,7 @@ float = true, size = "1200 700", center = true, opacity = "1", animation = "slid
 border_color = theme.color2 .. " " .. theme.color15 })
 
 -- Anarchy-Installer
-hl.window_rule({ name = "anarchyinstrules", match = { class = "Anarchy-Installer" },
+hl.window_rule({ name = "anarchyinstrules", match = { class = "com.anarchy.OfflineInstaller" },
 float = true, size = "1200 700", center = true, opacity = "1", animation = "slide top", 
 border_color = theme.color2 .. " " .. theme.color15 })
 
