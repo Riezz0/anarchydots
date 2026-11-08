@@ -177,7 +177,11 @@ sudo stow -R -t /usr/local scripts
 # Only the two pywal bridge helpers live per-user under ~/.local/bin; the rest
 # of the scripts must stay in /usr/local/bin. Remove anything left by an older
 # manual setup first, otherwise stow refuses to take ownership of the targets.
-mkdir -p "$HOME/.local"
+mkdir -p "$HOME/.local/bin"
+if [ -L "$HOME/.local/bin" ] && [ "$(readlink -f "$HOME/.local/bin")" = "$REPO_DIR/local-bin/bin" ]; then
+    rm -f "$HOME/.local/bin"
+    mkdir -p "$HOME/.local/bin"
+fi
 rm -f "$HOME/.local/bin/wal-to-caelestia" \
       "$HOME/.local/bin/wal-to-caelestia.py" \
       "$HOME/.local/bin/shell-theme-sync" \

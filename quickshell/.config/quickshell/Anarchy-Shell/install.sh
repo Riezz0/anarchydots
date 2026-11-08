@@ -26,10 +26,17 @@
 
 set -euo pipefail
 
+if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+    echo "error: run this installer as your normal user, not root (it writes to \$HOME)." >&2
+    exit 1
+fi
+
 # Build from the directory this script lives in, regardless of the
-# invoking CWD. (Canonical quickshell location: ~/.config/quickshell/
-# Anarchy-Shell; here it resolves to the anarchydots working tree.)
-SRC_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# invoking CWD. Resolve the script itself through stow symlinks first, so
+# this also works when ~/.config/quickshell/Anarchy-Shell is a real
+# directory containing per-file symlinks (stow without folding).
+SELF="$(readlink -f -- "${BASH_SOURCE[0]}")"
+SRC_DIR="$(cd -- "$(dirname -- "$SELF")" && pwd -P)"
 PREFIX="${HOME}/.local"
 
 command -v cmake >/dev/null || { echo "error: cmake not found" >&2; exit 1; }
@@ -118,34 +125,82 @@ rm -rf -- "$SRC_DIR/build"
 # helper scripts are already stowed into /usr/local/bin by the offline
 # installer, so they are intentionally not touched here.
 find_repo_root() {
-    local dir="$SRC_DIR"
+    local dir
+
+    # Explicit override, e.g. ANARCHYDOTS_DIR=~/dots ./install.sh
+    if [ -n "${ANARCHYDOTS_DIR:-}" ] && [ -d "$ANARCHYDOTS_DIR/local-bin" ]; then
+        printf '%s\n' "$ANARCHYDOTS_DIR"
+        return 0
+    fi
+
+    # Real script location (already resolved through stow symlinks above).
+    dir="$SRC_DIR"
     while [ "$dir" != "/" ]; do
-        if [ -d "$dir/local-bin" ] && [ -d "$dir/scripts" ]; then
+        if [ -d "$dir/local-bin" ]; then
             printf '%s\n' "$dir"
             return 0
         fi
         dir="$(dirname -- "$dir")"
     done
+
+    # Fall back to common clone names in case the shell was copied rather
+    # than stowed from the repo.
+    for dir in "$HOME/anarchydots" "$HOME/dots" "$HOME/mydots" "$HOME/.config/anarchydots"; do
+        if [ -d "$dir/local-bin" ]; then
+            printf '%s\n' "$dir"
+            return 0
+        fi
+    done
+
+    # Last resort: locate the package by its unique helper file.
+    local helper
+    helper="$(find "$HOME" -maxdepth 6 -type f \
+        -path '*/local-bin/bin/wal-to-caelestia' -print -quit 2>/dev/null || true)"
+    if [ -n "$helper" ]; then
+        printf '%s\n' "${helper%/local-bin/bin/wal-to-caelestia}"
+        return 0
+    fi
+
     return 1
 }
 
 if REPO_ROOT="$(find_repo_root)"; then
+    echo "Repo root: $REPO_ROOT"
     if command -v stow >/dev/null 2>&1; then
         # Undo a previous all-scripts stow into ~/.local, then place only the
         # bridge helpers there.
-        mkdir -p "$HOME/.local"
+        mkdir -p "$HOME/.local/bin"
+        # If a previous stow folded ~/.local/bin itself into a symlink to our
+        # package, replace the link with a real directory before touching the
+        # entries (removing the link does not delete the repo files).
+        if [ -L "$HOME/.local/bin" ] && [ "$(readlink -f "$HOME/.local/bin")" = "$REPO_ROOT/local-bin/bin" ]; then
+            rm -f "$HOME/.local/bin"
+            mkdir -p "$HOME/.local/bin"
+        fi
         stow -D -t "$HOME/.local" scripts >/dev/null 2>&1 || true
         rm -f "$HOME/.local/bin/wal-to-caelestia" \
               "$HOME/.local/bin/wal-to-caelestia.py" \
               "$HOME/.local/bin/shell-theme-sync" \
               "$HOME/.local/bin/shell-theme-sync.sh"
         stow -d "$REPO_ROOT" -R -t "$HOME/.local" local-bin
-        echo "Stowed pywal bridge helpers into $HOME/.local/bin"
+        if [ -e "$HOME/.local/bin/wal-to-caelestia" ] && [ -e "$HOME/.local/bin/shell-theme-sync" ]; then
+            echo "Stowed pywal bridge helpers into $HOME/.local/bin"
+        else
+            echo "error: pywal bridge helpers were not stowed into $HOME/.local/bin" >&2
+            echo "       repo root: $REPO_ROOT" >&2
+            exit 1
+        fi
     else
-        echo "warning: stow not found; skipping pywal bridge setup" >&2
+        echo "error: stow not found; cannot set up the pywal bridge helpers" >&2
+        echo "       install 'stow', or create these links manually:" >&2
+        echo "       ln -s <repo>/local-bin/bin/wal-to-caelestia ~/.local/bin/wal-to-caelestia" >&2
+        echo "       ln -s <repo>/local-bin/bin/shell-theme-sync ~/.local/bin/shell-theme-sync" >&2
+        exit 1
     fi
 else
-    echo "warning: could not locate repo root for pywal bridge helpers" >&2
+    echo "error: could not locate the anarchydots checkout for the pywal bridge" >&2
+    echo "       re-run with: ANARCHYDOTS_DIR=/path/to/anarchydots $0" >&2
+    exit 1
 fi
 
 echo "Installed Caelestia QML modules to $PREFIX/lib/qt6/qml"
