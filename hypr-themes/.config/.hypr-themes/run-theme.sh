@@ -33,7 +33,7 @@ echo "[$(date)] Script finished" >> "$LOG"
 # VM, different username, renamed clone).
 BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
 [ -n "$BRIDGE" ] || BRIDGE="$HOME/.local/bin/wal-to-caelestia"
-[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/local-bin/bin/wal-to-caelestia"
 
 theme_dir="$(dirname "$THEME_SCRIPT")"
 theme_name="$(basename "$theme_dir")"

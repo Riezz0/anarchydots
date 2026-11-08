@@ -16,12 +16,14 @@ REPO_ROOT="$(cd "$(dirname "$SELF")/../.." && pwd -P)"
 # /usr/local, but a fresh checkout may not have that step; self-heal here so
 # the running shell and the QML side always find the same bridge.
 mkdir -p "$HOME/.local/bin"
-ln -sf "$REPO_ROOT/scripts/bin/wal-to-caelestia.py" "$HOME/.local/bin/wal-to-caelestia"
-ln -sf "$REPO_ROOT/scripts/bin/shell-theme-sync.sh" "$HOME/.local/bin/shell-theme-sync"
+# Only create the links when they are missing: if the scripts package was
+# stowed into ~/.local, those stow-managed symlinks must be left alone.
+[ -e "$HOME/.local/bin/wal-to-caelestia" ] || ln -sf "$REPO_ROOT/local-bin/bin/wal-to-caelestia" "$HOME/.local/bin/wal-to-caelestia"
+[ -e "$HOME/.local/bin/shell-theme-sync" ] || ln -sf "$REPO_ROOT/local-bin/bin/shell-theme-sync" "$HOME/.local/bin/shell-theme-sync"
 
 BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
 [ -x "$BRIDGE" ] || BRIDGE="$HOME/.local/bin/wal-to-caelestia"
-[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/local-bin/bin/wal-to-caelestia"
 
 theme="$(sed -n 's/^THEME_NAME="\(.*\)"/\1/p' "$HOME/.local/share/themes/hypr-theme-active.sh" 2>/dev/null)"
 if [ -f "$HOME/.cache/wal/colors.json" ] && [ -f "$BRIDGE" ]; then

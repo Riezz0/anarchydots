@@ -8,6 +8,7 @@
 # `quickshell -c Anarchy-Shell`. The build therefore only needs to:
 #   1. compile plugin/ -> Caelestia.* QML modules in ~/.local/lib/qt6/qml
 #   2. compile extras/ -> version binary in ~/.local/lib/caelestia
+#   3. stow the pywal bridge helpers into ~/.local/bin
 # The "shell" module (QML sources copied to INSTALL_QSCONFDIR) stays
 # disabled: with source == destination it would copy assets/components/...
 # and the transformed shell.qml back onto the source tree, overwriting it.
@@ -109,6 +110,43 @@ fi
 cmake --install build
 
 rm -rf -- "$SRC_DIR/build"
+
+# ---------------------------------------------------------------
+# Helper scripts / pywal bridge
+# ---------------------------------------------------------------
+# Only the two pywal bridge helpers belong in ~/.local/bin. The rest of the
+# helper scripts are already stowed into /usr/local/bin by the offline
+# installer, so they are intentionally not touched here.
+find_repo_root() {
+    local dir="$SRC_DIR"
+    while [ "$dir" != "/" ]; do
+        if [ -d "$dir/local-bin" ] && [ -d "$dir/scripts" ]; then
+            printf '%s\n' "$dir"
+            return 0
+        fi
+        dir="$(dirname -- "$dir")"
+    done
+    return 1
+}
+
+if REPO_ROOT="$(find_repo_root)"; then
+    if command -v stow >/dev/null 2>&1; then
+        # Undo a previous all-scripts stow into ~/.local, then place only the
+        # bridge helpers there.
+        mkdir -p "$HOME/.local"
+        stow -D -t "$HOME/.local" scripts >/dev/null 2>&1 || true
+        rm -f "$HOME/.local/bin/wal-to-caelestia" \
+              "$HOME/.local/bin/wal-to-caelestia.py" \
+              "$HOME/.local/bin/shell-theme-sync" \
+              "$HOME/.local/bin/shell-theme-sync.sh"
+        stow -d "$REPO_ROOT" -R -t "$HOME/.local" local-bin
+        echo "Stowed pywal bridge helpers into $HOME/.local/bin"
+    else
+        echo "warning: stow not found; skipping pywal bridge setup" >&2
+    fi
+else
+    echo "warning: could not locate repo root for pywal bridge helpers" >&2
+fi
 
 echo "Installed Caelestia QML modules to $PREFIX/lib/qt6/qml"
 echo "Installed version binary to $PREFIX/lib/caelestia/version"

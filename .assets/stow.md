@@ -3,6 +3,7 @@
 stuff to be done
 
 sudo stow -t /usr/local scripts
+stow -t ~/.local local-bin
 sudo stow -t /usr/share bg 
 
 stow the following packages normally (check for conflicting files):

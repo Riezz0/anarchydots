@@ -172,13 +172,17 @@ sleep 3
 cd "$REPO_DIR"
 stow $stow_packs
 # The scripts package is stowed into /usr/local so every helper (anarchy-shell,
-# wal-to-caelestia, shell-theme-sync, ...) is on PATH for Hyprland/systemd.
-sudo stow -t /usr/local scripts
-# Stable user-level path for the pywal -> shell colour bridge (used by the
-# QML polling loop and by the launcher).
-mkdir -p "$HOME/.local/bin"
-ln -sf "$REPO_DIR/scripts/bin/wal-to-caelestia.py" "$HOME/.local/bin/wal-to-caelestia"
-ln -sf "$REPO_DIR/scripts/bin/shell-theme-sync.sh" "$HOME/.local/bin/shell-theme-sync"
+# awww.sh, volume.sh, ...) is on PATH for Hyprland/systemd.
+sudo stow -R -t /usr/local scripts
+# Only the two pywal bridge helpers live per-user under ~/.local/bin; the rest
+# of the scripts must stay in /usr/local/bin. Remove anything left by an older
+# manual setup first, otherwise stow refuses to take ownership of the targets.
+mkdir -p "$HOME/.local"
+rm -f "$HOME/.local/bin/wal-to-caelestia" \
+      "$HOME/.local/bin/wal-to-caelestia.py" \
+      "$HOME/.local/bin/shell-theme-sync" \
+      "$HOME/.local/bin/shell-theme-sync.sh"
+stow -R -t "$HOME/.local" local-bin
 echo "Done"
 sleep 3
 

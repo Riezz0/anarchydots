@@ -18,7 +18,7 @@ PATH_TXT="$HOME_DIR/.local/state/caelestia/wallpaper/path.txt"
 BRIDGE="$HOME_DIR/.local/bin/wal-to-caelestia"
 [ -x "$BRIDGE" ] || BRIDGE="/usr/local/bin/wal-to-caelestia"
 [ -x "$BRIDGE" ] || BRIDGE="$(command -v wal-to-caelestia 2>/dev/null || true)"
-[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+[ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/local-bin/bin/wal-to-caelestia"
 
 [ -f "$WAL_COLORS" ] || exit 0
 [ -x "$BRIDGE" ] || exit 0

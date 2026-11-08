@@ -53,7 +53,7 @@ if [ -n "$SYNC" ]; then
     "$SYNC" >/dev/null 2>&1 || true
 else
     BRIDGE="$HOME/.local/bin/wal-to-caelestia"
-    [ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/scripts/bin/wal-to-caelestia.py"
+    [ -x "$BRIDGE" ] || BRIDGE="$REPO_ROOT/local-bin/bin/wal-to-caelestia"
     [ -f "$BRIDGE" ] && python3 "$BRIDGE" pywal >/dev/null 2>&1
 fi
 
