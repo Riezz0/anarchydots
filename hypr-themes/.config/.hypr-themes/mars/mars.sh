@@ -56,9 +56,7 @@ cp -r "$THEME_DIR/hypr-colors" "$USER_HOME/.config/hypr/modules/colors.lua"
 # bash ~/.config/.hypr-themes/patch-look.sh "$THEME_DIR/hyprlook"
 bash ~/.config/.hypr-themes/patch-look.sh "$THEME_DIR/hyprlook"
 cp -r "$THEME_DIR/kitty" "$USER_HOME/.config/kitty/kitty.conf"
-cp -r "$THEME_DIR/qcol" "$USER_HOME/.config/quickshell/mainbar/Theme.qml"
 cp -r "$THEME_DIR/rofi" "$USER_HOME/.config/rofi/launcher/colors.rasi"
-cp -f "${HOME}"/.cache/wal/pywal.json "${HOME}"/.config/presets/user/pywal.json
 cp -r $HOME/.cache/wal/colors-discord.css $HOME/.config/vesktop/themes/pywal-vencord.theme.css
 #--------------------------#
 # REMOVE CONFLICTING FILES
@@ -67,19 +65,33 @@ rm -rf /home/$USER/.config/gtk-4.0/*
 rm -rf /home/$USER/.config/gtk-3.0/*
 
 #------------------------#
-# SET GTK AND ICON THEME
+# SET ICON & REWAITA THEME
 #------------------------#
-cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/assets/" "$USER_HOME/.config/gtk-4.0/"
-cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/gtk-dark.css" "$USER_HOME/.config/gtk-4.0/"
-cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/gtk.css" "$USER_HOME/.config/gtk-4.0/"
-cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/libadwaita-tweaks.css" "$USER_HOME/.config/gtk-4.0/"
-cp -r "/home/$USER/.themes/adw-gtk3-dark/gtk-4.0/libadwaita.css" "$USER_HOME/.config/gtk-4.0/"
 gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
-gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
 echo "$ICON_THEME" > "$HOME/.cache/current_icon_theme.txt"
-wait
-gradience-cli apply -p ~/.config/presets/user/pywal.json --gtk both  
-gradience-cli flatpak-overrides -e both 
+
+grep -vE "^(cat <<|EOF$)" "$HOME/.cache/wal/rewaita-pywal.css" > "$HOME/.local/share/dark/pywal.css"
+cp "$HOME/.local/share/dark/pywal.css" "$HOME/.local/share/light/pywal.css"
+
+pkill -f rewaita 2>/dev/null || true
+rewaita --theme=pywal >/dev/null 2>&1
+
+gtk4-update-icon-cache "$HOME/.config/gtk-4.0" 2>/dev/null || true
+gtk-update-icon-cache "$HOME/.config/gtk-3.0" 2>/dev/null || true
+
+if [[ "$GTK_THEME" == *"dark"* ]]; then
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+    sleep 0.1
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
+else
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+    sleep 0.1
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+    gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
+fi
 
 #------------------------#
 # SET KVANTUM THEME
@@ -104,7 +116,6 @@ cp -r "$THEME_DIR/arch-mars.png" "/home/$USER/.config/fastfetch/arch.png"
 # BAR ICON
 #------------------------#
 # cp -r "$THEME_DIR/arch-tokyo-night.png" "/home/$USER/.config/waybar/icons/arch.png"
-cp -r "$THEME_DIR/arch-mars.png" "/home/$USER/.config/quickshell/assets/arch.png"
 cp "$THEME_DIR/arch-mars.png" "$HOME/.config/quickshell/Anarchy-Bar/Assets/arch.png"
 
 #------------------------#
@@ -137,17 +148,3 @@ cp "$THEME_DIR/$THEME_NAME.sh" "/home/$USER/.local/share/themes/hypr-theme-activ
 #------------------------#
 notify-send -a "$THEME_DISPLAY" "Theme Loaded"
 
-#------------------------#
-# REFRESH GTK APPS
-#------------------------#
-gtk4-update-icon-cache "$HOME/.config/gtk-4.0" 2>/dev/null || true
-gtk-update-icon-cache "$HOME/.config/gtk-3.0" 2>/dev/null || true
-killall -q nautilus 2>/dev/null || true
-killall -q nemo 2>/dev/null || true
-killall -q thunar 2>/dev/null || true
-killall -q gnome-text-editor 2>/dev/null || true
-killall -q gnome-calculator 2>/dev/null || true
-killall -q gnome-calendar 2>/dev/null || true
-killall -q evince 2>/dev/null || true
-killall -q eog 2>/dev/null || true
-killall -q file-roller 2>/dev/null || true

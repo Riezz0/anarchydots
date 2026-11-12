@@ -1,0 +1,145 @@
+:root {
+  --accent-color: #CA4AA7;
+  --accent-bg-color: #CA4AA7;
+  --accent-fg-color: #090b15;
+  --window-bg-color: #090b15;
+  --window-fg-color: #c1c2c4;
+  --view-bg-color: #090b15;
+  --view-fg-color: #c1c2c4;
+  --success-color: #096B94;
+  --success-bg-color: #096B94;
+  --success-fg-color: #c1c2c4;
+  --warning-color: #614D93;
+  --warning-bg-color: #614D93;
+  --warning-fg-color: #090b15;
+  --destructive-color: #981C71;
+  --destructive-bg-color: #981C71;
+  --destructive-fg-color: #c1c2c4;
+  --error-color: #981C71;
+  --error-bg-color: #981C71;
+  --error-fg-color: #c1c2c4;
+  --headerbar-bg-color: #090b15;
+  --headerbar-fg-color: #c1c2c4;
+  --popover-bg-color: #090b15;
+  --popover-fg-color: #c1c2c4;
+  --dialog-bg-color: #090b15;
+  --dialog-fg-color: #c1c2c4;
+  --card-bg-color: #585b6c;
+  --card-fg-color: #c1c2c4;
+  --sidebar-bg-color: #090b15;
+  --sidebar-fg-color: #c1c2c4;
+  --sidebar-backdrop-color: #090b15;
+  --sidebar-border-color: #585b6c;
+  --secondary-sidebar-bg-color: var(--sidebar-bg-color);
+  --secondary-sidebar-fg-color: var(--sidebar-fg-color);
+  --secondary-sidebar-backdrop-color: var(--sidebar-backdrop-color);
+  --secondary-sidebar-border-color: var(--sidebar-border-color);
+  --blue-1: #CA4AA7;
+  --blue-2: #CA4AA7;
+  --green-1: #096B94;
+  --yellow-1: #614D93;
+  --red-1: #981C71;
+  --purple-1: #EA58B4;
+  --purple-2: #EA58B4;
+  --orange-1: #614D93;
+  --brown-1: #614D93;
+  --light-1: #c1c2c4;
+  --light-5: #c1c2c4;
+  --dark-1: #585b6c;
+}
+
+toast {
+  background-color: #614D93;
+  color: #090b15;
+}
+
+toggle:checked {
+  background-color: #CA4AA7;
+  color: #090b15;
+}
+
+/* 1 & 2. Active sidebar item & selected file/list rows (color4) */
+.navigation-sidebar > row:selected,
+listview > row:selected,
+list > row:selected,
+.view:selected {
+  background-color: #CA4AA7;
+  color: #090b15;
+}
+
+.navigation-sidebar > row:selected label,
+.navigation-sidebar > row:selected image,
+listview > row:selected label,
+list > row:selected label {
+  color: #090b15;
+}
+
+/* 3. Right-click context menus & dropdown popovers (color5) */
+popover.menu modelbutton:hover,
+popover.menu modelbutton:selected,
+popover modelbutton:hover,
+popover modelbutton:selected,
+menu menuitem:hover,
+.menu menuitem:hover,
+.context-menu menuitem:hover {
+  background-color: #EA58B4;
+  color: #090b15;
+}
+
+popover.menu modelbutton:hover label,
+popover.menu modelbutton:selected label,
+popover modelbutton:hover label,
+popover modelbutton:selected label,
+menu menuitem:hover label,
+.menu menuitem:hover label,
+.context-menu menuitem:hover label {
+  color: #090b15;
+}
+
+/* 4. Floating bottom selection pill in Nautilus (color3) */
+.floating-bar {
+  background-color: #614D93;
+  color: #090b15;
+  border-radius: 12px;
+  padding: 4px 10px;
+}
+
+.floating-bar label {
+  color: #090b15;
+}
+
+/* 5. Active tab in Libadwaita tab bar (color2) */
+tabbar tab:selected,
+tabbox tab:selected {
+  background-color: #096B94;
+  color: #090b15;
+}
+
+tabbar tab:selected label,
+tabbar tab:selected image,
+tabbox tab:selected label,
+tabbox tab:selected image {
+  color: #090b15;
+}
+
+/* 6. Clean circular window close button */
+windowcontrols button.close {
+  background: none;
+  box-shadow: none;
+}
+
+windowcontrols button.close image {
+  background-color: #EA58B4;
+  color: #090b15;
+  border-radius: 999px;
+  padding: 4px;
+}
+
+windowcontrols button.close:hover image {
+  background-color: #981C71;
+  color: #090b15;
+}
+
+
+@define-color accent_bg_color #CA4AA7;
+@define-color accent_fg_color #222222;
