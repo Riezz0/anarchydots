@@ -24,7 +24,7 @@
   --popover-fg-color: {foreground};
   --dialog-bg-color: {background};
   --dialog-fg-color: {foreground};
-  --card-bg-color: {color8};
+  --card-bg-color: alpha({foreground}, 0.07);
   --card-fg-color: {foreground};
   --sidebar-bg-color: {color0};
   --sidebar-fg-color: {foreground};

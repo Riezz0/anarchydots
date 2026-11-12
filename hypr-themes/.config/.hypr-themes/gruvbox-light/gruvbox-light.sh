@@ -19,7 +19,7 @@ WALL="$USER_HOME/.config/.hypr-themes/$THEME_NAME/thumbnail.png"
 PYWAL="$USER_HOME/.config/pywal/themes/active.json"
 
 # GTK, Icons and Cursors
-GTK_THEME="graphite-anarchy-gruvbox-dark"
+GTK_THEME="adw-gtk3"
 ICON_THEME="vimix_gruvbox_light"
 CURSOR_THEME="bibata_gruvbox_light_modern"
 
@@ -65,33 +65,45 @@ rm -rf /home/$USER/.config/gtk-4.0/*
 rm -rf /home/$USER/.config/gtk-3.0/*
 
 #------------------------#
-# SET ICON & REWAITA THEME
+# SET GTK & ICON THEME
 #------------------------#
 gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 echo "$ICON_THEME" > "$HOME/.cache/current_icon_theme.txt"
 
-grep -vE "^(cat <<|EOF$)" "$HOME/.cache/wal/rewaita-pywal.css" > "$HOME/.local/share/dark/pywal.css"
-cp "$HOME/.local/share/dark/pywal.css" "$HOME/.local/share/light/pywal.css"
-
-pkill -f rewaita 2>/dev/null || true
-rewaita --theme=pywal >/dev/null 2>&1
+grep -qxF '@import url("rewaita.css");' "$HOME/.config/gtk-4.0/gtk.css" 2>/dev/null || echo '@import url("rewaita.css");' > "$HOME/.config/gtk-4.0/gtk.css"
+    cp "$HOME/.cache/wal/rewaita-pywal.css" "$HOME/.config/gtk-4.0/rewaita.css"
+cp "$HOME/.cache/wal/gtk3-overrides.css" "$HOME/.config/gtk-3.0/gtk.css"
+    cat << EOF > "$HOME/.config/gtk-3.0/settings.ini"
+[Settings]
+gtk-theme-name=$GTK_THEME
+gtk-icon-theme-name=$ICON_THEME
+gtk-cursor-theme-name=$CURSOR_THEME
+gtk-application-prefer-dark-theme=$([[ "$GTK_THEME" == *"dark"* ]] && echo 1 || echo 0)
+EOF
 
 gtk4-update-icon-cache "$HOME/.config/gtk-4.0" 2>/dev/null || true
 gtk-update-icon-cache "$HOME/.config/gtk-3.0" 2>/dev/null || true
+killall -q nautilus gnome-clocks gnome-calculator gnome-calendar gnome-text-editor loupe evince baobab gnome-system-monitor nwg-look virt-manager blueman-manager pavucontrol 2>/dev/null || true
+systemctl --user restart xdg-desktop-portal-gtk 2>/dev/null || true
 
 if [[ "$GTK_THEME" == *"dark"* ]]; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
-    sleep 0.1
+    touch "$HOME/.config/gtk-4.0/gtk.css" "$HOME/.config/gtk-3.0/gtk.css"
+        sleep 0.3
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
 else
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
-    sleep 0.1
+    touch "$HOME/.config/gtk-4.0/gtk.css" "$HOME/.config/gtk-3.0/gtk.css"
+        sleep 0.3
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME"
 fi
+
+systemctl --user restart xdg-desktop-portal-gtk 2>/dev/null || true
+
 #------------------------#
 # SET KVANTUM THEME
 #------------------------#
@@ -99,7 +111,8 @@ mkdir -p "$KVANTUM_DIR"
 
 # Wait until Pywal cache files exist
 while [ ! -f "$HOME/.cache/wal/pywal.kvconfig" ] || [ ! -f "$HOME/.cache/wal/pywal.svg" ]; do
-    sleep 0.1
+    touch "$HOME/.config/gtk-4.0/gtk.css" "$HOME/.config/gtk-3.0/gtk.css"
+        sleep 0.3
 done
 
 cp "$HOME/.cache/wal/pywal.kvconfig" "$KVANTUM_DIR/pywal.kvconfig"
